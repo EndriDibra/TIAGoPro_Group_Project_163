@@ -11,6 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Major parts of this file are based on the original work by PAL Robotics S.L.
+# Modifications for WSL compatibility have been added.
 
 
 import os
@@ -69,6 +72,10 @@ class LaunchArguments(LaunchArgumentsBase):
     world_name: DeclareLaunchArgument = CommonArgs.world_name
     tuck_arm: DeclareLaunchArgument = CommonArgs.tuck_arm
     is_public_sim: DeclareLaunchArgument = CommonArgs.is_public_sim
+    
+    headless: DeclareLaunchArgument = DeclareLaunchArgument(
+        "headless", default_value="False",
+        description="Run Gazebo without GUI (headless mode)")
 
 
 def private_navigation(context, *args, **kwargs):

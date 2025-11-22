@@ -1,0 +1,23 @@
+FROM development-tiago-pro-34:alum-25.01
+
+# Force software rendering for simulation stability
+ENV LIBGL_ALWAYS_SOFTWARE=1
+
+# Install missing build dependencies
+USER root
+RUN apt-get update && apt-get install -y \
+    ros-humble-launch \
+    ros-humble-launch-ros \
+    ros-humble-ament-cmake \
+    ros-humble-robot-localization \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+USER user
+WORKDIR /home/user
+
+# Add build alias to .bashrc for convenience
+RUN echo "alias build='colcon build --symlink-install && source install/setup.bash'" >> /home/user/.bashrc

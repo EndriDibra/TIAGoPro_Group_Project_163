@@ -1,0 +1,29 @@
+services:
+  tiago_sim:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: tiago_group_163_sim
+    container_name: tiago_group_sim
+    network_mode: host
+    privileged: true
+    user: user
+    working_dir: /home/user
+    entrypoint: /entrypoint.sh
+    command: bash
+    runtime: nvidia
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - LIBGL_ALWAYS_SOFTWARE=1
+      - LIBGL_ALWAYS_INDIRECT=0
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      # Mount local source code to the container
+      - ./src:/home/user/src
+      # GUI forwarding
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/user/.Xauthority
+    stdin_open: true
+    tty: true
