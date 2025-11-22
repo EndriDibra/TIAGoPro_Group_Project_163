@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tiago_social_sim</name>
+  <version>0.0.0</version>
+  <description>Simulation package for TIAGo Pro Social Navigation</description>
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+
+  <!-- Core ROS2 launch dependencies -->
+  <exec_depend>launch_pal</exec_depend>
+  
+  <!-- PAL Robotics packages that the launch file includes -->
+  <exec_depend>tiago_pro_gazebo</exec_depend>
+  <exec_depend>tiago_pro_description</exec_depend>
+  <exec_depend>tiago_pro_bringup</exec_depend>
+  <exec_depend>tiago_pro_moveit_config</exec_depend>
+  <exec_depend>tiago_pro_2dnav</exec_depend>
+  <exec_depend>tiago_pro_laser_sensors</exec_depend>
+  <exec_depend>tiago_pro_docking</exec_depend>
+  
+  <!-- PAL infrastructure packages -->
+  <exec_depend>pal_gazebo_worlds</exec_depend>
+  <exec_depend>robot_info_publisher</exec_depend>
+  <exec_depend>pal_stores_server</exec_depend>
+  
+  <!-- Base and arm dependencies -->
+  <exec_depend>omni_base_description</exec_depend>
+  <exec_depend>pal_sea_arm_description</exec_depend>
+  <exec_depend>pal_pro_gripper_description</exec_depend>
+  <exec_depend>tiago_pro_head_description</exec_depend>
+  <exec_depend>allegro_hand_description</exec_depend>
+  
+  <!-- Utilities -->
+  <exec_depend>pal_urdf_utils</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  
+  <!-- RViz for visualization -->
+  <exec_depend>rviz2</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
