@@ -1,0 +1,27 @@
+# PAL User Configuration Override for Costmap Parameters
+# This file has the highest precedence in PAL's configuration system
+# It reduces update rates to lower computational load
+
+local_costmap:
+  ros__parameters:
+    # Reduce update frequency from default 10.0 to 2.0
+    update_frequency: 2.0
+    # Reduce publish frequency from default 10.0 to 1.0
+    publish_frequency: 1.0
+    
+    # More lenient expected update rate for obstacle layers
+    obstacle_laser_layer:
+      scan:
+        expected_update_rate: 1.0  # Increased from 0.2 to be more lenient
+
+global_costmap:
+  ros__parameters:
+    # Reduce update frequency from default 5.0 to 0.5
+    update_frequency: 0.5
+    # Keep publish frequency low
+    publish_frequency: 0.5
+    
+    # More lenient expected update rate for obstacle layers
+    obstacle_laser_layer:
+      scan:
+        expected_update_rate: 1.0  # Increased from 0.2 to be more lenient

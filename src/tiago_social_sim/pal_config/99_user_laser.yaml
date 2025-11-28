@@ -1,0 +1,11 @@
+# PAL User Configuration Override for Laser Scan Parameters
+# This file has the highest precedence in PAL's configuration system
+# It reduces laser scan resolution to lower computational load
+
+laserscan_multi_merger:
+  ros__parameters:
+    # Double the angle increment to halve the resolution
+    # Default: 0.0058 radians (~0.33 degrees)
+    # New: 0.012 radians (~0.69 degrees)
+    # This reduces the number of scan points by approximately 50%
+    angle_increment: 0.012

@@ -61,6 +61,71 @@ The simulation will start:
 - **SLAM** - Simultaneous Localization and Mapping
 - **RViz** - Visualization of robot state and sensor data
 
+#### Worlds
+
+Worlds can be found in `/opt/pal/alum/share/pal_gazebo_worlds/worlds`. The following worlds are available:
+
+- aruco
+- door_obstacle
+- memmo_simple
+- pick_place_cabinet
+- small_office_w_aruco_w_docks
+- ball
+- empty
+- narrow_passage
+- pick_place_close_demo
+- small_textured_office
+- cabinet_grasping
+- empty_room
+- objects_on_table
+- pick_place_demo
+- socmcs
+- calibration_room
+- factory
+- pal_office
+- reemc
+- stairs
+- chairs
+- featured
+- pal_office_w_aruco
+- reemc_indoor
+- stamping_demo
+- corridor_110cm
+- footstep_obstacle
+- pal_office_w_docks
+- simple_office
+- t_shaped
+- corridor_60cm
+- hit_table
+- pal_textured_object
+- simple_office_with_people
+- tabletop_cube
+- corridor_70cm
+- home
+- passage_110cm
+- simple_ramp
+- tabletop_cylinder
+- corridor_85cm
+- hospital
+- passage_60cm
+- small_factory
+- tutorial_office
+- dock_and_aruco
+- hospital_flat
+- passage_70cm
+- small_office
+- voronoi_graph
+- dock_station
+- look_to_point
+- pg_demo
+- small_office_door_obstacle
+- willow_garage
+- docker_chair
+- low_sun_empty
+- pick
+- small_office_inventory
+- world_wall_REEM_photo
+
 ### 5. Stop the Container
 
 ```bash
@@ -89,6 +154,7 @@ build
 ```bash
 # If you modified launch files (using --symlink-install, no rebuild needed)
 ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True
+ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True world_name:=tutorial_office &> output.log
 
 # If you modified C++ code
 colcon build --packages-select tiago_social_sim
@@ -100,8 +166,8 @@ source install/setup.bash
 ### Robot Control
 
 ```bash
-# Publish a velocity command to move the robot forward
-ros2 topic pub --once -w 1 /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}, angular: {z: 0.0}}"
+# Publish a velocity command to move in circles
+ros2 topic pub --once -w 1 /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}, angular: {z: 0.5}}"
 
 # Send a navigation goal (requires navigation stack running)
 ros2 topic pub /goal_pose geometry_msgs/msg/PoseStamped "{header: {frame_id: 'map'}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}}}"

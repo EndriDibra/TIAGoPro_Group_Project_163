@@ -151,7 +151,7 @@ def private_navigation(context, *args, **kwargs):
     actions.append(ekf_node)
     # ===== END WSL2 FIX =====
     
-    # Navigation
+    # Navigation (using PAL's default config with user overrides from /home/user/.pal/config/)
     nav_bringup_launch = include_launch_py_description(
         pkg_name=base_type + '_2dnav',
         paths=['launch', 'navigation.launch.py'],

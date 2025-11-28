@@ -10,7 +10,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 
 
-install(DIRECTORY launch
+install(DIRECTORY launch pal_config
   DESTINATION share/${PROJECT_NAME}
 )
 

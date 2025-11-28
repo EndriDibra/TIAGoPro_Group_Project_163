@@ -12,6 +12,16 @@ if [ ! -f "/home/user/install/setup.bash" ]; then
     colcon build --symlink-install || echo "Build failed, but continuing for debug..."
 fi
 
+# Deploy PAL user configuration overrides
+echo "Deploying PAL user configuration overrides..."
+mkdir -p /home/user/.pal/config
+if [ -d "/home/user/src/tiago_social_sim/pal_config" ]; then
+    cp -v /home/user/src/tiago_social_sim/pal_config/*.yaml /home/user/.pal/config/
+    echo "PAL config overrides deployed successfully"
+else
+    echo "Warning: PAL config source directory not found"
+fi
+
 # Source the local workspace
 if [ -f "/home/user/install/setup.bash" ]; then
     source /home/user/install/setup.bash
