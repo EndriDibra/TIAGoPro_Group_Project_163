@@ -154,7 +154,7 @@ build
 ```bash
 # If you modified launch files (using --symlink-install, no rebuild needed)
 ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True
-ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True world_name:=tutorial_office &> output.log
+ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True world_name:=tutorial_office &> ~/src/tmp/output.log
 
 # If you modified C++ code
 colcon build --packages-select tiago_social_sim

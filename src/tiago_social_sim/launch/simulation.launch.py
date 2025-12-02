@@ -135,7 +135,7 @@ def private_navigation(context, *args, **kwargs):
         output='screen',
         parameters=[{
             'use_sim_time': True,
-            'frequency': 30.0,
+            'frequency': 100.0,
             'two_d_mode': True,
             'publish_tf': True,
             'map_frame': 'map',
@@ -363,6 +363,16 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     )
 
     launch_description.add_action(tuck_arm)
+
+    # Social Costmap Node
+    social_costmap_node = Node(
+        package='tiago_social_nav',
+        executable='social_costmap_node',
+        name='social_costmap_node',
+        output='screen',
+        #parameters=[{'camera_topic': '/head_front_camera/color/image_raw'}]
+    )
+    launch_description.add_action(social_costmap_node)
 
     return
 
