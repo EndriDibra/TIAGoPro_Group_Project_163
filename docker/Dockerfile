@@ -13,6 +13,16 @@ RUN apt-get update && apt-get install -y \
     ros-humble-image-pipeline \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies for YOLO
+RUN pip3 install --no-cache-dir \
+    ultralytics>=8.1.0 \
+    torch>=2.0.0 \
+    torchvision>=0.15.0 \
+    opencv-python-headless
+
+# Install MistralAI
+RUN pip3 install --no-cache-dir mistralai
+
 # Copy entrypoint script
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
