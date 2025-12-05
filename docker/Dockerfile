@@ -1,5 +1,10 @@
 FROM development-tiago-pro-34:alum-25.01
 
+# Install PyTorch and torchvision first
+RUN pip install --no-cache-dir \
+    torch>=2.0.0 \
+    torchvision>=0.15.0
+
 # Force software rendering for simulation stability
 ENV LIBGL_ALWAYS_SOFTWARE=1
 
@@ -13,9 +18,10 @@ RUN apt-get update && apt-get install -y \
     ros-humble-image-pipeline \
     && rm -rf /var/lib/apt/lists/*
 
+
 # Copy and install Python requirements
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir --ignore-installed \
+RUN pip install --no-cache-dir \
     -r /tmp/requirements.txt && rm /tmp/requirements.txt
 
 # Copy entrypoint script

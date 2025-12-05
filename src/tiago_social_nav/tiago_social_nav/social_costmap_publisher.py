@@ -117,7 +117,7 @@ class SocialCostmapPublisher:
         # Set origin (lower-left corner of grid)
         occupancy_grid.info.origin.position.x = origin_x
         occupancy_grid.info.origin.position.y = origin_y
-        occupancy_grid.info.origin.position.z = 0.0
+        occupancy_grid.info.origin.position.z = 0.05
         occupancy_grid.info.origin.orientation.w = 1.0
         
         # Flatten grid row-major (y-axis increases upward)

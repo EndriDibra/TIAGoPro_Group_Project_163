@@ -51,6 +51,9 @@ class SocialCostmapNode(Node):
         self.declare_parameter('save_debug_images', True)
         self.declare_parameter('debug_dir', '~/src/tmp')
         
+        # Robot frame for costmap centering
+        self.declare_parameter('robot_base_frame', 'base_footprint')
+        
         # Get parameters
         self.camera_topic = self.get_parameter('camera_topic').get_parameter_value().string_value
         self.depth_topic = self.get_parameter('depth_topic').get_parameter_value().string_value
@@ -73,6 +76,7 @@ class SocialCostmapNode(Node):
         
         self.save_debug = self.get_parameter('save_debug_images').get_parameter_value().bool_value
         self.debug_dir = os.path.expanduser(self.get_parameter('debug_dir').get_parameter_value().string_value)
+        self.robot_base_frame = self.get_parameter('robot_base_frame').get_parameter_value().string_value
         
         self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
@@ -245,9 +249,25 @@ class SocialCostmapNode(Node):
                     )
             
             # ========== Step 4: Generate and Publish Social Costmap ==========
+            # Get robot position in map frame for centering costmap
+            robot_position = None
+            try:
+                transform_map_to_robot = self.tf_buffer.lookup_transform(
+                    'map',
+                    self.robot_base_frame,
+                    rclpy.time.Time()
+                )
+                robot_position = np.array([
+                    transform_map_to_robot.transform.translation.x,
+                    transform_map_to_robot.transform.translation.y
+                ])
+                # self.get_logger().info(f'Centering costmap at robot: {robot_position}')
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                self.get_logger().warn(f'Could not get transform map->{self.robot_base_frame}, costmap will default to origin')
+
             costmap = self.costmap_publisher_module.create_costmap(
                 persons=localized_persons,
-                robot_position=None,  # Could get robot pose from TF if needed
+                robot_position=robot_position,
                 map_frame='map',
                 timestamp=rgb_msg.header.stamp
             )

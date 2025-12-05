@@ -370,6 +370,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         executable='social_costmap_node',
         name='social_costmap_node',
         output='screen',
+        parameters=[{'use_sim_time': True}],
     )
     launch_description.add_action(social_costmap_node)
 
