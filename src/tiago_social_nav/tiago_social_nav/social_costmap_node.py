@@ -48,7 +48,7 @@ class SocialCostmapNode(Node):
         self.declare_parameter('social_radius', 3.6)  # meters
         
         # Declare debugging parameters
-        self.declare_parameter('save_debug_images', False)
+        self.declare_parameter('save_debug_images', True)
         self.declare_parameter('debug_dir', '~/src/tmp')
         
         # Get parameters

@@ -4,7 +4,7 @@ Handles model loading, inference, and person detection filtering.
 """
 
 import numpy as np
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict
 import cv2
 from ultralytics import YOLO
 
