@@ -20,7 +20,7 @@ PERSONAL_FROM_EDGE = 1.20  # m
 INTIMATE_EDGE = BODY_RADIUS + INTIMATE_FROM_EDGE   # 0.70 m
 PERSONAL_EDGE = BODY_RADIUS + PERSONAL_FROM_EDGE   # 1.45 m
 
-DECAY_TIME = 2.0  # seconds
+DECAY_TIME = 10.0  # seconds
 
 
 class SocialCostmapPublisher:
