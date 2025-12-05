@@ -1,7 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image, CameraInfo
-from nav_msgs.msg import OccupancyGrid
+from sensor_msgs.msg import Image, CameraInfo, PointCloud2
 from visualization_msgs.msg import MarkerArray
 from cv_bridge import CvBridge
 import cv2
@@ -12,13 +11,12 @@ import message_filters
 from rclpy.qos import qos_profile_sensor_data
 import tf2_ros
 import tf2_geometry_msgs
-from geometry_msgs.msg import PointStamped
-import time
 
 # Import our custom modules
 from .person_detector import PersonDetector
 from .person_localizer import PersonLocalizer
 from .social_costmap_publisher import SocialCostmapPublisher
+import time
 
 class SocialCostmapNode(Node):
     def __init__(self):
@@ -39,20 +37,9 @@ class SocialCostmapNode(Node):
         # Declare localization parameters
         self.declare_parameter('localization_method', '3d_centroid')  # or 'min_z_column'
         
-        # Declare costmap parameters
-        self.declare_parameter('costmap_resolution', 0.05)  # meters
-        self.declare_parameter('costmap_width', 10.0)  # meters
-        self.declare_parameter('costmap_height', 10.0)  # meters
-        self.declare_parameter('intimate_radius', 0.5)  # meters
-        self.declare_parameter('personal_radius', 1.2)  # meters
-        self.declare_parameter('social_radius', 3.6)  # meters
-        
         # Declare debugging parameters
         self.declare_parameter('save_debug_images', True)
         self.declare_parameter('debug_dir', '~/src/tmp')
-        
-        # Robot frame for costmap centering
-        self.declare_parameter('robot_base_frame', 'base_footprint')
         
         # Get parameters
         self.camera_topic = self.get_parameter('camera_topic').get_parameter_value().string_value
@@ -67,16 +54,8 @@ class SocialCostmapNode(Node):
         
         localization_method = self.get_parameter('localization_method').get_parameter_value().string_value
         
-        costmap_resolution = self.get_parameter('costmap_resolution').get_parameter_value().double_value
-        costmap_width = self.get_parameter('costmap_width').get_parameter_value().double_value
-        costmap_height = self.get_parameter('costmap_height').get_parameter_value().double_value
-        intimate_radius = self.get_parameter('intimate_radius').get_parameter_value().double_value
-        personal_radius = self.get_parameter('personal_radius').get_parameter_value().double_value
-        social_radius = self.get_parameter('social_radius').get_parameter_value().double_value
-        
         self.save_debug = self.get_parameter('save_debug_images').get_parameter_value().bool_value
         self.debug_dir = os.path.expanduser(self.get_parameter('debug_dir').get_parameter_value().string_value)
-        self.robot_base_frame = self.get_parameter('robot_base_frame').get_parameter_value().string_value
         
         self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
@@ -96,21 +75,15 @@ class SocialCostmapNode(Node):
         
         self.localizer = PersonLocalizer(method=localization_method)
         
-        self.costmap_publisher_module = SocialCostmapPublisher(
-            resolution=costmap_resolution,
-            width=costmap_width,
-            height=costmap_height,
-            intimate_radius=intimate_radius,
-            personal_radius=personal_radius,
-            social_radius=social_radius
-        )
+        self.costmap_publisher_module = SocialCostmapPublisher()
         
         # TF Buffer
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         
         # ROS Publishers
-        self.costmap_pub = self.create_publisher(OccupancyGrid, '/social_costmap', 10)
+        # Replaced OccupancyGrid with PointCloud2
+        self.social_pub = self.create_publisher(PointCloud2, '/social_obstacles', 10)
         self.markers_pub = self.create_publisher(MarkerArray, '/social_costmap/person_markers', 10)
         
         # Subscribers
@@ -140,7 +113,7 @@ class SocialCostmapNode(Node):
         
         self.bridge = CvBridge()
         
-        self.get_logger().info('Social Costmap Node with YOLO detection ready!')
+        self.get_logger().info('Social Costmap Node (PointCloud2) with YOLO detection ready!')
 
     def depth_camera_info_callback(self, msg):
         if self.depth_camera_model is None:
@@ -178,16 +151,24 @@ class SocialCostmapNode(Node):
             cv_rgb_yolo = cv2.cvtColor(cv_rgb, cv2.COLOR_BGR2RGB)
             detections = self.detector.detect(cv_rgb_yolo)
             
-            self.get_logger().info(f'Detected {len(detections)} person(s)')
+            # self.get_logger().info(f'Detected {len(detections)} person(s)')
             
             if len(detections) == 0:
-                # No persons detected - publish empty costmap
-                empty_costmap = self.costmap_publisher_module.create_costmap(
+                # No persons detected - publish empty pointcloud to clear obstacles
+                empty_cloud = self.costmap_publisher_module.create_social_pointcloud(
                     persons=[],
                     map_frame='map',
                     timestamp=rgb_msg.header.stamp
                 )
-                self.costmap_pub.publish(empty_costmap)
+                self.social_pub.publish(empty_cloud)
+                
+                # Also clear markers
+                empty_markers = self.costmap_publisher_module.create_person_markers(
+                    persons=[],
+                    map_frame='map',
+                    timestamp=rgb_msg.header.stamp
+                )
+                self.markers_pub.publish(empty_markers)
                 return
             
             # ========== Step 2: Create Registered Depth Image ==========
@@ -237,42 +218,17 @@ class SocialCostmapNode(Node):
                 depth_to_map_transform=transform_matrix
             )
             
-            self.get_logger().info(f'Localized {len(localized_persons)} person(s) in 3D')
+            if len(localized_persons) > 0:
+                self.get_logger().info(f'Localized {len(localized_persons)} person(s) in 3D')
             
-            # Log person positions
-            for i, person in enumerate(localized_persons):
-                if 'position_3d_map' in person:
-                    pos = person['position_3d_map']
-                    self.get_logger().info(
-                        f'  Person {i+1}: Map position ({pos[0]:.2f}, {pos[1]:.2f}, {pos[2]:.2f}), '
-                        f'Confidence: {person["confidence"]:.2f}'
-                    )
-            
-            # ========== Step 4: Generate and Publish Social Costmap ==========
-            # Get robot position in map frame for centering costmap
-            robot_position = None
-            try:
-                transform_map_to_robot = self.tf_buffer.lookup_transform(
-                    'map',
-                    self.robot_base_frame,
-                    rclpy.time.Time()
-                )
-                robot_position = np.array([
-                    transform_map_to_robot.transform.translation.x,
-                    transform_map_to_robot.transform.translation.y
-                ])
-                # self.get_logger().info(f'Centering costmap at robot: {robot_position}')
-            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
-                self.get_logger().warn(f'Could not get transform map->{self.robot_base_frame}, costmap will default to origin')
-
-            costmap = self.costmap_publisher_module.create_costmap(
+            # ========== Step 4: Generate and Publish Social PointCloud ==========
+            point_cloud = self.costmap_publisher_module.create_social_pointcloud(
                 persons=localized_persons,
-                robot_position=robot_position,
                 map_frame='map',
                 timestamp=rgb_msg.header.stamp
             )
             
-            self.costmap_pub.publish(costmap)
+            self.social_pub.publish(point_cloud)
             
             # ========== Step 5: Publish Visualization Markers ==========
             markers = self.costmap_publisher_module.create_person_markers(
@@ -422,7 +378,7 @@ class SocialCostmapNode(Node):
                         f.write(f'  Depth samples: {person["depth_samples"]}\n')
                     f.write('\n')
             
-            self.get_logger().info(f'Debug data saved to {self.debug_dir}')
+            # self.get_logger().info(f'Debug data saved to {self.debug_dir}')
             
         except Exception as e:
             self.get_logger().error(f'Failed to save debug data: {e}')

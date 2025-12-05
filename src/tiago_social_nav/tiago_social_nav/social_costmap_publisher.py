@@ -1,179 +1,94 @@
 """
 Social Costmap Publisher
-Generates and publishes OccupancyGrid with social costs around detected persons.
+Generates and publishes PointCloud2 with social obstacles around detected persons.
 """
 
 import numpy as np
-from typing import List, Dict, Optional
-from nav_msgs.msg import OccupancyGrid
-from geometry_msgs.msg import Pose
+import math
+from typing import List, Dict
+from sensor_msgs.msg import PointCloud2, PointField
 from std_msgs.msg import Header
 from visualization_msgs.msg import Marker, MarkerArray
+import sensor_msgs_py.point_cloud2 as pc2
 import rclpy
+
+# Proxemics constants
+BODY_RADIUS = 0.25       # m
+INTIMATE_FROM_EDGE = 0.45  # m
+PERSONAL_FROM_EDGE = 1.20  # m
+
+INTIMATE_EDGE = BODY_RADIUS + INTIMATE_FROM_EDGE   # 0.70 m
+PERSONAL_EDGE = BODY_RADIUS + PERSONAL_FROM_EDGE   # 1.45 m
+
+DECAY_TIME = 2.0  # seconds
 
 
 class SocialCostmapPublisher:
-    """Generate and publish social costmap as OccupancyGrid."""
+    """Generate and publish social obstacles as PointCloud2."""
     
-    def __init__(self,
-                 resolution: float = 0.05,
-                 width: float = 10.0,
-                 height: float = 10.0,
-                 robot_radius: float = 0.3,
-                 intimate_radius: float = 0.5,
-                 personal_radius: float = 1.2,
-                 social_radius: float = 3.6,
-                 max_cost: int = 100):
-        """
-        Initialize social costmap publisher.
-        
-        Args:
-            resolution: Grid resolution in meters per cell
-            width: Costmap width in meters
-            height: Costmap height in meters
-            robot_radius: Robot radius for collision zone (meters)
-            intimate_radius: Intimate zone radius - very high cost (meters)
-            personal_radius: Personal zone radius - high cost (meters)
-            social_radius: Social zone radius - moderate cost (meters)
-            max_cost: Maximum cost value (0-100 for OccupancyGrid)
-        """
-        self.resolution = resolution
-        self.width_meters = width
-        self.height_meters = height
-        self.width_cells = int(width / resolution)
-        self.height_cells = int(height / resolution)
-        
-        # Social zone parameters
-        self.robot_radius = robot_radius
-        self.intimate_radius = intimate_radius
-        self.personal_radius = personal_radius
-        self.social_radius = social_radius
-        self.max_cost = max_cost
-        
-        # Gaussian sigma for smooth cost falloff
-        # Sigma chosen so that at zone boundary, cost is ~13% of max (2 sigma rule)
-        self.intimate_sigma = intimate_radius / 2.0
-        self.personal_sigma = personal_radius / 2.0
-        self.social_sigma = social_radius / 2.0
+    def __init__(self):
+        """Initialize social costmap publisher."""
+        # No grid parameters needed anymore
+        pass
     
-    def create_costmap(self,
-                      persons: List[Dict],
-                      robot_position: Optional[np.ndarray] = None,
-                      map_frame: str = 'map',
-                      timestamp = None) -> OccupancyGrid:
+    def create_social_pointcloud(self,
+                                persons: List[Dict],
+                                map_frame: str = 'map',
+                                timestamp = None) -> PointCloud2:
         """
-        Generate OccupancyGrid with social costs around persons.
+        Generate PointCloud2 with points representing social obstacles.
         
         Args:
             persons: List of localized persons with 'position_3d_map' field
-            robot_position: [x, y] robot position in map frame (for centering costmap)
-            map_frame: Frame ID for the costmap
+            map_frame: Frame ID for the point cloud
             timestamp: ROS timestamp for the message
         
         Returns:
-            OccupancyGrid message
+            PointCloud2 message
         """
-        # Create empty grid
-        grid = np.zeros((self.height_cells, self.width_cells), dtype=np.int8)
+        points = []
         
-        # Determine costmap origin (center on robot if available, else at 0,0)
-        if robot_position is not None:
-            origin_x = robot_position[0] - self.width_meters / 2.0
-            origin_y = robot_position[1] - self.height_meters / 2.0
-        else:
-            origin_x = -self.width_meters / 2.0
-            origin_y = -self.height_meters / 2.0
-        
-        # Add costs for each person
-        for person in persons:
-            if 'position_3d_map' not in person:
+        for p in persons:
+            if 'position_3d_map' not in p:
                 continue
+                
+            pos = p['position_3d_map']
+            px, py = pos[0], pos[1]
             
-            pos_map = person['position_3d_map']
-            person_x, person_y = pos_map[0], pos_map[1]
-            
-            # Convert to grid coordinates
-            grid_x = int((person_x - origin_x) / self.resolution)
-            grid_y = int((person_y - origin_y) / self.resolution)
-            
-            # Skip if person is outside costmap bounds
-            if not (0 <= grid_x < self.width_cells and 0 <= grid_y < self.height_cells):
-                continue
-            
-            # Add social zones using Gaussian cost function
-            self._add_social_zones(grid, grid_x, grid_y)
-        
-        # Create OccupancyGrid message
-        occupancy_grid = OccupancyGrid()
-        
+            # 1. Physical body: fill with dense rings from center out to body radius
+            # Create a solid obstacle for the person's body
+            for radius in np.linspace(0.1, BODY_RADIUS, 3):
+                num_points = 8
+                for angle in np.linspace(0, 2*math.pi, num_points, endpoint=False):
+                    x = px + radius * math.cos(angle)
+                    y = py + radius * math.sin(angle)
+                    z = 0.5  # fixed height
+                    points.append((x, y, z))
+
+            # 2. Intimate boundary ring at INTIMATE_EDGE
+            # This marks the critical personal space boundary
+            radius = INTIMATE_EDGE
+            num_points = 24
+            for angle in np.linspace(0, 2*math.pi, num_points, endpoint=False):
+                x = px + radius * math.cos(angle)
+                y = py + radius * math.sin(angle)
+                z = 0.5
+                points.append((x, y, z))
+
+        # Create header
+        header = Header()
+        header.frame_id = map_frame
         if timestamp is not None:
-            occupancy_grid.header.stamp = timestamp
-        occupancy_grid.header.frame_id = map_frame
-        
-        occupancy_grid.info.resolution = self.resolution
-        occupancy_grid.info.width = self.width_cells
-        occupancy_grid.info.height = self.height_cells
-        
-        # Set origin (lower-left corner of grid)
-        occupancy_grid.info.origin.position.x = origin_x
-        occupancy_grid.info.origin.position.y = origin_y
-        occupancy_grid.info.origin.position.z = 0.05
-        occupancy_grid.info.origin.orientation.w = 1.0
-        
-        # Flatten grid row-major (y-axis increases upward)
-        occupancy_grid.data = grid.flatten().tolist()
-        
-        return occupancy_grid
-    
-    def _add_social_zones(self, grid: np.ndarray, center_x: int, center_y: int):
-        """
-        Add three-zone social cost model around a person.
-        
-        Uses concentric zones:
-        1. Intimate zone (0-0.5m): max_cost (100)
-        2. Personal zone (0.5-1.2m): high cost (70-100)
-        3. Social zone (1.2-3.6m): moderate cost (30-70)
-        
-        Costs fall off with Gaussian function for smooth transitions.
-        """
-        height, width = grid.shape
-        
-        # Create meshgrid for distance calculation
-        y_coords, x_coords = np.ogrid[0:height, 0:width]
-        
-        # Calculate distance from person center (in cells)
-        dist_cells = np.sqrt((x_coords - center_x)**2 + (y_coords - center_y)**2)
-        
-        # Convert to meters
-        dist_meters = dist_cells * self.resolution
-        
-        # Three-zone cost model with Gaussian falloff
-        cost = np.zeros_like(dist_meters)
-        
-        # Intimate zone: Highest cost (max within intimate_radius)
-        intimate_mask = dist_meters <= self.intimate_radius
-        cost[intimate_mask] = self.max_cost
-        
-        # Personal zone: High cost with Gaussian falloff
-        personal_mask = (dist_meters > self.intimate_radius) & (dist_meters <= self.personal_radius)
-        if np.any(personal_mask):
-            # Gaussian centered at intimate boundary, sigma = personal_sigma
-            dist_from_intimate = dist_meters[personal_mask] - self.intimate_radius
-            gaussian_personal = np.exp(-(dist_from_intimate**2) / (2 * self.personal_sigma**2))
-            cost[personal_mask] = self.max_cost * 0.7 + (self.max_cost * 0.3) * gaussian_personal
-        
-        # Social zone: Moderate cost with Gaussian falloff
-        social_mask = (dist_meters > self.personal_radius) & (dist_meters <= self.social_radius)
-        if np.any(social_mask):
-            dist_from_personal = dist_meters[social_mask] - self.personal_radius
-            gaussian_social = np.exp(-(dist_from_personal**2) / (2 * self.social_sigma**2))
-            cost[social_mask] = self.max_cost * 0.3 + (self.max_cost * 0.4) * gaussian_social
-        
-        # Clip to valid range [0, 100] and convert to int8
-        cost = np.clip(cost, 0, self.max_cost).astype(np.int8)
-        
-        # Merge with existing grid (take maximum cost)
-        grid[:, :] = np.maximum(grid, cost)
+            header.stamp = timestamp
+            
+        fields = [
+            PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+            PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+            PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
+        ]
+
+        pc2_msg = pc2.create_cloud(header, fields, points)
+        return pc2_msg
     
     def create_person_markers(self,
                              persons: List[Dict],
@@ -200,7 +115,7 @@ class SocialCostmapPublisher:
             
             pos_map = person['position_3d_map']
             
-            # Create sphere marker
+            # Create sphere marker for body
             marker = Marker()
             marker.header.frame_id = map_frame
             if timestamp is not None:
@@ -208,42 +123,114 @@ class SocialCostmapPublisher:
             
             marker.ns = namespace
             marker.id = i
-            marker.type = Marker.SPHERE
+            marker.type = Marker.CYLINDER
             marker.action = Marker.ADD
             
             # Position
             marker.pose.position.x = float(pos_map[0])
             marker.pose.position.y = float(pos_map[1])
-            marker.pose.position.z = float(pos_map[2])
+            marker.pose.position.z = 0.9  # Center of 1.8m tall cylinder
             marker.pose.orientation.w = 1.0
             
-            # Scale (person size)
-            marker.scale.x = 0.5
-            marker.scale.y = 0.5
-            marker.scale.z = 1.7  # Average human height
+            # Scale
+            marker.scale.x = BODY_RADIUS * 2
+            marker.scale.y = BODY_RADIUS * 2
+            marker.scale.z = 1.8 
             
-            # Color (green, semi-transparent)
-            marker.color.r = 0.0
-            marker.color.g = 1.0
+            # Color (Red for body)
+            marker.color.r = 1.0
+            marker.color.g = 0.0
             marker.color.b = 0.0
-            marker.color.a = 0.7
+            marker.color.a = 0.8
             
-            # Lifetime
-            marker.lifetime.sec = 1  # 1 second (will update at 5Hz)
-            
+            marker.lifetime.sec = 1
             marker_array.markers.append(marker)
+            
+            # Create Intimate Zone Ring
+            ring = Marker()
+            ring.header.frame_id = map_frame
+            if timestamp is not None:
+                ring.header.stamp = timestamp
+            
+            ring.ns = namespace + "_intimate"
+            ring.id = i
+            ring.type = Marker.CYLINDER
+            ring.action = Marker.ADD
+            
+            ring.pose.position.x = float(pos_map[0])
+            ring.pose.position.y = float(pos_map[1])
+            ring.pose.position.z = 0.05
+            ring.pose.orientation.w = 1.0
+            
+            # Outer diameter = 2 * INTIMATE_EDGE
+            ring.scale.x = INTIMATE_EDGE * 2
+            ring.scale.y = INTIMATE_EDGE * 2
+            ring.scale.z = 0.05
+            
+            # Color (Orange/Yellow for intimate zone)
+            ring.color.r = 1.0
+            ring.color.g = 0.6
+            ring.color.b = 0.0
+            ring.color.a = 0.4
+            
+            ring.lifetime.sec = 1
+            marker_array.markers.append(ring)
+            
+            # Create Personal Zone Ring
+            p_ring = Marker()
+            p_ring.header.frame_id = map_frame
+            if timestamp is not None:
+                p_ring.header.stamp = timestamp
+            
+            p_ring.ns = namespace + "_personal"
+            p_ring.id = i
+            p_ring.type = Marker.CYLINDER
+            p_ring.action = Marker.ADD
+            
+            p_ring.pose.position.x = float(pos_map[0])
+            p_ring.pose.position.y = float(pos_map[1])
+            p_ring.pose.position.z = 0.01
+            p_ring.pose.orientation.w = 1.0
+            
+            p_ring.scale.x = PERSONAL_EDGE * 2.0
+            p_ring.scale.y = PERSONAL_EDGE * 2.0
+            p_ring.scale.z = 0.01
+            
+            # Color (Green/Blue for personal zone)
+            p_ring.color.r = 0.0
+            p_ring.color.g = 0.5
+            p_ring.color.b = 1.0
+            p_ring.color.a = 0.2
+            
+            p_ring.lifetime.sec = 1
+            marker_array.markers.append(p_ring)
         
-        # Add delete marker for any previously published markers beyond current count
-        # This cleans up markers when persons leave the scene
-        if len(persons) < 10:  # Assume max 10 tracked persons
+        # Cleanup old markers
+        if len(persons) < 10:
             for i in range(len(persons), 10):
+                # Body
                 delete_marker = Marker()
                 delete_marker.header.frame_id = map_frame
-                if timestamp is not None:
-                    delete_marker.header.stamp = timestamp
                 delete_marker.ns = namespace
                 delete_marker.id = i
                 delete_marker.action = Marker.DELETE
                 marker_array.markers.append(delete_marker)
+                
+                # Intimate
+                delete_intimate = Marker()
+                delete_intimate.header.frame_id = map_frame
+                delete_intimate.ns = namespace + "_intimate"
+                delete_intimate.id = i
+                delete_intimate.action = Marker.DELETE
+                marker_array.markers.append(delete_intimate)
+
+                # Personal
+                delete_personal = Marker()
+                delete_personal.header.frame_id = map_frame
+                delete_personal.ns = namespace + "_personal"
+                delete_personal.id = i
+                delete_personal.action = Marker.DELETE
+                marker_array.markers.append(delete_personal)
         
         return marker_array
+

@@ -135,7 +135,7 @@ def private_navigation(context, *args, **kwargs):
         output='screen',
         parameters=[{
             'use_sim_time': True,
-            'frequency': 100.0,
+            'frequency': 10.0,
             'two_d_mode': True,
             'publish_tf': True,
             'map_frame': 'map',
@@ -237,25 +237,25 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     launch_description.add_action(cleanup_wsl)
     # ===== END WSL2 FIX =====
 
-    # ===== WSL2 FIX: REMAP TOPICS =====
-    relay_node = Node(
-        package='topic_tools',
-        executable='relay',
-        name='scan_topic_relay',
-        parameters=[{
-            'input_topic': '/scan_front_raw',
-            'output_topic': '/scan',
-        }],
-    )
-    launch_description.add_action(relay_node)
+    # ===== WSL2 FIX: REMAP    # WSL2 FIX
+    # relay_node = Node(
+    #     package='topic_tools',
+    #     executable='relay',
+    #     name='scan_topic_relay',
+    #     parameters=[{
+    #         'input_topic': '/scan_front_raw',
+    #         'output_topic': '/scan',
+    #     }],
+    # )
+    # launch_description.add_action(relay_node)
 
-    static_tf_publisher_node = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_footprint'],
-        output='screen',
-    )
-    launch_description.add_action(static_tf_publisher_node)
+    # static_tf_publisher_node = Node(
+    #     package='tf2_ros',
+    #     executable='static_transform_publisher',
+    #     name='static_transform_publisher',
+    #     arguments=['0', '0', '0', '0', '0', '0', 'odom', 'base_footprint'],
+    # )
+    # launch_description.add_action(static_tf_publisher_node)
     # ===== END WSL2 FIX =====
 
     # Shows error if is_public_sim is not set to True when using public simulation
@@ -345,7 +345,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     # ===== WSL2 FIX: DELAY BEFORE BRINGUP =====    
     # Wrap with delay to ensure Gazebo + controller_manager are ready
     tiago_bringup_delayed = TimerAction(
-        period=15.0,  # 15 second delay for WSL2
+        period=5.0,  # 20 second delay for WSL2
         actions=[tiago_bringup]
     )
     # (The name of the added action would have to be changed if reverting)
