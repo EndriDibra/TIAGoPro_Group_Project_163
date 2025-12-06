@@ -1,0 +1,84 @@
+# PAL User Configuration Override for Costmap Parameters
+# This file has the highest precedence in PAL's configuration system
+# It reduces update rates to lower computational load
+
+local_costmap:
+  ros__parameters:
+    # Define plugins for local costmap (override default)
+    # Order matters: obstacle layer, then social layer (overlay), then inflation
+    plugins: ["obstacle_laser_layer", "social_layer", "inflation_layer"]
+
+    social_layer:
+      plugin: "nav2_costmap_2d::StaticLayer"
+      map_topic: "/social_costmap"
+      subscribe_to_updates: false
+      map_subscribe_transient_local: false
+      use_sim_time: true
+      enabled: true
+
+    inflation_layer:
+      plugin: "nav2_costmap_2d::InflationLayer"
+      cost_scaling_factor: 3.0
+      inflation_radius: 0.55
+
+    # More lenient expected update rate for obstacle layers
+    obstacle_laser_layer:
+      plugin: "nav2_costmap_2d::ObstacleLayer"
+      enabled: True
+      observation_sources: scan
+      footprint_clearing_enabled: False
+      scan:
+        topic: "scan"
+        expected_update_rate: 1.0  # Increased from 0.2 to be more lenient
+        max_obstacle_height: 2.0
+        clearing: True
+        marking: True
+        data_type: "LaserScan"
+        reliability: "best_effort"
+        raytrace_max_range: 6.0
+        raytrace_min_range: 0.0
+        obstacle_max_range: 5.5
+        obstacle_min_range: 0.0
+
+global_costmap:
+  ros__parameters:
+    # Define plugins for global costmap (override default)
+    # Order matters: static (map), obstacles, social, inflation
+    plugins: ["static_layer", "obstacle_laser_layer", "social_layer", "inflation_layer"]
+
+    static_layer:
+      plugin: "nav2_costmap_2d::StaticLayer"
+      subscribe_to_updates: true
+      map_subscribe_transient_local: true
+
+    social_layer:
+      plugin: "nav2_costmap_2d::StaticLayer"
+      map_topic: "/social_costmap"
+      subscribe_to_updates: false
+      map_subscribe_transient_local: false
+      use_sim_time: true
+      enabled: true
+    
+    inflation_layer:
+      plugin: "nav2_costmap_2d::InflationLayer"
+      cost_scaling_factor: 3.0
+      inflation_radius: 0.55
+
+    # More lenient expected update rate for obstacle layers
+    obstacle_laser_layer:
+      plugin: "nav2_costmap_2d::ObstacleLayer"
+      enabled: True
+      observation_sources: scan
+      footprint_clearing_enabled: False
+      scan:
+        topic: "scan"
+        expected_update_rate: 1.0  # Increased from 0.2 to be more lenient
+        max_obstacle_height: 2.0
+        clearing: True
+        marking: True
+        data_type: "LaserScan"
+        reliability: "best_effort"
+        raytrace_max_range: 6.0
+        raytrace_min_range: 0.0
+        obstacle_max_range: 5.5
+        obstacle_min_range: 0.0

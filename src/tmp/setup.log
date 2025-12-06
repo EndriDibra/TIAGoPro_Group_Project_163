@@ -1,0 +1,72 @@
+ Container tiago_group_sim  Stopping
+ Container tiago_group_sim  Stopped
+ Container tiago_group_sim  Removing
+ Container tiago_group_sim  Removed
+#1 [internal] load local bake definitions
+#1 reading from stdin 571B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.26kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/development-tiago-pro-34:alum-25.01
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [ 1/10] FROM docker.io/library/development-tiago-pro-34:alum-25.01@sha256:aaf258c1b5adfdc4d0f2e30b478998ac523de7f9221ad769adf5731e35f35888
+#5 resolve docker.io/library/development-tiago-pro-34:alum-25.01@sha256:aaf258c1b5adfdc4d0f2e30b478998ac523de7f9221ad769adf5731e35f35888 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 103B done
+#6 DONE 0.0s
+
+#7 [ 3/10] RUN apt-get update && apt-get install -y     ros-humble-launch     ros-humble-launch-ros     ros-humble-ament-cmake     ros-humble-robot-localization     ros-humble-image-pipeline     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [ 5/10] RUN pip install --no-cache-dir     -r /tmp/requirements.txt && rm /tmp/requirements.txt
+#8 CACHED
+
+#9 [ 8/10] WORKDIR /home/user
+#9 CACHED
+
+#10 [ 2/10] RUN pip install --no-cache-dir     torch>=2.0.0     torchvision>=0.15.0
+#10 CACHED
+
+#11 [ 9/10] RUN echo "alias build='colcon build --symlink-install && source install/setup.bash'" >> /home/user/.bashrc
+#11 CACHED
+
+#12 [ 4/10] COPY requirements.txt /tmp/requirements.txt
+#12 CACHED
+
+#13 [ 6/10] COPY docker/entrypoint.sh /entrypoint.sh
+#13 CACHED
+
+#14 [ 7/10] RUN chmod +x /entrypoint.sh
+#14 CACHED
+
+#15 [10/10] RUN echo "alias start_sim='ros2 launch tiago_social_sim simulation.launch.py navigation:=True slam:=True world_name:=tutorial_office &> ~/src/tmp/output.log'" >> /home/user/.bashrc
+#15 CACHED
+
+#16 exporting to image
+#16 exporting layers done
+#16 exporting manifest sha256:cef70025d947e2e3b7d8d1bfee459b2ebecd2936857c4c6a9ca7030c705eea60 done
+#16 exporting config sha256:247bc31efa7e2109841db4417d63b27b8fee97c7a5ae8ad0a0df09c09e729c7c done
+#16 exporting attestation manifest sha256:69f59a840aca3ee86172be046a6f01a19bb1018a224303139e6d0bd7527525ac 0.0s done
+#16 exporting manifest list sha256:95d2f2b6f0c8ab97b35f01f0fa3c897980069a167fc06cb63464752f5a4c21ec
+#16 exporting manifest list sha256:95d2f2b6f0c8ab97b35f01f0fa3c897980069a167fc06cb63464752f5a4c21ec 0.0s done
+#16 naming to docker.io/library/tiago_group_163_sim:latest done
+#16 unpacking to docker.io/library/tiago_group_163_sim:latest 0.0s done
+#16 DONE 0.1s
+
+#17 resolving provenance for metadata file
+#17 DONE 0.0s
+ tiago_group_163_sim  Built
+ Container tiago_group_sim  Creating
+ Container tiago_group_sim  Created
+ Container tiago_group_sim  Starting
+ Container tiago_group_sim  Started

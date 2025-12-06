@@ -6,7 +6,16 @@ Handles model loading, inference, and person detection filtering.
 import numpy as np
 from typing import List, Dict
 import cv2
+
 from ultralytics import YOLO
+from pathlib import Path
+import shutil
+import os
+
+# Define cache directory relative to this file
+# .../src/tiago_social_nav/tiago_social_nav/person_detector.py -> .../src/cache/ultralytics
+CACHE_DIR = Path(__file__).parents[2] / "cache" / "ultralytics"
+
 
 
 class PersonDetector:
@@ -31,15 +40,49 @@ class PersonDetector:
         self.device = device
         
         # Load model (will download on first run)
+        # Load model using cache
         try:
-            self.model = YOLO(model_name)
+            # Ensure cache dir exists
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            
+            cached_model_path = CACHE_DIR / model_name
+            
+            if not cached_model_path.exists():
+                print(f"[PersonDetector] Model not found in cache. Downloading {model_name}...")
+                # Download to current directory first (YOLO default)
+                model = YOLO(model_name) 
+                
+                # Move to cache if it was downloaded to CWD
+                if Path(model_name).exists():
+                    print(f"[PersonDetector] Moving {model_name} to {CACHE_DIR}...")
+                    shutil.move(model_name, cached_model_path)
+                    # Reload from new location
+                    self.model = YOLO(str(cached_model_path))
+                else:
+                    # It might have been downloaded elsewhere or we can't find it. 
+                    # Just use the model object we have, but warn.
+                    print(f"[PersonDetector] formatted model path not found in CWD, using loaded model.")
+                    self.model = model
+            else:
+                 print(f"[PersonDetector] Loading {model_name} from cache: {cached_model_path}")
+                 self.model = YOLO(str(cached_model_path))
+
             self.model.to(device)
             print(f"[PersonDetector] Loaded {model_name} on {device}")
         except Exception as e:
             print(f"[PersonDetector] Failed to load on {device}, falling back to CPU: {e}")
             self.device = 'cpu'
-            self.model = YOLO(model_name)
-            self.model.to('cpu')
+            # Fallback logic for CPU
+            try:
+                cached_model_path = CACHE_DIR / model_name
+                if cached_model_path.exists():
+                     self.model = YOLO(str(cached_model_path))
+                else:
+                     self.model = YOLO(model_name)
+                self.model.to('cpu')
+            except Exception as e2:
+                print(f"[PersonDetector] CRITICAL: Failed to load model on CPU: {e2}")
+                raise e2
         
         # COCO class ID for 'person' is 0
         self.person_class_id = 0

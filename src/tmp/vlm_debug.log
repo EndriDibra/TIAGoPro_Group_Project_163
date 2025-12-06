@@ -1,0 +1,171 @@
+2025-12-06 10:45:21,651 | INFO | ============================================================
+2025-12-06 10:45:21,652 | INFO | VLM Navigator Started
+2025-12-06 10:45:21,652 | INFO | Log file: src/tmp/vlm_debug.log
+2025-12-06 10:45:21,653 | INFO | ============================================================
+2025-12-06 10:45:21,657 | INFO | Parameters: controller=controller_server/FollowPath, default_speed=1.0, loop_rate=0.2, vlm_backend=mock
+2025-12-06 10:45:21,666 | INFO | Subscribed to /vlm/goal_pose for VLM-managed goals
+2025-12-06 10:45:21,708 | INFO | VLM Navigator fully initialized
+2025-12-06 10:46:07,093 | INFO | GOAL RECEIVED: x=0.000, y=0.000, frame=map
+2025-12-06 10:46:07,093 | INFO | No persons detected, switching to DIRECT_NAV
+2025-12-06 10:46:07,094 | INFO | MODE SWITCH: IDLE -> DIRECT_NAV
+2025-12-06 10:46:07,094 | INFO | DIRECT_NAV: Resetting speed to default (1.0)
+2025-12-06 10:46:07,094 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:46:07,096 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:46:07,097 | INFO | DIRECT_NAV: Sending stored goal to Nav2
+2025-12-06 10:46:07,097 | INFO | NAV_GOAL: Sending goal to Nav2: x=0.000, y=0.000, frame=map
+2025-12-06 10:46:07,098 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:15,486 | INFO | MODE SWITCH: DIRECT_NAV -> VLM_ASSIST
+2025-12-06 10:46:15,486 | INFO | VLM_ASSIST: Will query VLM on next control loop
+2025-12-06 10:46:21,674 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:46:21,674 | INFO | VLM_RESPONSE: {'risk': 'none', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3333420102270595, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:46:21,675 | INFO | SPEED_ADJUST: VLM suggested 0.33, applying 0.33 m/s
+2025-12-06 10:46:21,675 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.333
+2025-12-06 10:46:21,679 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.333
+2025-12-06 10:46:21,679 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:46:21,684 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (0.957, -0.178)
+2025-12-06 10:46:21,685 | INFO | NAV_GOAL: Sending goal to Nav2: x=0.957, y=-0.178, frame=map
+2025-12-06 10:46:21,685 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:28,221 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:46:28,222 | INFO | VLM_RESPONSE: {'risk': 'medium', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3717231031144892, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:46:28,222 | INFO | SPEED_ADJUST: VLM suggested 0.37, applying 0.37 m/s
+2025-12-06 10:46:28,223 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.372
+2025-12-06 10:46:28,223 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.372
+2025-12-06 10:46:28,224 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:46:28,225 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (1.838, -0.304)
+2025-12-06 10:46:28,225 | INFO | NAV_GOAL: Sending goal to Nav2: x=1.838, y=-0.304, frame=map
+2025-12-06 10:46:28,226 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:34,817 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:46:34,818 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.32548329862477626, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:46:34,818 | INFO | SPEED_ADJUST: VLM suggested 0.33, applying 0.33 m/s
+2025-12-06 10:46:34,819 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.325
+2025-12-06 10:46:34,819 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.325
+2025-12-06 10:46:34,820 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:46:34,821 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (2.622, -0.552)
+2025-12-06 10:46:34,822 | INFO | NAV_GOAL: Sending goal to Nav2: x=2.622, y=-0.552, frame=map
+2025-12-06 10:46:34,823 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:41,116 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:46:41,117 | INFO | VLM_RESPONSE: {'risk': 'medium', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.37128754291693833, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:46:41,117 | INFO | SPEED_ADJUST: VLM suggested 0.37, applying 0.37 m/s
+2025-12-06 10:46:41,117 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.371
+2025-12-06 10:46:41,118 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.371
+2025-12-06 10:46:41,118 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:46:41,119 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (3.417, -0.777)
+2025-12-06 10:46:41,120 | INFO | NAV_GOAL: Sending goal to Nav2: x=3.417, y=-0.777, frame=map
+2025-12-06 10:46:41,121 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:47,294 | INFO | MODE SWITCH: VLM_ASSIST -> DIRECT_NAV
+2025-12-06 10:46:47,294 | INFO | DIRECT_NAV: Resetting speed to default (1.0)
+2025-12-06 10:46:47,295 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:46:47,295 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:46:47,295 | INFO | DIRECT_NAV: Sending stored goal to Nav2
+2025-12-06 10:46:47,295 | INFO | NAV_GOAL: Sending goal to Nav2: x=0.000, y=0.000, frame=map
+2025-12-06 10:46:47,296 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:46:53,503 | INFO | MODE SWITCH: DIRECT_NAV -> VLM_ASSIST
+2025-12-06 10:46:53,503 | INFO | VLM_ASSIST: Will query VLM on next control loop
+2025-12-06 10:46:59,958 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:46:59,959 | INFO | VLM_RESPONSE: {'risk': 'none', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3423008500387822, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:46:59,959 | INFO | SPEED_ADJUST: VLM suggested 0.34, applying 0.34 m/s
+2025-12-06 10:46:59,959 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.342
+2025-12-06 10:46:59,964 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.342
+2025-12-06 10:46:59,965 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:46:59,965 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (-0.038, -0.142)
+2025-12-06 10:46:59,966 | INFO | NAV_GOAL: Sending goal to Nav2: x=-0.038, y=-0.142, frame=map
+2025-12-06 10:46:59,967 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:06,128 | INFO | MODE SWITCH: VLM_ASSIST -> DIRECT_NAV
+2025-12-06 10:47:06,128 | INFO | DIRECT_NAV: Resetting speed to default (1.0)
+2025-12-06 10:47:06,128 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:47:06,129 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 1.000
+2025-12-06 10:47:06,130 | INFO | DIRECT_NAV: Sending stored goal to Nav2
+2025-12-06 10:47:06,130 | INFO | NAV_GOAL: Sending goal to Nav2: x=0.000, y=0.000, frame=map
+2025-12-06 10:47:06,132 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:12,643 | INFO | MODE SWITCH: DIRECT_NAV -> VLM_ASSIST
+2025-12-06 10:47:12,643 | INFO | VLM_ASSIST: Will query VLM on next control loop
+2025-12-06 10:47:20,369 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:20,369 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3435122501386317, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:20,370 | INFO | SPEED_ADJUST: VLM suggested 0.34, applying 0.34 m/s
+2025-12-06 10:47:20,370 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.344
+2025-12-06 10:47:20,370 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.344
+2025-12-06 10:47:20,371 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:20,372 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (1.010, 0.199)
+2025-12-06 10:47:20,372 | INFO | NAV_GOAL: Sending goal to Nav2: x=1.010, y=0.199, frame=map
+2025-12-06 10:47:20,372 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:27,859 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:27,860 | INFO | VLM_RESPONSE: {'risk': 'none', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3784404767027193, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:27,860 | INFO | SPEED_ADJUST: VLM suggested 0.38, applying 0.38 m/s
+2025-12-06 10:47:27,860 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.378
+2025-12-06 10:47:27,862 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.378
+2025-12-06 10:47:27,862 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:27,863 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (1.870, 0.313)
+2025-12-06 10:47:27,864 | INFO | NAV_GOAL: Sending goal to Nav2: x=1.870, y=0.313, frame=map
+2025-12-06 10:47:27,865 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:34,887 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:34,888 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.31657750089223746, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:34,888 | INFO | SPEED_ADJUST: VLM suggested 0.32, applying 0.32 m/s
+2025-12-06 10:47:34,888 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.317
+2025-12-06 10:47:34,889 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.317
+2025-12-06 10:47:34,889 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:34,890 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (2.712, 0.430)
+2025-12-06 10:47:34,890 | INFO | NAV_GOAL: Sending goal to Nav2: x=2.712, y=0.430, frame=map
+2025-12-06 10:47:34,891 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:42,345 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:42,346 | INFO | VLM_RESPONSE: {'risk': 'medium', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3649839476378521, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:42,346 | INFO | SPEED_ADJUST: VLM suggested 0.36, applying 0.36 m/s
+2025-12-06 10:47:42,346 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.365
+2025-12-06 10:47:42,346 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.365
+2025-12-06 10:47:42,346 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:42,347 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (3.630, 0.524)
+2025-12-06 10:47:42,348 | INFO | NAV_GOAL: Sending goal to Nav2: x=3.630, y=0.524, frame=map
+2025-12-06 10:47:42,348 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:49,555 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:49,557 | INFO | VLM_RESPONSE: {'risk': 'none', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3079515347326719, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:49,560 | INFO | SPEED_ADJUST: VLM suggested 0.31, applying 0.31 m/s
+2025-12-06 10:47:49,561 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.308
+2025-12-06 10:47:49,562 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.308
+2025-12-06 10:47:49,563 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:49,564 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (1.614, 0.225)
+2025-12-06 10:47:49,570 | INFO | NAV_GOAL: Sending goal to Nav2: x=1.614, y=0.225, frame=map
+2025-12-06 10:47:49,574 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:47:56,778 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:47:56,779 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.383399921943639, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:47:56,779 | INFO | SPEED_ADJUST: VLM suggested 0.38, applying 0.38 m/s
+2025-12-06 10:47:56,779 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.383
+2025-12-06 10:47:56,779 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.383
+2025-12-06 10:47:56,780 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:47:56,780 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (1.100, 0.175)
+2025-12-06 10:47:56,781 | INFO | NAV_GOAL: Sending goal to Nav2: x=1.100, y=0.175, frame=map
+2025-12-06 10:47:56,768 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:48:03,859 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:48:03,860 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.31128268461637904, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:48:03,862 | INFO | SPEED_ADJUST: VLM suggested 0.31, applying 0.31 m/s
+2025-12-06 10:48:03,863 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.311
+2025-12-06 10:48:03,863 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.311
+2025-12-06 10:48:03,864 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:48:03,865 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (0.270, 0.054)
+2025-12-06 10:48:03,866 | INFO | NAV_GOAL: Sending goal to Nav2: x=0.270, y=0.054, frame=map
+2025-12-06 10:48:03,867 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:48:11,300 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:48:11,300 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.306576296643637, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:48:11,300 | INFO | SPEED_ADJUST: VLM suggested 0.31, applying 0.31 m/s
+2025-12-06 10:48:11,300 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.307
+2025-12-06 10:48:11,301 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.307
+2025-12-06 10:48:11,301 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:48:11,302 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (-1.167, -0.603)
+2025-12-06 10:48:11,303 | INFO | NAV_GOAL: Sending goal to Nav2: x=-1.167, y=-0.603, frame=map
+2025-12-06 10:48:11,308 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:48:18,572 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:48:18,573 | INFO | VLM_RESPONSE: {'risk': 'low', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3002550733157379, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:48:18,573 | INFO | SPEED_ADJUST: VLM suggested 0.30, applying 0.30 m/s
+2025-12-06 10:48:18,573 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.300
+2025-12-06 10:48:18,573 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.300
+2025-12-06 10:48:18,574 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:48:18,574 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (-1.750, -1.286)
+2025-12-06 10:48:18,575 | INFO | NAV_GOAL: Sending goal to Nav2: x=-1.750, y=-1.286, frame=map
+2025-12-06 10:48:18,576 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
+2025-12-06 10:48:26,806 | INFO | VLM_UPDATE: Requesting VLM advice
+2025-12-06 10:48:26,816 | INFO | VLM_RESPONSE: {'risk': 'none', 'behavior': 'proceed_cautiously', 'waypoint': [1.5, 0.0], 'waypoint_frame': 'base_link', 'target_pose': [1.0, 0.0], 'speed': 0.3205451877892387, 'description': 'Mock VLM Response: Path clear.'}
+2025-12-06 10:48:26,817 | INFO | SPEED_ADJUST: VLM suggested 0.32, applying 0.32 m/s
+2025-12-06 10:48:26,817 | INFO | SET_SPEED: Attempting to set FollowPath.max_vel_x = 0.321
+2025-12-06 10:48:26,818 | INFO | SET_SPEED: Sent async request to set FollowPath.max_vel_x = 0.321
+2025-12-06 10:48:26,818 | INFO | WAYPOINT: VLM suggested target_pose in base_link: [1.0, 0.0]
+2025-12-06 10:48:26,819 | INFO | TF_TRANSFORM: base_link (1.00, 0.00) -> map (-2.879, -1.546)
+2025-12-06 10:48:26,821 | INFO | NAV_GOAL: Sending goal to Nav2: x=-2.879, y=-1.546, frame=map
+2025-12-06 10:48:26,822 | INFO | NAV_GOAL: Goal sent successfully to navigate_to_pose
