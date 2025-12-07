@@ -15,7 +15,7 @@ import tf2_geometry_msgs
 # Import our custom modules
 from .person_detector import PersonDetector
 from .person_localizer import PersonLocalizer
-from .social_costmap_publisher import SocialCostmapPublisher, DECAY_TIME
+from .social_costmap_publisher import SocialCostmapPublisher
 import time
 
 class SocialCostmapNode(Node):
@@ -33,9 +33,6 @@ class SocialCostmapNode(Node):
         self.declare_parameter('yolo_model', 'yolo11n-seg.pt')
         self.declare_parameter('confidence_threshold', 0.5)
         self.declare_parameter('device', 'cuda')  # 'cuda' or 'cpu'
-        
-        # Tracking parameters
-        self.declare_parameter('match_distance', 1.0)  # meters
         
         # Declare localization parameters
         self.declare_parameter('localization_method', '3d_centroid')  # or 'min_z_column'
@@ -59,7 +56,6 @@ class SocialCostmapNode(Node):
         
         self.save_debug = self.get_parameter('save_debug_images').get_parameter_value().bool_value
         self.debug_dir = os.path.expanduser(self.get_parameter('debug_dir').get_parameter_value().string_value)
-        self.match_distance = self.get_parameter('match_distance').get_parameter_value().double_value
         
         self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
@@ -84,9 +80,6 @@ class SocialCostmapNode(Node):
         # TF Buffer
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
-
-        # State for tracking
-        self.tracked_persons = []  # List of Dicts with 'last_seen' timestamp
         
         # ROS Publishers
         # Replaced OccupancyGrid with PointCloud2
@@ -227,35 +220,28 @@ class SocialCostmapNode(Node):
             
             if len(localized_persons) > 0:
                 self.get_logger().info(f'Localized {len(localized_persons)} person(s) in 3D')
-            
-            # ========== Step 4: Update Tracked Persons (Decay & Movement) ==========
-            current_time_sec = self.get_clock().now().nanoseconds / 1e9
-            self.update_tracked_persons(localized_persons, current_time_sec)
 
-            if len(self.tracked_persons) > 0:
-                 self.get_logger().info(f'Tracking {len(self.tracked_persons)} person(s)')
-
-            # ========== Step 5: Generate and Publish Social PointCloud ==========
+            # ========== Step 4: Generate and Publish Social PointCloud ==========
             point_cloud = self.costmap_publisher_module.create_social_pointcloud(
-                persons=self.tracked_persons,
+                persons=localized_persons,
                 map_frame='map',
                 timestamp=rgb_msg.header.stamp
             )
             
             self.social_pub.publish(point_cloud)
             
-            # ========== Step 6: Publish Visualization Markers ==========
+            # ========== Step 5: Publish Visualization Markers ==========
             markers = self.costmap_publisher_module.create_person_markers(
-                persons=self.tracked_persons,
+                persons=localized_persons,
                 map_frame='map',
                 timestamp=rgb_msg.header.stamp
             )
             
             self.markers_pub.publish(markers)
             
-            # ========== Step 7: Save Debug Images (Optional) ==========
+            # ========== Step 6: Save Debug Images (Optional) ==========
             if self.save_debug:
-                self._save_debug_data(cv_rgb, registered_depth, detections, self.tracked_persons)
+                self._save_debug_data(cv_rgb, registered_depth, detections, localized_persons)
 
         except Exception as e:
             self.get_logger().error(f'Error processing RGB-D: {e}')
@@ -397,64 +383,7 @@ class SocialCostmapNode(Node):
         except Exception as e:
             self.get_logger().error(f'Failed to save debug data: {e}')
 
-    def update_tracked_persons(self, new_detections: List[Dict], current_time: float):
-        """
-        Update tracked persons with new detections.
-        - Matches new detections to existing tracks by distance.
-        - Updates position and timestamp of matched tracks.
-        - Adds new tracks for unmatched detections.
-        - Removes tracks older than DECAY_TIME.
-        """
-        # 1. Prediction (Identity for now, could be Kalman Filter)
-        
-        # 2. Matching
-        unmatched_detections = []
-        used_tracks = set()
-        
-        for detection in new_detections:
-            if 'position_3d_map' not in detection:
-                continue
-                
-            det_pos = np.array(detection['position_3d_map'])
-            best_track_idx = -1
-            min_dist = self.match_distance
-            
-            for i, track in enumerate(self.tracked_persons):
-                if i in used_tracks:
-                    continue
-                
-                track_pos = np.array(track['position_3d_map'])
-                dist = np.linalg.norm(det_pos - track_pos)
-                
-                if dist < min_dist:
-                    min_dist = dist
-                    best_track_idx = i
-            
-            if best_track_idx != -1:
-                # Match found - update track
-                self.tracked_persons[best_track_idx]['position_3d_map'] = detection['position_3d_map']
-                self.tracked_persons[best_track_idx]['last_seen'] = current_time
-                self.tracked_persons[best_track_idx]['confidence'] = detection['confidence'] # Update confidence
-                used_tracks.add(best_track_idx)
-            else:
-                unmatched_detections.append(detection)
-        
-        # 3. Add new tracks
-        for detection in unmatched_detections:
-            new_track = detection.copy()
-            new_track['last_seen'] = current_time
-            self.tracked_persons.append(new_track)
-            
-        # 4. Prune old tracks
-        active_tracks = []
-        for track in self.tracked_persons:
-            age = current_time - track['last_seen']
-            if age < DECAY_TIME:
-                active_tracks.append(track)
-            # else:
-            #     self.get_logger().info(f'Removing expired track (age: {age:.2f}s)')
-                
-        self.tracked_persons = active_tracks
+
 
 
 def main(args=None):
