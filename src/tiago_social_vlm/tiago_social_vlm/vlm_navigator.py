@@ -24,6 +24,7 @@ import os
 import threading
 import time
 import logging
+import math
 from datetime import datetime
 from pathlib import Path
 
@@ -89,6 +90,8 @@ class VLMNavigator(Node):
         self.mode = "IDLE" 
         self.current_goal = None
         self.person_count = 0
+        self.person_positions = []  # List of (x, y) positions in map frame
+        self.latest_person_markers = None
         self.last_person_time = 0.0
         self.human_timeout = 5.0 
         
@@ -173,11 +176,16 @@ class VLMNavigator(Node):
 
     def people_callback(self, msg):
         count = 0
+        positions = []
         for m in msg.markers:
-            if m.ns == 'detected_persons' and m.action == 0: 
-                 count += 1
+            if m.ns == 'detected_persons' and m.action == 0:
+                count += 1
+                # Store position in map frame (markers are typically in map frame)
+                positions.append((m.pose.position.x, m.pose.position.y))
         
         self.person_count = count
+        self.person_positions = positions
+        self.latest_person_markers = msg
         if count > 0:
             self.last_person_time = self.get_clock().now().nanoseconds / 1e9
 
@@ -232,23 +240,15 @@ class VLMNavigator(Node):
 
         with self.lock:
             cv_image = self.bridge.imgmsg_to_cv2(self.latest_rgb, desired_encoding='bgr8')
-            # Placeholder map
-            map_img_path = "/tmp/vlm_map_crop.jpg" 
-            cv2.imwrite(map_img_path, np.zeros((100,100,3), dtype=np.uint8))
+            map_img = self._generate_map_image()
         
-        image_path = "/tmp/vlm_current_view.jpg"
+        image_path = "src/tmp/vlm_current_view.jpg"
+        map_img_path = "src/tmp/vlm_map_crop.jpg"
         cv2.imwrite(image_path, cv_image)
+        cv2.imwrite(map_img_path, map_img)
 
-        prompt = (
-            "You are a robot navigation assistant. "
-            "I am currently at [0,0] facing forward. "
-            "My goal is to reach the target. "
-            "There are humans nearby (see image). "
-            "Identify the social risk (High/Medium/Low). "
-            "Suggest a safe speed multiplier (0.1 to 1.0). "
-            "Suggest a short term waypoint relative to me in meters [x, y] to avoid disturbance. "
-            "Output JSON."
-        )
+        # Prompt is now centralized in vlm_interface.py
+        prompt = ""  # Empty - the backend uses NAVIGATION_PROMPT
 
         self.get_logger().info("Requesting VLM advice...")
         self._log("VLM_UPDATE: Requesting VLM advice")
@@ -264,34 +264,33 @@ class VLMNavigator(Node):
         msg.data = str(response)
         self.vlm_response_pub.publish(msg)
         
-        if 'speed' in response:
+        # Check if speed is valid before applying
+        if response.get('speed_valid', False):
             speed = float(response['speed'])
             adjusted_speed = speed * self.default_speed
             self._log(f"SPEED_ADJUST: VLM suggested {speed:.2f}, applying {adjusted_speed:.2f} m/s")
             self.set_max_speed(adjusted_speed)
+        elif 'speed' in response:
+            self._log(f"SPEED_INVALID: VLM speed {response['speed']} failed validation", level="WARN")
             
-        if 'target_pose' in response:
+        # Check if goal is valid before applying
+        if response.get('goal_valid', False):
             try:
-                # response['target_pose'] is [x, y] relative to base_link
-                target = response['target_pose']
-                self._log(f"WAYPOINT: VLM suggested target_pose in base_link: [{target[0]}, {target[1]}]")
+                target = response['goal']
+                self._log(f"WAYPOINT: VLM suggested goal in base_link: [{target[0]}, {target[1]}]")
                 
                 p = PoseStamped()
                 p.header.frame_id = 'base_link'
-                # Use Time(0) for TF lookup - means "use latest available transform"
-                # Using current time causes "extrapolation into the future" errors
                 p.header.stamp = rclpy.time.Time().to_msg()
                 p.pose.position.x = float(target[0])
                 p.pose.position.y = float(target[1])
                 p.pose.orientation.w = 1.0 
                 
-                # Check if transform is available (use Time() for latest)
                 if not self.tf_buffer.can_transform('map', 'base_link', rclpy.time.Time()):
                     self.get_logger().warn("Cannot transform base_link to map")
                     self._log("TF_ERROR: Cannot transform base_link -> map", level="ERROR")
                     return
 
-                # Transform using latest available data
                 p_map = self.tf_buffer.transform(p, 'map')
                 self._log(f"TF_TRANSFORM: base_link ({target[0]:.2f}, {target[1]:.2f}) -> map ({p_map.pose.position.x:.3f}, {p_map.pose.position.y:.3f})")
                 
@@ -301,6 +300,160 @@ class VLMNavigator(Node):
             except Exception as e:
                 self.get_logger().error(f"Failed to process VLM waypoint: {e}")
                 self._log(f"WAYPOINT_ERROR: {e}", level="ERROR")
+        else:
+            if 'goal' in response:
+                self._log(f"GOAL_INVALID: VLM goal {response['goal']} failed validation", level="WARN")
+
+    def _generate_map_image(self):
+        """Generate a map image with robot, humans, goal, and axis for VLM."""
+        # Image size and scale (pixels per meter)
+        img_size = 400
+        scale = 40  # 40 pixels per meter -> 10m x 10m view
+        center = img_size // 2
+        
+        # Create white background
+        map_img = np.ones((img_size, img_size, 3), dtype=np.uint8) * 255
+        
+        # Get robot position first for OccupancyGrid rendering
+        robot_x, robot_y, robot_yaw = 0.0, 0.0, 0.0
+        try:
+            if self.tf_buffer.can_transform('map', 'base_link', rclpy.time.Time()):
+                trans = self.tf_buffer.lookup_transform('map', 'base_link', rclpy.time.Time())
+                robot_x = trans.transform.translation.x
+                robot_y = trans.transform.translation.y
+                q = trans.transform.rotation
+                robot_yaw = math.atan2(2.0 * (q.w * q.z + q.x * q.y), 1.0 - 2.0 * (q.y * q.y + q.z * q.z))
+        except Exception as e:
+            self._log(f"MAP_GEN: Could not get robot transform: {e}", level="WARN")
+        
+        # Render OccupancyGrid (walls and obstacles)
+        if self.latest_map is not None:
+            try:
+                occ_data = np.array(self.latest_map.data, dtype=np.int8)
+                occ_width = self.latest_map.info.width
+                occ_height = self.latest_map.info.height
+                resolution = self.latest_map.info.resolution
+                origin_x = self.latest_map.info.origin.position.x
+                origin_y = self.latest_map.info.origin.position.y
+                
+                occ_grid = occ_data.reshape((occ_height, occ_width))
+                
+                # Create obstacle mask and inflate it
+                obstacle_mask = (occ_grid > 50).astype(np.uint8)
+                inflation_radius_m = 0.3  # 30cm robot radius
+                inflation_pixels = int(inflation_radius_m / resolution)
+                if inflation_pixels > 0:
+                    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, 
+                                                       (2*inflation_pixels+1, 2*inflation_pixels+1))
+                    inflated_obstacles = cv2.dilate(obstacle_mask, kernel)
+                else:
+                    inflated_obstacles = obstacle_mask
+                
+                # For each pixel in our output image, sample the occupancy grid
+                for img_y in range(img_size):
+                    for img_x in range(img_size):
+                        # Convert image coords to robot-local coords
+                        local_y = (center - img_x) / scale  # image x -> local y
+                        local_x = (center - img_y) / scale  # image y -> local x
+                        
+                        # Convert robot-local to world coords
+                        cos_yaw = math.cos(robot_yaw)
+                        sin_yaw = math.sin(robot_yaw)
+                        world_x = robot_x + local_x * cos_yaw - local_y * sin_yaw
+                        world_y = robot_y + local_x * sin_yaw + local_y * cos_yaw
+                        
+                        # Convert world to grid coords
+                        grid_x = int((world_x - origin_x) / resolution)
+                        grid_y = int((world_y - origin_y) / resolution)
+                        
+                        if 0 <= grid_x < occ_width and 0 <= grid_y < occ_height:
+                            cell_value = occ_grid[grid_y, grid_x]
+                            is_inflated = inflated_obstacles[grid_y, grid_x]
+                            
+                            if cell_value > 50:  # Actual wall
+                                map_img[img_y, img_x] = [50, 50, 50]  # Dark gray
+                            elif is_inflated:  # Inflated zone
+                                map_img[img_y, img_x] = [120, 120, 120]  # Medium gray
+                            elif cell_value < 0:  # Unknown
+                                map_img[img_y, img_x] = [200, 200, 200]  # Light gray
+            except Exception as e:
+                self._log(f"MAP_GEN: Failed to render OccupancyGrid: {e}", level="WARN")
+        
+        # Draw grid lines (every 1 meter)
+        grid_color = (200, 200, 200)
+        for i in range(-5, 6):
+            px = center + int(i * scale)
+            cv2.line(map_img, (px, 0), (px, img_size), grid_color, 1)
+            cv2.line(map_img, (0, px), (img_size, px), grid_color, 1)
+        
+        # Draw axis labels
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(map_img, "X (forward)", (center + 10, 20), font, 0.4, (0, 0, 0), 1)
+        cv2.putText(map_img, "Y (left)", (10, center - 10), font, 0.4, (0, 0, 0), 1)
+        
+        # Robot position already obtained above for OccupancyGrid rendering
+        
+        # Helper to convert world coords to image coords (robot-centric)
+        def world_to_img(wx, wy):
+            # Relative to robot position
+            rel_x = wx - robot_x
+            rel_y = wy - robot_y
+            # Rotate by negative robot yaw to align with robot frame
+            cos_yaw = math.cos(-robot_yaw)
+            sin_yaw = math.sin(-robot_yaw)
+            local_x = rel_x * cos_yaw - rel_y * sin_yaw
+            local_y = rel_x * sin_yaw + rel_y * cos_yaw
+            # Convert to image coords (X forward = up, Y left = left)
+            img_x = center - int(local_y * scale)  # Y left -> image left
+            img_y = center - int(local_x * scale)  # X forward -> image up
+            return img_x, img_y
+        
+        # Draw robot at center (blue dot with arrow)
+        cv2.circle(map_img, (center, center), 8, (255, 0, 0), -1)  # Blue dot
+        arrow_len = 20
+        arrow_end = (center, center - arrow_len)  # Arrow pointing up (forward)
+        cv2.arrowedLine(map_img, (center, center), arrow_end, (255, 0, 0), 2, tipLength=0.3)
+        
+        # Draw humans with proxemics circles (red)
+        intimate_radius = 0.7  # meters
+        personal_radius = 1.45   # meters
+        for (px, py) in self.person_positions:
+            img_x, img_y = world_to_img(px, py)
+            if 0 <= img_x < img_size and 0 <= img_y < img_size:
+                # Red dot for person
+                cv2.circle(map_img, (img_x, img_y), 6, (0, 0, 255), -1)
+                # Intimate space circle (inner, darker red)
+                cv2.circle(map_img, (img_x, img_y), int(intimate_radius * scale), (0, 0, 200), 2)
+                # Personal space circle (outer, lighter red)
+                cv2.circle(map_img, (img_x, img_y), int(personal_radius * scale), (0, 0, 255), 1)
+        
+        # Draw goal position (green star)
+        if self.current_goal:
+            gx = self.current_goal.pose.position.x
+            gy = self.current_goal.pose.position.y
+            img_x, img_y = world_to_img(gx, gy)
+            if 0 <= img_x < img_size and 0 <= img_y < img_size:
+                # Draw star shape
+                self._draw_star(map_img, (img_x, img_y), 12, (0, 200, 0), -1)
+        
+        # Draw scale indicator
+        cv2.putText(map_img, "1m", (img_size - 60, img_size - 10), font, 0.4, (0, 0, 0), 1)
+        cv2.line(map_img, (img_size - 50, img_size - 20), (img_size - 50 + scale, img_size - 20), (0, 0, 0), 2)
+        
+        return map_img
+    
+    def _draw_star(self, img, center, size, color, thickness):
+        """Draw a simple star shape at the given center."""
+        cx, cy = center
+        # Draw as overlapping triangles for simplicity
+        pts = []
+        for i in range(5):
+            angle = math.radians(i * 72 - 90)  # Start from top
+            outer_x = int(cx + size * math.cos(angle))
+            outer_y = int(cy + size * math.sin(angle))
+            pts.append([outer_x, outer_y])
+        pts = np.array(pts, np.int32)
+        cv2.fillPoly(img, [pts], color)
 
     def set_max_speed(self, speed):
         """Set the max velocity parameter on the controller server."""

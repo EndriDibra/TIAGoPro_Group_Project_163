@@ -14,7 +14,7 @@ import os
 
 # Define cache directory relative to this file
 # .../src/tiago_social_nav/tiago_social_nav/person_detector.py -> .../src/cache/ultralytics
-CACHE_DIR = Path(__file__).parents[2] / "cache" / "ultralytics"
+CACHE_DIR = Path(__file__).resolve().parents[2] / "cache" / "ultralytics"
 
 
 
@@ -39,11 +39,13 @@ class PersonDetector:
         self.iou_threshold = iou_threshold
         self.device = device
         
+        
         # Load model (will download on first run)
         # Load model using cache
         try:
             # Ensure cache dir exists
             CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            print(f"[PersonDetector] Cache directory: {CACHE_DIR}")
             
             cached_model_path = CACHE_DIR / model_name
             
@@ -59,10 +61,23 @@ class PersonDetector:
                     # Reload from new location
                     self.model = YOLO(str(cached_model_path))
                 else:
-                    # It might have been downloaded elsewhere or we can't find it. 
-                    # Just use the model object we have, but warn.
-                    print(f"[PersonDetector] formatted model path not found in CWD, using loaded model.")
-                    self.model = model
+                    # It might have been downloaded elsewhere (global cache)
+                    # Try to find source and copy it
+                    try:
+                        # YOLO models usually track their source path
+                        # Check .ckpt_path or try to infer from model object
+                        if hasattr(self.model, 'ckpt_path') and self.model.ckpt_path:
+                            source_path = Path(self.model.ckpt_path)
+                            if source_path.exists() and source_path != cached_model_path:
+                                print(f"[PersonDetector] Copying model from {source_path} to {CACHE_DIR}...")
+                                shutil.copy2(source_path, cached_model_path)
+                                self.model = YOLO(str(cached_model_path))
+                            else:
+                                print(f"[PersonDetector] Model loaded from {source_path}, but not moving (already in cache or invalid).")
+                        else:
+                             print(f"[PersonDetector] loaded model but could not find source file to cache. Using loaded model.")
+                    except Exception as e_copy:
+                         print(f"[PersonDetector] Error trying to cache model from global store: {e_copy}")
             else:
                  print(f"[PersonDetector] Loading {model_name} from cache: {cached_model_path}")
                  self.model = YOLO(str(cached_model_path))

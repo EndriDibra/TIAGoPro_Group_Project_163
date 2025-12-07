@@ -345,7 +345,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     # ===== WSL2 FIX: DELAY BEFORE BRINGUP =====    
     # Wrap with delay to ensure Gazebo + controller_manager are ready
     tiago_bringup_delayed = TimerAction(
-        period=5.0,  # 20 second delay for WSL2
+        period=5.0,  # 5 second delay for WSL2
         actions=[tiago_bringup]
     )
     # (The name of the added action would have to be changed if reverting)

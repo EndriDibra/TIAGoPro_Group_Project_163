@@ -1,7 +1,14 @@
 # Ultralytics
-numpy<2.0
+numpy<1.25.0
 opencv-python<4.10
 ultralytics
 
 # Mistral
 mistralai
+
+# Transformers
+transformers>=4.48.0
+accelerate>=0.26.0
+Pillow>=10.0.0
+num2words
+jinja2>=3.1.0

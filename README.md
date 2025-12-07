@@ -265,3 +265,10 @@ Segmentation faults during shutdown (e.g., in `move_group` or `component_contain
 - First launch may take 15-20 seconds due to initialization delays
 - GPU acceleration improves Gazebo performance but is not required
 - Shutdown warnings/errors are normal and can be ignored if simulation runs properly
+
+
+
+
+ros2 launch tiago_social_vlm bringup.launch.py vlm_backend:=smol
+
+ros2 topic pub --once /vlm/goal_pose geometry_msgs/msg/PoseStamped "{header: {frame_id: 'map'}, pose: {position: {x: 1.0, y: 0.5}, orientation: {w: 1.0}}}"

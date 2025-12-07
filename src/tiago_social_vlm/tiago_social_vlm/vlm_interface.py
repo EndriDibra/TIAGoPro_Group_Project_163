@@ -7,9 +7,47 @@ from typing import Dict, List, Optional, Tuple
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-# Define cache directory relative to this file
+import shutil
+import logging
+
 # .../src/tiago_social_vlm/tiago_social_vlm/vlm_interface.py -> .../src/cache/huggingface
-CACHE_DIR = Path(__file__).parents[2] / "cache" / "huggingface"
+CACHE_DIR = Path(__file__).resolve().parents[2] / "cache" / "huggingface"
+
+debug_log_path = Path(__file__).resolve().parents[2] / "tmp" / "vlm_internal.log"
+debug_log_path.parent.mkdir(parents=True, exist_ok=True)
+logger = logging.getLogger("vlm_interface")
+fh = logging.FileHandler(str(debug_log_path))
+fh.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
+logger.addHandler(fh)
+logger.setLevel(logging.INFO)
+
+def build_navigation_prompt(heading_deg: float = None) -> str:
+    """Build the navigation prompt, optionally including heading to goal."""
+    heading_info = ""
+    if heading_deg is not None:
+        heading_info = f"  - Heading to goal: {heading_deg:.0f} degrees (0=forward, 90=left, -90=right)\n"
+    
+    return (
+        "You are a robot navigation assistant helping a mobile robot navigate safely around humans.\n\n"
+        "IMAGE 1 (Camera View): Shows what the robot currently sees from its front camera.\n"
+        "IMAGE 2 (Map View): Shows a top-down map with:\n"
+        "  - Blue dot/arrow: Robot's current position and facing direction\n"
+        "  - Red dots + circles: Humans with proxemics zones (avoid entering these)\n"
+        "  - Green star: Goal position\n"
+        "  - Gray areas: Walls and obstacles\n"
+        f"{heading_info}"
+        "  - Grid: 1 meter spacing\n\n"
+        "Your task: Suggest a safe intermediate waypoint to help the robot reach the goal while avoiding humans.\n\n"
+        "Respond ONLY with a JSON object (no other text):\n"
+        '{"scene_description": "what you see", "risk_description": "high/medium/low/none + reason", '
+        '"action_description": "what to do", "goal": [x, y], "speed": 0.1-1.0}\n\n'
+        "IMPORTANT: goal is [x,y] in meters relative to robot. Positive x=forward, positive y=left.\n"
+        "Example: [1.5, 0.3] means 1.5m forward and 0.3m left."
+    )
+
+# Default prompt for backwards compatibility
+NAVIGATION_PROMPT = build_navigation_prompt()
+
 
 
 # ============================================================
@@ -30,6 +68,20 @@ class VLMBackend(ABC):
         """Return the name of this backend."""
         pass
 
+    def _save_debug_images(self, image_path: str, map_img_path: str):
+        """Save debug images to tmp directory."""
+        try:
+            dest_dir = Path(__file__).resolve().parents[2] / "tmp"
+            dest_dir.mkdir(exist_ok=True)
+            
+            if image_path and os.path.exists(image_path):
+                shutil.copy(image_path, dest_dir / "debug_rgb.jpg")
+                
+            if map_img_path and os.path.exists(map_img_path):
+                shutil.copy(map_img_path, dest_dir / "debug_map.jpg")
+        except Exception as e:
+            logger.error(f"Failed to save debug images: {e}")
+
 
 # ============================================================
 # Mock Backend (For testing without GPU/API)
@@ -49,13 +101,11 @@ class MockBackend(VLMBackend):
         """Return a randomized mock response for testing."""
         speed = 0.3 + (0.1 * random.random())
         return {
-            "risk": random.choice(["none", "low", "medium"]),
-            "behavior": "proceed_cautiously",
-            "waypoint": [1.5, 0.0],
-            "waypoint_frame": "base_link", 
-            "target_pose": [1.0, 0.0],  # 1m forward
+            "scene_description": "Mock: Indoor corridor with clear path ahead.",
+            "risk_description": random.choice(["none", "low: Person visible in distance", "medium: Person approaching"]),
+            "action_description": "Proceed cautiously along the corridor.",
+            "goal": [1.0, 0.0],
             "speed": speed,
-            "description": "Mock VLM Response: Path clear."
         }
 
 
@@ -76,27 +126,28 @@ class SmolVLMBackend(VLMBackend):
             import torch
             from transformers import AutoProcessor, AutoModelForImageTextToText
             
-            model_path = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"
-            print(f"Loading SmolVLM2 model from {model_path}...")
+            model_path = "HuggingFaceTB/SmolVLM2-2.2B-Instruct"
+            print(f"Loading SmolVLM2-2.2B model from {model_path}...")
             
             self.processor = AutoProcessor.from_pretrained(model_path, cache_dir=str(CACHE_DIR))
             self.model = AutoModelForImageTextToText.from_pretrained(
                 model_path,
                 torch_dtype=torch.bfloat16,
-                cache_dir=str(CACHE_DIR),
-                _attn_implementation="flash_attention_2"
+                cache_dir=str(CACHE_DIR)
             ).to("cuda")
             
             self._initialized = True
-            print("SmolVLM2 backend initialized successfully.")
+            print(f"SmolVLM2 backend initialized successfully. Cache: {CACHE_DIR}")
             
         except ImportError as e:
             self._init_error = f"Missing dependencies for SmolVLM: {e}"
             print(f"Warning: {self._init_error}")
+            logger.error(self._init_error)
         except Exception as e:
             self._init_error = f"Failed to initialize SmolVLM: {e}"
             print(f"Warning: {self._init_error}")
-    
+            logger.error(self._init_error, exc_info=True)
+            
     @property
     def name(self) -> str:
         return "smol"
@@ -104,6 +155,7 @@ class SmolVLMBackend(VLMBackend):
     def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
         if not self._initialized:
             print(f"SmolVLM not initialized: {self._init_error}")
+            logger.error(f"SmolVLM not initialized: {self._init_error}")
             return self._get_fallback_response()
         
         try:
@@ -115,24 +167,29 @@ class SmolVLMBackend(VLMBackend):
             image_base64 = base64.b64encode(image_bytes).decode("utf-8")
             image_data_uri = f"data:image/jpeg;base64,{image_base64}"
             
-            # Construct the navigation prompt with JSON output instruction
-            full_prompt = (
-                f"{prompt}\n\n"
-                "Respond with a JSON object containing these fields:\n"
-                "- risk: 'high', 'medium', 'low', or 'none'\n"
-                "- behavior: suggested behavior (e.g. 'proceed_cautiously', 'stop', 'slow_down')\n"
-                "- target_pose: [x, y] relative waypoint in meters\n"
-                "- speed: speed multiplier between 0.1 and 1.0\n"
-                "- description: brief explanation\n"
-            )
+            # Use centralized prompt
+            full_prompt = NAVIGATION_PROMPT
             
+            # Save debug images
+            self._save_debug_images(image_path, map_img_path)
+            
+            # Encode the map image
+            map_data_uri = None
+            if map_img_path and os.path.exists(map_img_path):
+                with open(map_img_path, "rb") as f:
+                    map_bytes = f.read()
+                map_base64 = base64.b64encode(map_bytes).decode("utf-8")
+                map_data_uri = f"data:image/jpeg;base64,{map_base64}"
+            
+            content_list = [{"type": "image", "url": image_data_uri}]
+            if map_data_uri:
+                content_list.append({"type": "image", "url": map_data_uri})
+            content_list.append({"type": "text", "text": full_prompt})
+
             messages = [
                 {
                     "role": "user",
-                    "content": [
-                        {"type": "image", "url": image_data_uri},
-                        {"type": "text", "text": full_prompt},
-                    ]
+                    "content": content_list
                 },
             ]
             
@@ -150,6 +207,8 @@ class SmolVLMBackend(VLMBackend):
                 skip_special_tokens=True,
             )[0]
             
+            logger.info(f"Raw SmolVLM Response: {generated_text}")
+            
             # Try to extract JSON from the response
             return self._parse_vlm_response(generated_text)
             
@@ -158,28 +217,105 @@ class SmolVLMBackend(VLMBackend):
             return self._get_fallback_response()
     
     def _parse_vlm_response(self, text: str) -> Dict:
-        """Try to extract JSON from VLM text response."""
+        """Try to extract JSON from VLM text response with validation."""
         try:
-            # Try to find JSON in the response
-            import re
-            json_match = re.search(r'\{[^{}]*\}', text, re.DOTALL)
-            if json_match:
-                return json.loads(json_match.group())
-        except json.JSONDecodeError:
-            pass
+            # Find the last JSON object in the response (VLM output is typically at the end)
+            # Look for "Assistant:" marker and extract text after it
+            if "Assistant:" in text:
+                text = text.split("Assistant:")[-1]
+            
+            # Find JSON by matching braces properly (handles nested arrays)
+            json_str = self._extract_json(text)
+            if json_str:
+                parsed = json.loads(json_str)
+                return self._validate_response(parsed)
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON decode error: {e}")
+        except Exception as e:
+            logger.warning(f"Parse error: {e}")
         
         # If we can't parse JSON, return a cautious default
         print(f"Could not parse JSON from SmolVLM response: {text[:200]}...")
+        logger.warning(f"Failed to parse VLM response: {text[:500]}")
         return self._get_fallback_response()
+    
+    def _extract_json(self, text: str) -> str:
+        """Extract JSON object from text using bracket matching."""
+        # Find the first '{' character
+        start = text.find('{')
+        if start == -1:
+            return None
+        
+        # Match braces to find the complete JSON object
+        depth = 0
+        for i, char in enumerate(text[start:], start):
+            if char == '{':
+                depth += 1
+            elif char == '}':
+                depth -= 1
+                if depth == 0:
+                    return text[start:i+1]
+        return None
+    
+    def _validate_response(self, response: Dict) -> Dict:
+        """Validate and normalize the VLM response."""
+        result = self._get_fallback_response().copy()
+        
+        # Copy over valid fields
+        if 'scene_description' in response and isinstance(response['scene_description'], str):
+            result['scene_description'] = response['scene_description']
+        if 'risk_description' in response and isinstance(response['risk_description'], str):
+            result['risk_description'] = response['risk_description']
+        if 'action_description' in response and isinstance(response['action_description'], str):
+            result['action_description'] = response['action_description']
+        
+        # Validate goal - must be [x, y] with reasonable values
+        if 'goal' in response:
+            goal = response['goal']
+            if isinstance(goal, list) and len(goal) >= 2:
+                try:
+                    x, y = float(goal[0]), float(goal[1])
+                    # Sanity check: waypoints should be within reasonable range
+                    # Note: [0, 0] is valid - it means "stop/stay in place"
+                    if -5.0 <= x <= 5.0 and -5.0 <= y <= 5.0:
+                        result['goal'] = [x, y]
+                        result['goal_valid'] = True
+                    else:
+                        logger.warning(f"Goal out of range: [{x}, {y}]")
+                        result['goal_valid'] = False
+                except (ValueError, TypeError):
+                    result['goal_valid'] = False
+            else:
+                result['goal_valid'] = False
+        else:
+            result['goal_valid'] = False
+        
+        # Validate speed
+        if 'speed' in response:
+            try:
+                speed = float(response['speed'])
+                if 0.1 <= speed <= 1.0:
+                    result['speed'] = speed
+                    result['speed_valid'] = True
+                else:
+                    result['speed_valid'] = False
+            except (ValueError, TypeError):
+                result['speed_valid'] = False
+        else:
+            result['speed_valid'] = False
+        
+        return result
     
     def _get_fallback_response(self) -> Dict:
         """Return a safe fallback response."""
         return {
-            "risk": "medium",
-            "behavior": "proceed_cautiously",
-            "target_pose": [0.5, 0.0],
+            "scene_description": "SmolVLM fallback: Unable to analyze scene.",
+            "risk_description": "medium: Proceeding with caution due to analysis failure.",
+            "action_description": "Move forward slowly while sensors recover.",
+            "goal": [0.5, 0.0],
             "speed": 0.3,
-            "description": "SmolVLM fallback: Proceeding cautiously."
+            "goal_valid": True,
+            "speed_valid": True,
         }
 
 
@@ -218,9 +354,12 @@ class MistralBackend(VLMBackend):
             return self._call_mistral(image_path, map_img_path, prompt)
         except Exception as e:
             print(f"Mistral API call failed: {e}. Returning fallback.")
+            logger.error(f"Mistral API call failed: {e}", exc_info=True)
             return self._get_fallback_response()
     
     def _call_mistral(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
+        self._save_debug_images(image_path, map_img_path)
+        
         def encode_image(path):
             with open(path, "rb") as image_file:
                 return base64.standard_b64encode(image_file.read()).decode("utf-8")
@@ -228,11 +367,14 @@ class MistralBackend(VLMBackend):
         rgb_b64 = encode_image(image_path)
         map_b64 = encode_image(map_img_path)
 
+        # Use centralized prompt
+        full_prompt = NAVIGATION_PROMPT
+
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": prompt},
+                    {"type": "text", "text": full_prompt},
                     {"type": "image_url", "image_url": f"data:image/jpeg;base64,{rgb_b64}"},
                     {"type": "image_url", "image_url": f"data:image/jpeg;base64,{map_b64}"}
                 ]
@@ -249,6 +391,7 @@ class MistralBackend(VLMBackend):
         )
 
         content = response.outputs[0].content
+        logger.info(f"Raw Mistral Response: {content}")
         try:
             clean_content = content.replace("```json", "").replace("```", "").strip()
             return json.loads(clean_content)
@@ -259,11 +402,13 @@ class MistralBackend(VLMBackend):
     def _get_fallback_response(self) -> Dict:
         """Return a safe fallback response."""
         return {
-            "risk": "medium",
-            "behavior": "proceed_cautiously",
-            "target_pose": [0.5, 0.0],
+            "scene_description": "Mistral fallback: Unable to analyze scene.",
+            "risk_description": "medium: Proceeding with caution due to API failure.",
+            "action_description": "Move forward slowly while connection recovers.",
+            "goal": [0.5, 0.0],
             "speed": 0.3,
-            "description": "Mistral fallback: Proceeding cautiously."
+            "goal_valid": True,
+            "speed_valid": True,
         }
 
 
