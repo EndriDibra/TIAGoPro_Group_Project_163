@@ -39,65 +39,31 @@ class PersonDetector:
         self.iou_threshold = iou_threshold
         self.device = device
         
+        # Load model with caching support
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        cached_model_path = CACHE_DIR / model_name
         
-        # Load model (will download on first run)
-        # Load model using cache
         try:
-            # Ensure cache dir exists
-            CACHE_DIR.mkdir(parents=True, exist_ok=True)
-            print(f"[PersonDetector] Cache directory: {CACHE_DIR}")
-            
-            cached_model_path = CACHE_DIR / model_name
-            
-            if not cached_model_path.exists():
-                print(f"[PersonDetector] Model not found in cache. Downloading {model_name}...")
-                # Download to current directory first (YOLO default)
-                model = YOLO(model_name) 
-                
-                # Move to cache if it was downloaded to CWD
-                if Path(model_name).exists():
-                    print(f"[PersonDetector] Moving {model_name} to {CACHE_DIR}...")
-                    shutil.move(model_name, cached_model_path)
-                    # Reload from new location
-                    self.model = YOLO(str(cached_model_path))
-                else:
-                    # It might have been downloaded elsewhere (global cache)
-                    # Try to find source and copy it
-                    try:
-                        # YOLO models usually track their source path
-                        # Check .ckpt_path or try to infer from model object
-                        if hasattr(self.model, 'ckpt_path') and self.model.ckpt_path:
-                            source_path = Path(self.model.ckpt_path)
-                            if source_path.exists() and source_path != cached_model_path:
-                                print(f"[PersonDetector] Copying model from {source_path} to {CACHE_DIR}...")
-                                shutil.copy2(source_path, cached_model_path)
-                                self.model = YOLO(str(cached_model_path))
-                            else:
-                                print(f"[PersonDetector] Model loaded from {source_path}, but not moving (already in cache or invalid).")
-                        else:
-                             print(f"[PersonDetector] loaded model but could not find source file to cache. Using loaded model.")
-                    except Exception as e_copy:
-                         print(f"[PersonDetector] Error trying to cache model from global store: {e_copy}")
+            # Load from cache or download
+            if cached_model_path.exists():
+                self.model = YOLO(str(cached_model_path))
             else:
-                 print(f"[PersonDetector] Loading {model_name} from cache: {cached_model_path}")
-                 self.model = YOLO(str(cached_model_path))
-
+                # Download model, then move to cache if it landed in CWD
+                self.model = YOLO(model_name)
+                if Path(model_name).exists():
+                    shutil.move(model_name, cached_model_path)
+                    self.model = YOLO(str(cached_model_path))
+            
             self.model.to(device)
-            print(f"[PersonDetector] Loaded {model_name} on {device}")
         except Exception as e:
-            print(f"[PersonDetector] Failed to load on {device}, falling back to CPU: {e}")
+            # Fallback to CPU if GPU fails
+            print(f"[PersonDetector] GPU load failed ({e}), falling back to CPU")
             self.device = 'cpu'
-            # Fallback logic for CPU
-            try:
-                cached_model_path = CACHE_DIR / model_name
-                if cached_model_path.exists():
-                     self.model = YOLO(str(cached_model_path))
-                else:
-                     self.model = YOLO(model_name)
-                self.model.to('cpu')
-            except Exception as e2:
-                print(f"[PersonDetector] CRITICAL: Failed to load model on CPU: {e2}")
-                raise e2
+            if cached_model_path.exists():
+                self.model = YOLO(str(cached_model_path))
+            else:
+                self.model = YOLO(model_name)
+            self.model.to('cpu')
         
         # COCO class ID for 'person' is 0
         self.person_class_id = 0

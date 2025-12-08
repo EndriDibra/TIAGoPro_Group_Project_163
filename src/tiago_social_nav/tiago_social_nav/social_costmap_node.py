@@ -376,8 +376,7 @@ class SocialCostmapNode(Node):
                 
             return map_centroids
             
-        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-            # self.get_logger().warn(f'TF Error (laser to map): {e}')
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             return []
 
     def _publish_tracking_results(self, tracks, timestamp_sec):
@@ -543,8 +542,6 @@ class SocialCostmapNode(Node):
                     if 'depth_samples' in person:
                         f.write(f'  Depth samples: {person["depth_samples"]}\n')
                     f.write('\n')
-            
-            # self.get_logger().info(f'Debug data saved to {self.debug_dir}')
             
         except Exception as e:
             self.get_logger().error(f'Failed to save debug data: {e}')

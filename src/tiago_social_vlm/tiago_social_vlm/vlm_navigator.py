@@ -70,7 +70,7 @@ class VLMNavigator(Node):
         self.declare_parameter('controller_server_name', 'controller_server')
         self.declare_parameter('controller_name', 'FollowPath') 
         self.declare_parameter('default_max_speed', 1.0)
-        self.declare_parameter('vlm_loop_rate', 0.2) 
+        self.declare_parameter('vlm_loop_rate', 0.1)  # Query every 10 seconds
         self.declare_parameter('mistral_api_key', '')
         self.declare_parameter('vlm_backend', 'mock')  # 'mock', 'smol', or 'mistral'
         self.declare_parameter('sim_mode', True) 
@@ -150,7 +150,6 @@ class VLMNavigator(Node):
         self._log("VLM Navigator fully initialized")
         
         self.lock = threading.Lock()
-        self.nav_goal_handle = None
 
     def _log(self, message, level="INFO"):
         """Write a message to the debug log file."""
@@ -257,8 +256,8 @@ class VLMNavigator(Node):
             cv_image = self.bridge.imgmsg_to_cv2(self.latest_rgb, desired_encoding='bgr8')
             map_img = self._generate_map_image()
         
-        image_path = "src/tmp/vlm_current_view.jpg"
-        map_img_path = "src/tmp/vlm_map_crop.jpg"
+        image_path = "src/tmp/vlm_rgb.jpg"
+        map_img_path = "src/tmp/vlm_map.jpg"
         cv2.imwrite(image_path, cv_image)
         cv2.imwrite(map_img_path, map_img)
 
@@ -391,18 +390,7 @@ class VLMNavigator(Node):
                 # For now keeping it simple as grid is smallish usually or cpu is fast enough for 400x400
                 # Actually, iterating 400x400 pixels is 160k ops, totally fine.
                 
-                # Simple optimization: Render obstacle mask then warp? 
-                # Current per-pixel approach is robust but slow-ish in python.
-                # Keeping existing logic for stability.
-                
-                # Render logic preserved...
-                # (Skipping full re-implementation of occ grid rendering for brevity in diff unless requested)
-                # Actually, I need to keep the code I'm replacing!
-                # I will paste the existing OccGrid logic back in.
-                
-                # ... Occ Grid Logic from previous code ...
-                
-                # Create obstacle mask and inflate it (from previous code)
+                # Create obstacle mask and inflate
                 obstacle_mask = (occ_grid > 50).astype(np.uint8)
                 inflation_radius_m = 0.3
                 inflation_pixels = int(inflation_radius_m / resolution)
@@ -521,23 +509,6 @@ class VLMNavigator(Node):
         self._log(f"SET_SPEED: Published speed limit {percentage:.1f}% (= {speed:.3f} m/s)")
         self.get_logger().info(f"Set speed limit to {percentage:.1f}% ({speed:.2f} m/s)")
 
-    def send_nav_goal(self, pose_stamped):
-        """Send a navigation goal to Nav2."""
-        x = pose_stamped.pose.position.x
-        y = pose_stamped.pose.position.y
-        frame = pose_stamped.header.frame_id
-        
-        self._log(f"NAV_GOAL: Sending goal to Nav2: x={x:.3f}, y={y:.3f}, frame={frame}")
-        
-        if not self.nav_client.wait_for_server(timeout_sec=1.0):
-            self.get_logger().error("NavigateToPose action server not available!")
-            self._log("NAV_GOAL_ERROR: navigate_to_pose action server not available", level="ERROR")
-            return
-            
-        goal_msg = NavigateToPose.Goal()
-        goal_msg.pose = pose_stamped
-        self.nav_client.send_goal_async(goal_msg)
-        self._log(f"NAV_GOAL: Goal sent successfully to navigate_to_pose")
 
 def main(args=None):
     rclpy.init(args=args)

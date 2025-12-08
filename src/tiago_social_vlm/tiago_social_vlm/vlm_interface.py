@@ -22,7 +22,7 @@ logger.addHandler(fh)
 logger.setLevel(logging.INFO)
 
 def build_navigation_prompt(heading_deg: float = None, distance_to_goal: float = None, path_blocked: bool = False) -> str:
-    """Build the navigation prompt with nav metrics and action-based instructions."""
+    """Build the navigation prompt with nav metrics and prediction-based instructions."""
     
     context_info = ""
     if distance_to_goal is not None:
@@ -31,30 +31,30 @@ def build_navigation_prompt(heading_deg: float = None, distance_to_goal: float =
         context_info += f"  - Heading relative to goal: {heading_deg:.0f} degrees\n"
     
     return (
-        "You are a robot navigation assistant. The robot is currently executing a global plan (shown as a blue line on the map).\n\n"
+        "You are a robot navigation assistant. The robot is executing a global plan (blue line on map).\n\n"
         "IMAGE 1 (Camera View): Robot's front view.\n"
         "IMAGE 2 (Map View): Top-down view.\n"
         "  - Blue arrow: Robot position/direction\n"
-        "  - Blue line: The global path the robot is trying to follow\n"
+        "  - Blue line: The global path the robot is following\n"
         "  - Red dots/circles: Detected humans and their personal space\n"
-        "  - Green goal: Final destination\n"
+        "  - Green star: Final destination\n"
         f"{context_info}"
         "\n"
-        "Your task: Monitor the situation. If a human blocks the path or creates a social conflict, decide to Slow Down or Yield. If the path is clear, Continue.\n\n"
+        "Your task:\n"
+        "1. OBSERVE: Describe what you see - where are humans relative to the path?\n"
+        "2. PREDICT: What will happen in the next 3-5 seconds? Will humans move into/out of the path?\n"
+        "3. DECIDE: Based on your prediction, choose an action.\n\n"
         "Respond ONLY with a JSON object:\n"
         '{\n'
-        '  "reasoning": "Explain your assessment of the situation relative to the blue path and humans.",\n'
+        '  "observation": "Brief description of current scene (humans, obstacles, path status)",\n'
+        '  "prediction": "What you expect to happen next (human movement, potential conflicts)",\n'
         '  "action": "Continue" | "Slow Down" | "Yield"\n'
         '}\n\n'
-        'Definitions:\n'
-        '- "Continue": Path is clear, no social conflict. (Speed: 100%)\n'
-        '- "Slow Down": Human nearby or potential conflict, but passable. (Speed: 50%)\n'
-        '- "Yield": Human blocking path or high risk of collision. (Speed: 0%)'
+        'Action Definitions:\n'
+        '- "Continue": Path is clear now AND predicted to stay clear. (Speed: 100%)\n'
+        '- "Slow Down": Human nearby OR may enter path soon. (Speed: 50%)\n'
+        '- "Yield": Human blocking path OR predicted collision. (Speed: ~0%)'
     )
-
-# Default prompt for backwards compatibility
-NAVIGATION_PROMPT = build_navigation_prompt()
-
 
 
 # ============================================================
@@ -82,34 +82,30 @@ class VLMBackend(ABC):
         """Return the name of this backend."""
         pass
 
-    def _save_debug_images(self, image_path: str, map_img_path: str):
-        """Save debug images to tmp directory."""
-        try:
-            dest_dir = Path(__file__).resolve().parents[2] / "tmp"
-            dest_dir.mkdir(exist_ok=True)
-            
-            if image_path and os.path.exists(image_path):
-                shutil.copy(image_path, dest_dir / "debug_rgb.jpg")
-                
-            if map_img_path and os.path.exists(map_img_path):
-                shutil.copy(map_img_path, dest_dir / "debug_map.jpg")
-        except Exception as e:
-            logger.error(f"Failed to save debug images: {e}")
 
     def _validate_response(self, response: Dict) -> Dict:
         """Validate and normalize the VLM response."""
         result = {
-            "reasoning": "Unable to analyze scene.",
+            "observation": "Unable to analyze scene.",
+            "prediction": "Unknown.",
+            "reasoning": "Unable to analyze scene.",  # Combined for logging
             "action": "Slow Down",  # Safe default
             "speed": 0.5,
             "speed_valid": True
         }
         
-        # Copy reasoning
-        if 'reasoning' in response and isinstance(response['reasoning'], str):
+        # Handle new observation/prediction fields
+        if 'observation' in response and isinstance(response['observation'], str):
+            result['observation'] = response['observation']
+        if 'prediction' in response and isinstance(response['prediction'], str):
+            result['prediction'] = response['prediction']
+        
+        # Combine observation + prediction into reasoning for backward compatibility
+        if 'observation' in response or 'prediction' in response:
+            result['reasoning'] = f"{result['observation']} Prediction: {result['prediction']}"
+        elif 'reasoning' in response and isinstance(response['reasoning'], str):
+            # Fallback to old reasoning field if present
             result['reasoning'] = response['reasoning']
-        elif 'scene_description' in response: # Fallback for old prompts if any
-             result['reasoning'] = str(response.get('scene_description', '')) + " " + str(response.get('risk_description', ''))
 
         # Validate Action and Map to Speed
         if 'action' in response and isinstance(response['action'], str):
@@ -130,6 +126,7 @@ class VLMBackend(ABC):
                 result['speed'] = 0.5
         
         return result
+
 
 
 # ============================================================
@@ -229,8 +226,6 @@ class SmolVLMBackend(VLMBackend):
             # Build prompt dynamically with heading and goal info
             full_prompt = build_navigation_prompt(heading_deg, distance_to_goal)
             
-            # Save debug images
-            self._save_debug_images(image_path, map_img_path)
             
             # Encode the map image
             map_data_uri = None
@@ -367,7 +362,6 @@ class MistralBackend(VLMBackend):
             return self._get_fallback_response()
     
     def _call_mistral(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
-        self._save_debug_images(image_path, map_img_path)
         
         def encode_image(path):
             with open(path, "rb") as image_file:
