@@ -4,13 +4,11 @@ from sensor_msgs.msg import Image, CameraInfo, PointCloud2, LaserScan
 from visualization_msgs.msg import MarkerArray
 from cv_bridge import CvBridge
 import cv2
-import os
 import numpy as np
 from typing import List, Dict, Optional
 import message_filters
 from rclpy.qos import qos_profile_sensor_data
 import tf2_ros
-import tf2_geometry_msgs
 import threading
 
 # Import our custom modules
@@ -41,10 +39,6 @@ class SocialCostmapNode(Node):
         # Declare localization parameters
         self.declare_parameter('localization_method', '3d_centroid')  # or 'min_z_column'
         
-        # Declare debugging parameters
-        self.declare_parameter('save_debug_images', True)
-        self.declare_parameter('debug_dir', '~/src/tmp')
-        
         # Get parameters
         self.camera_topic = self.get_parameter('camera_topic').get_parameter_value().string_value
         self.depth_topic = self.get_parameter('depth_topic').get_parameter_value().string_value
@@ -58,9 +52,6 @@ class SocialCostmapNode(Node):
         device = self.get_parameter('device').get_parameter_value().string_value
         
         localization_method = self.get_parameter('localization_method').get_parameter_value().string_value
-        
-        self.save_debug = self.get_parameter('save_debug_images').get_parameter_value().bool_value
-        self.debug_dir = os.path.expanduser(self.get_parameter('debug_dir').get_parameter_value().string_value)
         
         self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}, Scan: {self.scan_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
@@ -241,18 +232,6 @@ class SocialCostmapNode(Node):
             with self._tracking_lock:
                 self._pending_yolo_detections = localized_persons_3d
 
-            # ========== Step 6: Save Debug Images (Optional) ==========
-            if self.save_debug and len(detections) > 0 and registered_depth is not None:
-                # We need to construct dummy localized_persons dicts for debug saving roughly
-                # This is a bit disjointed now that tracking is separate, but for debug viz:
-                debug_persons = []
-                for i, pos in enumerate(localized_persons_3d):
-                     debug_persons.append({
-                         'confidence': detections[i]['confidence'],
-                         'position_3d_map': pos
-                     })
-                
-                self._save_debug_data(cv_rgb, registered_depth, detections, debug_persons)
 
         except Exception as e:
             self.get_logger().error(f'Error processing RGB-D: {e}')
@@ -504,47 +483,7 @@ class SocialCostmapNode(Node):
         
         return registered_depth
     
-    def _save_debug_data(self, cv_rgb: np.ndarray, registered_depth: np.ndarray,
-                        detections: List[Dict], localized_persons: List[Dict]):
-        """Save debug images and data to disk."""
-        try:
-            os.makedirs(self.debug_dir, exist_ok=True)
-            
-            # Save annotated RGB with detections
-            annotated_rgb = self.detector.visualize_detections(
-                cv2.cvtColor(cv_rgb, cv2.COLOR_BGR2RGB),
-                detections,
-                show_masks=True
-            )
-            cv2.imwrite(
-                os.path.join(self.debug_dir, 'detected_persons.jpg'),
-                cv2.cvtColor(annotated_rgb, cv2.COLOR_RGB2BGR)
-            )
-            
-            # Save registered depth visualization
-            depth_vis = cv2.normalize(registered_depth, None, 0, 255, cv2.NORM_MINMAX)
-            depth_vis = depth_vis.astype(np.uint8)
-            depth_colormap = cv2.applyColorMap(depth_vis, cv2.COLORMAP_JET)
-            cv2.imwrite(os.path.join(self.debug_dir, 'registered_depth.png'), depth_colormap)
-            
-            # Save person data to text file
-            with open(os.path.join(self.debug_dir, 'persons.txt'), 'w') as f:
-                f.write(f'Detected {len(localized_persons)} person(s)\n\n')
-                for i, person in enumerate(localized_persons):
-                    f.write(f'Person {i+1}:\n')
-                    f.write(f'  Confidence: {person["confidence"]:.3f}\n')
-                    if 'position_3d_camera' in person:
-                        pos_cam = person['position_3d_camera']
-                        f.write(f'  Camera Frame: ({pos_cam[0]:.3f}, {pos_cam[1]:.3f}, {pos_cam[2]:.3f})\n')
-                    if 'position_3d_map' in person:
-                        pos_map = person['position_3d_map']
-                        f.write(f'  Map Frame: ({pos_map[0]:.3f}, {pos_map[1]:.3f}, {pos_map[2]:.3f})\n')
-                    if 'depth_samples' in person:
-                        f.write(f'  Depth samples: {person["depth_samples"]}\n')
-                    f.write('\n')
-            
-        except Exception as e:
-            self.get_logger().error(f'Failed to save debug data: {e}')
+
 
 
 

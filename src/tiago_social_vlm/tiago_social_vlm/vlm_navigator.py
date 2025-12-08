@@ -1,21 +1,16 @@
 import rclpy
 from rclpy.node import Node
-from rclpy.action import ActionClient
-from rclpy.duration import Duration
 from rclpy.qos import qos_profile_sensor_data
 
-from geometry_msgs.msg import PoseStamped, Point
+from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image 
 from nav_msgs.msg import OccupancyGrid, Path
 from visualization_msgs.msg import MarkerArray
 from std_msgs.msg import String
 
 from nav2_msgs.msg import SpeedLimit
-from rcl_interfaces.srv import SetParameters
-from rclpy.parameter import Parameter
 
 import tf2_ros
-import tf2_geometry_msgs
 
 from cv_bridge import CvBridge
 import cv2
@@ -25,17 +20,16 @@ import threading
 import time
 import logging
 import math
-from datetime import datetime
 from pathlib import Path as FilePath
 
 from tiago_social_vlm.vlm_interface import VLMClient
 
 # --- File Logger Setup ---
 def setup_file_logger():
-    """Setup a file logger that writes to src/tmp/vlm_debug.log"""
+    """Setup a file logger that writes to src/tmp/vlm.log"""
     log_dir = FilePath("src/tmp")
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_file = log_dir / "vlm_debug.log"
+    log_file = log_dir / "vlm.log"
     
     logger = logging.getLogger('vlm_file_logger')
     logger.setLevel(logging.DEBUG)
@@ -131,15 +125,11 @@ class VLMNavigator(Node):
             10
         )
 
-        # 3. Action Client for Nav2 -> REMOVED (Supervisor mode is passive)
-        
-        # 4. Speed Control
+
+        # 3. Speed Control
         self.speed_limit_pub = self.create_publisher(SpeedLimit, 'speed_limit', 10)
         
-        # Keep param client as fallback
-        self.param_client = self.create_client(SetParameters, f'/{self.controller_server}/set_parameters')
-        
-        # 5. Debug Pubs
+        # 4. Debug Pubs
         self.debug_img_pub = self.create_publisher(Image, '/vlm/debug_image', 1)
         self.vlm_response_pub = self.create_publisher(String, '/vlm/response', 10)
 
@@ -327,9 +317,8 @@ class VLMNavigator(Node):
             speed = float(response['speed'])
             adjusted_speed = speed * self.default_speed
             action = response.get('action', 'Unknown')
-            reasoning = response.get('reasoning', '')
             
-            self.get_logger().info(f"VLM Action: {action} ({speed*100:.0f}%) - {reasoning}")
+            self.get_logger().info(f"VLM Action: {action} ({speed*100:.0f}%)")
             self._log(f"APPLYING: Action={action}, Speed={adjusted_speed:.2f} m/s")
             
             self.set_max_speed(adjusted_speed)

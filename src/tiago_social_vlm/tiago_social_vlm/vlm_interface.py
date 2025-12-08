@@ -2,33 +2,25 @@ import os
 import base64
 import json
 import random
-from typing import Dict, List, Optional, Tuple
-
+from typing import Dict, Optional
 from abc import ABC, abstractmethod
 from pathlib import Path
-
-import shutil
 import logging
 
-# .../src/tiago_social_vlm/tiago_social_vlm/vlm_interface.py -> .../src/cache/huggingface
-CACHE_DIR = Path(__file__).resolve().parents[2] / "cache" / "huggingface"
-
-debug_log_path = Path(__file__).resolve().parents[2] / "tmp" / "vlm_internal.log"
-debug_log_path.parent.mkdir(parents=True, exist_ok=True)
+# Simple console logger for warnings
 logger = logging.getLogger("vlm_interface")
-fh = logging.FileHandler(str(debug_log_path), mode='w')  # 'w' to overwrite on each run
-fh.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
-logger.addHandler(fh)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.WARNING)
+
+# Cache directory for model weights
+CACHE_DIR = Path(__file__).resolve().parents[2] / "cache" / "huggingface"
 
 def build_navigation_prompt(heading_deg: float = None, distance_to_goal: float = None, path_blocked: bool = False) -> str:
     """Build the navigation prompt with nav metrics and prediction-based instructions."""
     
+    # Only include distance - heading is visible in the map image
     context_info = ""
     if distance_to_goal is not None:
         context_info += f"  - Distance to goal: {distance_to_goal:.1f} meters\n"
-    if heading_deg is not None:
-        context_info += f"  - Heading relative to goal: {heading_deg:.0f} degrees\n"
     
     return (
         "You are a robot navigation assistant. The robot is executing a global plan (blue line on map).\n\n"
@@ -88,24 +80,16 @@ class VLMBackend(ABC):
         result = {
             "observation": "Unable to analyze scene.",
             "prediction": "Unknown.",
-            "reasoning": "Unable to analyze scene.",  # Combined for logging
             "action": "Slow Down",  # Safe default
             "speed": 0.5,
             "speed_valid": True
         }
         
-        # Handle new observation/prediction fields
+        # Handle observation/prediction fields
         if 'observation' in response and isinstance(response['observation'], str):
             result['observation'] = response['observation']
         if 'prediction' in response and isinstance(response['prediction'], str):
             result['prediction'] = response['prediction']
-        
-        # Combine observation + prediction into reasoning for backward compatibility
-        if 'observation' in response or 'prediction' in response:
-            result['reasoning'] = f"{result['observation']} Prediction: {result['prediction']}"
-        elif 'reasoning' in response and isinstance(response['reasoning'], str):
-            # Fallback to old reasoning field if present
-            result['reasoning'] = response['reasoning']
 
         # Validate Action and Map to Speed
         if 'action' in response and isinstance(response['action'], str):
@@ -147,10 +131,10 @@ class MockBackend(VLMBackend):
         """Return a randomized mock response for testing (supervisor mode compatible)."""
         # Random action choice weighted towards Continue for testing
         action_choice = random.random()
-        if action_choice < 0.4:
+        if action_choice < 0.33:
             action = "Continue"
             speed = 1.0
-        elif action_choice < 0.7:
+        elif action_choice < 0.66:
             action = "Slow Down"
             speed = 0.5
         else:
@@ -158,7 +142,8 @@ class MockBackend(VLMBackend):
             speed = 0.01
             
         return {
-            "reasoning": f"Mock: Path appears clear. Distance to goal: {distance_to_goal:.1f}m." if distance_to_goal else "Mock: Analyzing scene.",
+            "observation": f"Mock: Distance to goal: {distance_to_goal:.1f}m." if distance_to_goal else "Mock: Analyzing scene.",
+            "prediction": "Mock prediction.",
             "action": action,
             "speed": speed,
             "speed_valid": True
@@ -316,7 +301,8 @@ class SmolVLMBackend(VLMBackend):
     def _get_fallback_response(self) -> Dict:
         """Return a safe fallback response (supervisor mode compatible)."""
         return {
-            "reasoning": "SmolVLM fallback: Unable to analyze scene. Proceeding with caution.",
+            "observation": "SmolVLM fallback: Unable to analyze scene.",
+            "prediction": "Proceeding with caution.",
             "action": "Slow Down",
             "speed": 0.5,
             "speed_valid": True
@@ -407,7 +393,8 @@ class MistralBackend(VLMBackend):
     def _get_fallback_response(self) -> Dict:
         """Return a safe fallback response (supervisor mode compatible)."""
         return {
-            "reasoning": "Mistral fallback: Unable to analyze scene. Proceeding with caution.",
+            "observation": "Mistral fallback: Unable to analyze scene.",
+            "prediction": "Proceeding with caution.",
             "action": "Slow Down",
             "speed": 0.5,
             "speed_valid": True
