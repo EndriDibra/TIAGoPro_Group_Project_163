@@ -163,7 +163,6 @@ class VLMNavigator(Node):
     def plan_callback(self, msg):
         """Handle incoming global plan from Nav2."""
         self.get_logger().info(f"Received global plan with {len(msg.poses)} poses")
-        self._log(f"PLAN RECEIVED: {len(msg.poses)} waypoints, frame={msg.header.frame_id}")
         
         self.current_path = msg
         # Extract goal from the last pose of the path
