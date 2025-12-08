@@ -374,6 +374,23 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     )
     launch_description.add_action(social_costmap_node)
 
+    # VLM Navigator Node
+    vlm_navigator_node = Node(
+        package='tiago_social_vlm',
+        executable='vlm_navigator',
+        name='vlm_navigator',
+        output='screen',
+        parameters=[
+            {'vlm_backend': os.environ.get('VLM_BACKEND', 'mistral')},  # Default to mistral, override with VLM_BACKEND env var
+            {'mistral_api_key': os.environ.get('MISTRAL_API_KEY', '')},  # Read from environment
+            {'controller_server_name': 'controller_server'},
+            {'controller_name': 'FollowPath'},
+            {'default_max_speed': 1.0},
+            {'use_sim_time': True}
+        ],
+    )
+    launch_description.add_action(vlm_navigator_node)
+
     return
 
 

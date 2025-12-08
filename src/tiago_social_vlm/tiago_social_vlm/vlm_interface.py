@@ -16,33 +16,40 @@ CACHE_DIR = Path(__file__).resolve().parents[2] / "cache" / "huggingface"
 debug_log_path = Path(__file__).resolve().parents[2] / "tmp" / "vlm_internal.log"
 debug_log_path.parent.mkdir(parents=True, exist_ok=True)
 logger = logging.getLogger("vlm_interface")
-fh = logging.FileHandler(str(debug_log_path))
+fh = logging.FileHandler(str(debug_log_path), mode='w')  # 'w' to overwrite on each run
 fh.setFormatter(logging.Formatter('%(asctime)s | %(levelname)s | %(message)s'))
 logger.addHandler(fh)
 logger.setLevel(logging.INFO)
 
-def build_navigation_prompt(heading_deg: float = None) -> str:
-    """Build the navigation prompt, optionally including heading to goal."""
-    heading_info = ""
+def build_navigation_prompt(heading_deg: float = None, distance_to_goal: float = None, path_blocked: bool = False) -> str:
+    """Build the navigation prompt with nav metrics and action-based instructions."""
+    
+    context_info = ""
+    if distance_to_goal is not None:
+        context_info += f"  - Distance to goal: {distance_to_goal:.1f} meters\n"
     if heading_deg is not None:
-        heading_info = f"  - Heading to goal: {heading_deg:.0f} degrees (0=forward, 90=left, -90=right)\n"
+        context_info += f"  - Heading relative to goal: {heading_deg:.0f} degrees\n"
     
     return (
-        "You are a robot navigation assistant helping a mobile robot navigate safely around humans.\n\n"
-        "IMAGE 1 (Camera View): Shows what the robot currently sees from its front camera.\n"
-        "IMAGE 2 (Map View): Shows a top-down map with:\n"
-        "  - Blue dot/arrow: Robot's current position and facing direction\n"
-        "  - Red dots + circles: Humans with proxemics zones (avoid entering these)\n"
-        "  - Green star: Goal position\n"
-        "  - Gray areas: Walls and obstacles\n"
-        f"{heading_info}"
-        "  - Grid: 1 meter spacing\n\n"
-        "Your task: Suggest a safe intermediate waypoint to help the robot reach the goal while avoiding humans.\n\n"
-        "Respond ONLY with a JSON object (no other text):\n"
-        '{"scene_description": "what you see", "risk_description": "high/medium/low/none + reason", '
-        '"action_description": "what to do", "goal": [x, y], "speed": 0.1-1.0}\n\n'
-        "IMPORTANT: goal is [x,y] in meters relative to robot. Positive x=forward, positive y=left.\n"
-        "Example: [1.5, 0.3] means 1.5m forward and 0.3m left."
+        "You are a robot navigation assistant. The robot is currently executing a global plan (shown as a blue line on the map).\n\n"
+        "IMAGE 1 (Camera View): Robot's front view.\n"
+        "IMAGE 2 (Map View): Top-down view.\n"
+        "  - Blue arrow: Robot position/direction\n"
+        "  - Blue line: The global path the robot is trying to follow\n"
+        "  - Red dots/circles: Detected humans and their personal space\n"
+        "  - Green goal: Final destination\n"
+        f"{context_info}"
+        "\n"
+        "Your task: Monitor the situation. If a human blocks the path or creates a social conflict, decide to Slow Down or Yield. If the path is clear, Continue.\n\n"
+        "Respond ONLY with a JSON object:\n"
+        '{\n'
+        '  "reasoning": "Explain your assessment of the situation relative to the blue path and humans.",\n'
+        '  "action": "Continue" | "Slow Down" | "Yield"\n'
+        '}\n\n'
+        'Definitions:\n'
+        '- "Continue": Path is clear, no social conflict. (Speed: 100%)\n'
+        '- "Slow Down": Human nearby or potential conflict, but passable. (Speed: 50%)\n'
+        '- "Yield": Human blocking path or high risk of collision. (Speed: 0%)'
     )
 
 # Default prompt for backwards compatibility
@@ -58,8 +65,15 @@ class VLMBackend(ABC):
     """Abstract base class for VLM backends."""
     
     @abstractmethod
-    def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
-        """Send images and prompt to VLM and get a JSON response."""
+    def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
+        """Send images and prompt to VLM and get a JSON response.
+        
+        Args:
+            image_path: Path to camera image
+            map_img_path: Path to map visualization image
+            heading_deg: Heading to goal in degrees (0=forward, 90=left, -90=right)
+            distance_to_goal: Distance to goal in meters
+        """
         pass
     
     @property
@@ -82,6 +96,41 @@ class VLMBackend(ABC):
         except Exception as e:
             logger.error(f"Failed to save debug images: {e}")
 
+    def _validate_response(self, response: Dict) -> Dict:
+        """Validate and normalize the VLM response."""
+        result = {
+            "reasoning": "Unable to analyze scene.",
+            "action": "Slow Down",  # Safe default
+            "speed": 0.5,
+            "speed_valid": True
+        }
+        
+        # Copy reasoning
+        if 'reasoning' in response and isinstance(response['reasoning'], str):
+            result['reasoning'] = response['reasoning']
+        elif 'scene_description' in response: # Fallback for old prompts if any
+             result['reasoning'] = str(response.get('scene_description', '')) + " " + str(response.get('risk_description', ''))
+
+        # Validate Action and Map to Speed
+        if 'action' in response and isinstance(response['action'], str):
+            action = response['action'].lower().strip()
+            result['action'] = response['action'] # Keep original case for display
+            
+            if "continue" in action:
+                result['speed'] = 1.0
+                result['action'] = "Continue"
+            elif "slow" in action:
+                result['speed'] = 0.5
+                result['action'] = "Slow Down"
+            elif "yield" in action or "stop" in action:
+                result['speed'] = 0.01  # Use 0.01 instead of 0.0 - Nav2 ignores 0%
+                result['action'] = "Yield"
+            else:
+                logger.warning(f"Unknown action: {action}, defaulting to Slow Down")
+                result['speed'] = 0.5
+        
+        return result
+
 
 # ============================================================
 # Mock Backend (For testing without GPU/API)
@@ -97,15 +146,25 @@ class MockBackend(VLMBackend):
     def name(self) -> str:
         return "mock"
     
-    def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
-        """Return a randomized mock response for testing."""
-        speed = 0.3 + (0.1 * random.random())
+    def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
+        """Return a randomized mock response for testing (supervisor mode compatible)."""
+        # Random action choice weighted towards Continue for testing
+        action_choice = random.random()
+        if action_choice < 0.4:
+            action = "Continue"
+            speed = 1.0
+        elif action_choice < 0.7:
+            action = "Slow Down"
+            speed = 0.5
+        else:
+            action = "Yield"
+            speed = 0.01
+            
         return {
-            "scene_description": "Mock: Indoor corridor with clear path ahead.",
-            "risk_description": random.choice(["none", "low: Person visible in distance", "medium: Person approaching"]),
-            "action_description": "Proceed cautiously along the corridor.",
-            "goal": [1.0, 0.0],
+            "reasoning": f"Mock: Path appears clear. Distance to goal: {distance_to_goal:.1f}m." if distance_to_goal else "Mock: Analyzing scene.",
+            "action": action,
             "speed": speed,
+            "speed_valid": True
         }
 
 
@@ -152,7 +211,7 @@ class SmolVLMBackend(VLMBackend):
     def name(self) -> str:
         return "smol"
     
-    def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
+    def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
         if not self._initialized:
             print(f"SmolVLM not initialized: {self._init_error}")
             logger.error(f"SmolVLM not initialized: {self._init_error}")
@@ -167,8 +226,8 @@ class SmolVLMBackend(VLMBackend):
             image_base64 = base64.b64encode(image_bytes).decode("utf-8")
             image_data_uri = f"data:image/jpeg;base64,{image_base64}"
             
-            # Use centralized prompt
-            full_prompt = NAVIGATION_PROMPT
+            # Build prompt dynamically with heading and goal info
+            full_prompt = build_navigation_prompt(heading_deg, distance_to_goal)
             
             # Save debug images
             self._save_debug_images(image_path, map_img_path)
@@ -257,65 +316,15 @@ class SmolVLMBackend(VLMBackend):
                     return text[start:i+1]
         return None
     
-    def _validate_response(self, response: Dict) -> Dict:
-        """Validate and normalize the VLM response."""
-        result = self._get_fallback_response().copy()
-        
-        # Copy over valid fields
-        if 'scene_description' in response and isinstance(response['scene_description'], str):
-            result['scene_description'] = response['scene_description']
-        if 'risk_description' in response and isinstance(response['risk_description'], str):
-            result['risk_description'] = response['risk_description']
-        if 'action_description' in response and isinstance(response['action_description'], str):
-            result['action_description'] = response['action_description']
-        
-        # Validate goal - must be [x, y] with reasonable values
-        if 'goal' in response:
-            goal = response['goal']
-            if isinstance(goal, list) and len(goal) >= 2:
-                try:
-                    x, y = float(goal[0]), float(goal[1])
-                    # Sanity check: waypoints should be within reasonable range
-                    # Note: [0, 0] is valid - it means "stop/stay in place"
-                    if -5.0 <= x <= 5.0 and -5.0 <= y <= 5.0:
-                        result['goal'] = [x, y]
-                        result['goal_valid'] = True
-                    else:
-                        logger.warning(f"Goal out of range: [{x}, {y}]")
-                        result['goal_valid'] = False
-                except (ValueError, TypeError):
-                    result['goal_valid'] = False
-            else:
-                result['goal_valid'] = False
-        else:
-            result['goal_valid'] = False
-        
-        # Validate speed
-        if 'speed' in response:
-            try:
-                speed = float(response['speed'])
-                if 0.1 <= speed <= 1.0:
-                    result['speed'] = speed
-                    result['speed_valid'] = True
-                else:
-                    result['speed_valid'] = False
-            except (ValueError, TypeError):
-                result['speed_valid'] = False
-        else:
-            result['speed_valid'] = False
-        
-        return result
+
     
     def _get_fallback_response(self) -> Dict:
-        """Return a safe fallback response."""
+        """Return a safe fallback response (supervisor mode compatible)."""
         return {
-            "scene_description": "SmolVLM fallback: Unable to analyze scene.",
-            "risk_description": "medium: Proceeding with caution due to analysis failure.",
-            "action_description": "Move forward slowly while sensors recover.",
-            "goal": [0.5, 0.0],
-            "speed": 0.3,
-            "goal_valid": True,
-            "speed_valid": True,
+            "reasoning": "SmolVLM fallback: Unable to analyze scene. Proceeding with caution.",
+            "action": "Slow Down",
+            "speed": 0.5,
+            "speed_valid": True
         }
 
 
@@ -345,19 +354,19 @@ class MistralBackend(VLMBackend):
     def name(self) -> str:
         return "mistral"
     
-    def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
+    def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
         if not self._initialized:
             print("Mistral not initialized, returning fallback.")
             return self._get_fallback_response()
         
         try:
-            return self._call_mistral(image_path, map_img_path, prompt)
+            return self._call_mistral(image_path, map_img_path, heading_deg, distance_to_goal)
         except Exception as e:
             print(f"Mistral API call failed: {e}. Returning fallback.")
             logger.error(f"Mistral API call failed: {e}", exc_info=True)
             return self._get_fallback_response()
     
-    def _call_mistral(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
+    def _call_mistral(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
         self._save_debug_images(image_path, map_img_path)
         
         def encode_image(path):
@@ -367,8 +376,8 @@ class MistralBackend(VLMBackend):
         rgb_b64 = encode_image(image_path)
         map_b64 = encode_image(map_img_path)
 
-        # Use centralized prompt
-        full_prompt = NAVIGATION_PROMPT
+        # Build prompt dynamically with heading and goal info
+        full_prompt = build_navigation_prompt(heading_deg, distance_to_goal)
 
         messages = [
             {
@@ -394,21 +403,20 @@ class MistralBackend(VLMBackend):
         logger.info(f"Raw Mistral Response: {content}")
         try:
             clean_content = content.replace("```json", "").replace("```", "").strip()
-            return json.loads(clean_content)
+            parsed = json.loads(clean_content)
+            # Validate response using base class method
+            return self._validate_response(parsed)
         except json.JSONDecodeError:
             print(f"Failed to parse JSON from Mistral: {content}")
             return self._get_fallback_response()
     
     def _get_fallback_response(self) -> Dict:
-        """Return a safe fallback response."""
+        """Return a safe fallback response (supervisor mode compatible)."""
         return {
-            "scene_description": "Mistral fallback: Unable to analyze scene.",
-            "risk_description": "medium: Proceeding with caution due to API failure.",
-            "action_description": "Move forward slowly while connection recovers.",
-            "goal": [0.5, 0.0],
-            "speed": 0.3,
-            "goal_valid": True,
-            "speed_valid": True,
+            "reasoning": "Mistral fallback: Unable to analyze scene. Proceeding with caution.",
+            "action": "Slow Down",
+            "speed": 0.5,
+            "speed_valid": True
         }
 
 
@@ -463,16 +471,14 @@ class VLMClient:
         """Return the name of the active backend."""
         return self._backend.name if self._backend else "none"
     
-    def get_navigation_command(self, image_path: str, map_img_path: str, prompt: str) -> Dict:
+    def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
         """
         Send images and prompt to the active VLM backend and get a JSON response.
         
         :param image_path: Path to the current camera image (jpg).
         :param map_img_path: Path to the current map crop (jpg).
-        :param prompt: Text prompt describing the task.
-        :return: JSON dict with keys: risk, behavior, target_pose, speed, description.
+        :param heading_deg: Heading to goal in degrees (0=forward, 90=left, -90=right).
+        :param distance_to_goal: Distance to goal in meters.
+        :return: JSON dict with goal, speed, and validation flags.
         """
-        return self._backend.get_navigation_command(image_path, map_img_path, prompt)
-
-
-
+        return self._backend.get_navigation_command(image_path, map_img_path, heading_deg, distance_to_goal)

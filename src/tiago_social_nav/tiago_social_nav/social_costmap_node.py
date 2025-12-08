@@ -1,6 +1,6 @@
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image, CameraInfo, PointCloud2
+from sensor_msgs.msg import Image, CameraInfo, PointCloud2, LaserScan
 from visualization_msgs.msg import MarkerArray
 from cv_bridge import CvBridge
 import cv2
@@ -11,12 +11,15 @@ import message_filters
 from rclpy.qos import qos_profile_sensor_data
 import tf2_ros
 import tf2_geometry_msgs
+import threading
 
 # Import our custom modules
 from .person_detector import PersonDetector
 from .person_localizer import PersonLocalizer
 from .social_costmap_publisher import SocialCostmapPublisher
+from .tracking import PersonTracker
 import time
+import math
 
 class SocialCostmapNode(Node):
     def __init__(self):
@@ -27,6 +30,7 @@ class SocialCostmapNode(Node):
         self.declare_parameter('depth_topic', '/head_front_camera/depth/image_raw')
         self.declare_parameter('camera_info_topic', '/head_front_camera/depth/camera_info')
         self.declare_parameter('rgb_camera_info_topic', '/head_front_camera/color/camera_info')
+        self.declare_parameter('scan_topic', '/scan') # Added scan topic parameter
         
         # Declare YOLO detection parameters
         self.declare_parameter('detection_rate', 5.0)  # Hz
@@ -46,6 +50,7 @@ class SocialCostmapNode(Node):
         self.depth_topic = self.get_parameter('depth_topic').get_parameter_value().string_value
         self.camera_info_topic = self.get_parameter('camera_info_topic').get_parameter_value().string_value
         self.rgb_camera_info_topic = self.get_parameter('rgb_camera_info_topic').get_parameter_value().string_value
+        self.scan_topic = self.get_parameter('scan_topic').get_parameter_value().string_value
         
         detection_rate = self.get_parameter('detection_rate').get_parameter_value().double_value
         yolo_model = self.get_parameter('yolo_model').get_parameter_value().string_value
@@ -57,7 +62,7 @@ class SocialCostmapNode(Node):
         self.save_debug = self.get_parameter('save_debug_images').get_parameter_value().bool_value
         self.debug_dir = os.path.expanduser(self.get_parameter('debug_dir').get_parameter_value().string_value)
         
-        self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}')
+        self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}, Scan: {self.scan_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
         self.get_logger().info(f'Localization method: {localization_method}')
         
@@ -74,12 +79,16 @@ class SocialCostmapNode(Node):
         )
         
         self.localizer = PersonLocalizer(method=localization_method)
-        
         self.costmap_publisher_module = SocialCostmapPublisher()
+        self.tracker = PersonTracker(decay_time=20.0, distance_threshold=0.8) # Initialize Tracker
         
         # TF Buffer
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
+        
+        # Threading lock for race condition prevention
+        self._tracking_lock = threading.Lock()
+        self._pending_yolo_detections = None
         
         # ROS Publishers
         # Replaced OccupancyGrid with PointCloud2
@@ -89,6 +98,18 @@ class SocialCostmapNode(Node):
         # Subscribers
         self.rgb_sub = message_filters.Subscriber(self, Image, self.camera_topic, qos_profile=qos_profile_sensor_data)
         self.depth_sub = message_filters.Subscriber(self, Image, self.depth_topic, qos_profile=qos_profile_sensor_data)
+        
+        # Laser Subscriber
+        self.scan_sub = self.create_subscription(
+            LaserScan,
+            self.scan_topic,
+            self.scan_callback,
+            qos_profile=qos_profile_sensor_data 
+        )
+        self.last_scan_msg = None
+        
+        # Unified tracking timer at ~20Hz to avoid race conditions
+        self.tracking_timer = self.create_timer(0.05, self._tracking_timer_callback)
         
         # Synchronizer
         # ApproximateTimeSynchronizer is robust to slight timestamp differences
@@ -113,7 +134,7 @@ class SocialCostmapNode(Node):
         
         self.bridge = CvBridge()
         
-        self.get_logger().info('Social Costmap Node (PointCloud2) with YOLO detection ready!')
+        self.get_logger().info('Social Costmap Node (PointCloud2) with YOLO + Laser Tracking ready!')
 
     def depth_camera_info_callback(self, msg):
         if self.depth_camera_model is None:
@@ -124,6 +145,20 @@ class SocialCostmapNode(Node):
         if self.rgb_camera_model is None:
             self.rgb_camera_model = msg
             self.get_logger().info(f'Received RGB Camera Info: {msg.width}x{msg.height}')
+
+    def scan_callback(self, msg):
+        """Store latest scan for use in tracking timer."""
+        self.last_scan_msg = msg
+        # Don't process here - let the unified timer handle tracking
+    
+    def _tracking_timer_callback(self):
+        """Unified tracking callback to avoid race conditions."""
+        with self._tracking_lock:
+            yolo_detections = self._pending_yolo_detections
+            self._pending_yolo_detections = None
+        
+        # Process tracking with whatever data we have
+        self.process_tracking(rgb_detections=yolo_detections, scan_msg=self.last_scan_msg)
 
     def rgbd_callback(self, rgb_msg, depth_msg):
         """Process synchronized RGB-D data with rate-limited YOLO detection."""
@@ -151,102 +186,233 @@ class SocialCostmapNode(Node):
             cv_rgb_yolo = cv2.cvtColor(cv_rgb, cv2.COLOR_BGR2RGB)
             detections = self.detector.detect(cv_rgb_yolo)
             
-            # self.get_logger().info(f'Detected {len(detections)} person(s)')
-            
-            if len(detections) == 0:
-                # No persons detected - publish empty pointcloud to clear obstacles
-                empty_cloud = self.costmap_publisher_module.create_social_pointcloud(
-                    persons=[],
-                    map_frame='map',
-                    timestamp=rgb_msg.header.stamp
-                )
-                self.social_pub.publish(empty_cloud)
-                
-                # Also clear markers
-                empty_markers = self.costmap_publisher_module.create_person_markers(
-                    persons=[],
-                    map_frame='map',
-                    timestamp=rgb_msg.header.stamp
-                )
-                self.markers_pub.publish(empty_markers)
-                return
-            
             # ========== Step 2: Create Registered Depth Image ==========
             registered_depth = self._create_registered_depth(
                 cv_depth, cv_rgb, rgb_msg.header.frame_id
             )
             
-            if registered_depth is None:
-                self.get_logger().warn('Failed to create registered depth')
-                return
+            localized_persons_3d = []
             
-            # ========== Step 3: Localize Persons in 3D ==========
-            depth_K = np.array(self.rgb_camera_model.k).reshape(3, 3)
+            if registered_depth is not None and len(detections) > 0:
+                # ========== Step 3: Localize Persons in 3D ==========
+                depth_K = np.array(self.rgb_camera_model.k).reshape(3, 3)
+                
+                # Get transform from camera to map
+                try:
+                    transform_cam_to_map = self.tf_buffer.lookup_transform(
+                        'map',
+                        rgb_msg.header.frame_id,
+                        rclpy.time.Time()
+                    )
+                    
+                    # Convert to 4x4 matrix
+                    q = transform_cam_to_map.transform.rotation
+                    t = transform_cam_to_map.transform.translation
+                    
+                    # Quaternion to rotation matrix
+                    qx, qy, qz, qw = q.x, q.y, q.z, q.w
+                    R = np.array([
+                        [1 - 2*qy**2 - 2*qz**2, 2*qx*qy - 2*qz*qw,     2*qx*qz + 2*qy*qw],
+                        [2*qx*qy + 2*qz*qw,     1 - 2*qx**2 - 2*qz**2, 2*qy*qz - 2*qx*qw],
+                        [2*qx*qz - 2*qy*qw,     2*qy*qz + 2*qx*qw,     1 - 2*qx**2 - 2*qy**2]
+                    ])
+                    T = np.array([t.x, t.y, t.z])
+                    
+                    transform_matrix = PersonLocalizer.create_transform_matrix(T, R)
+                    
+                    # Localize all persons
+                    localized_dicts = self.localizer.localize_persons(
+                        detections=detections,
+                        registered_depth=registered_depth,
+                        depth_K=depth_K,
+                        depth_to_map_transform=transform_matrix
+                    )
+                    
+                    # Extract just the 3D positions for the tracker
+                    for p in localized_dicts:
+                        if 'position_3d_map' in p:
+                            localized_persons_3d.append(p['position_3d_map'])
+                            
+                except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+                    self.get_logger().warn(f'TF Error (camera to map): {e}')
             
-            # Get transform from camera to map
-            try:
-                transform_cam_to_map = self.tf_buffer.lookup_transform(
-                    'map',
-                    rgb_msg.header.frame_id,
-                    rclpy.time.Time()
-                )
-                
-                # Convert to 4x4 matrix
-                q = transform_cam_to_map.transform.rotation
-                t = transform_cam_to_map.transform.translation
-                
-                # Quaternion to rotation matrix
-                qx, qy, qz, qw = q.x, q.y, q.z, q.w
-                R = np.array([
-                    [1 - 2*qy**2 - 2*qz**2, 2*qx*qy - 2*qz*qw,     2*qx*qz + 2*qy*qw],
-                    [2*qx*qy + 2*qz*qw,     1 - 2*qx**2 - 2*qz**2, 2*qy*qz - 2*qx*qw],
-                    [2*qx*qz - 2*qy*qw,     2*qy*qz + 2*qx*qw,     1 - 2*qx**2 - 2*qy**2]
-                ])
-                T = np.array([t.x, t.y, t.z])
-                
-                transform_matrix = PersonLocalizer.create_transform_matrix(T, R)
-                
-            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-                self.get_logger().warn(f'TF Error (camera to map): {e}')
-                return
-            
-            # Localize all persons
-            localized_persons = self.localizer.localize_persons(
-                detections=detections,
-                registered_depth=registered_depth,
-                depth_K=depth_K,
-                depth_to_map_transform=transform_matrix
-            )
-            
-            if len(localized_persons) > 0:
-                self.get_logger().info(f'Localized {len(localized_persons)} person(s) in 3D')
+            # ========== Step 4: Queue YOLO detections for tracking timer ==========
+            # Don't process tracking here to avoid race condition with scan_callback
+            with self._tracking_lock:
+                self._pending_yolo_detections = localized_persons_3d
 
-            # ========== Step 4: Generate and Publish Social PointCloud ==========
-            point_cloud = self.costmap_publisher_module.create_social_pointcloud(
-                persons=localized_persons,
-                map_frame='map',
-                timestamp=rgb_msg.header.stamp
-            )
-            
-            self.social_pub.publish(point_cloud)
-            
-            # ========== Step 5: Publish Visualization Markers ==========
-            markers = self.costmap_publisher_module.create_person_markers(
-                persons=localized_persons,
-                map_frame='map',
-                timestamp=rgb_msg.header.stamp
-            )
-            
-            self.markers_pub.publish(markers)
-            
             # ========== Step 6: Save Debug Images (Optional) ==========
-            if self.save_debug:
-                self._save_debug_data(cv_rgb, registered_depth, detections, localized_persons)
+            if self.save_debug and len(detections) > 0 and registered_depth is not None:
+                # We need to construct dummy localized_persons dicts for debug saving roughly
+                # This is a bit disjointed now that tracking is separate, but for debug viz:
+                debug_persons = []
+                for i, pos in enumerate(localized_persons_3d):
+                     debug_persons.append({
+                         'confidence': detections[i]['confidence'],
+                         'position_3d_map': pos
+                     })
+                
+                self._save_debug_data(cv_rgb, registered_depth, detections, debug_persons)
 
         except Exception as e:
             self.get_logger().error(f'Error processing RGB-D: {e}')
             import traceback
             self.get_logger().error(traceback.format_exc())
+
+    def process_tracking(self, rgb_detections: Optional[List[np.ndarray]], scan_msg: Optional[LaserScan]):
+        """
+        Main logic to fuse sensors and update tracker.
+        rgb_detections: List of [x,y,z] arrays in map frame (from YOLO)
+        scan_msg: LaserScan message (to be clustered)
+        """
+        current_time = self.get_clock().now().nanoseconds / 1e9
+        
+        laser_clusters_map = []
+        
+        # Process Laser if available
+        if scan_msg is not None:
+             laser_clusters_map = self._process_laser_scan(scan_msg)
+        
+        # Run Tracker Update
+        # Note: rgb_detections might be None if this is a laser-only update
+        # If rgb_detections is [], it means we ran YOLO and found NOTHING.
+        # If rgb_detections is None, it means we didn't run YOLO this frame.
+        
+        yolo_input = rgb_detections if rgb_detections is not None else []
+        
+        tracked_persons = self.tracker.update_tracks(
+            yolo_detections=yolo_input,
+            laser_clusters=laser_clusters_map,
+            current_time=current_time
+        )
+        
+        # Publish
+        self._publish_tracking_results(tracked_persons, current_time)
+
+    def _process_laser_scan(self, scan_msg: LaserScan) -> List[np.ndarray]:
+        """Convert LaserScan to Clusters in Map Frame"""
+        clusters = []
+        
+        ranges = np.array(scan_msg.ranges)
+        
+        # Robustly generate angles based on actual number of range readings
+        angles = scan_msg.angle_min + np.arange(len(ranges)) * scan_msg.angle_increment
+        
+        # Filter invalid
+        valid = (ranges > scan_msg.range_min) & (ranges < scan_msg.range_max) & (~np.isinf(ranges)) & (~np.isnan(ranges))
+        
+        if not np.any(valid):
+            return []
+            
+        r_valid = ranges[valid]
+        a_valid = angles[valid]
+        
+        x = r_valid * np.cos(a_valid)
+        y = r_valid * np.sin(a_valid)
+        points = np.vstack((x, y)).T
+        
+        # 2. Cluster points (Euclidean/DBSCAN simplified)
+        # Simple jump distance clustering
+        if len(points) == 0:
+            return []
+            
+        clusters_list = []
+        current_cluster = [points[0]]
+        
+        # Tuning for leg detection / people
+        JUMP_THRESHOLD = 0.5 # meters
+        
+        for i in range(1, len(points)):
+            dist = np.linalg.norm(points[i] - points[i-1])
+            if dist < JUMP_THRESHOLD:
+                current_cluster.append(points[i])
+            else:
+                clusters_list.append(np.array(current_cluster))
+                current_cluster = [points[i]]
+        clusters_list.append(np.array(current_cluster))
+        
+        # 3. Filter clusters (assume person width < 1.0m and > 0.1m)
+        valid_centroids = []
+        for c in clusters_list:
+            if len(c) < 3: continue # Too few points
+            
+            width = np.linalg.norm(c[0] - c[-1])
+            if 0.05 < width < 1.0:
+                centroid = np.mean(c, axis=0)
+                valid_centroids.append(centroid) # [x, y] in laser frame
+        
+        if not valid_centroids:
+            return []
+            
+        # 4. Transform to Map Frame
+        try:
+            transform = self.tf_buffer.lookup_transform(
+                'map',
+                scan_msg.header.frame_id,
+                rclpy.time.Time()
+            )
+            
+            # 2D Transform
+            q = transform.transform.rotation
+            # Yaw from quaternion
+            siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+            cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+            yaw = np.arctan2(siny_cosp, cosy_cosp)
+            
+            tx = transform.transform.translation.x
+            ty = transform.transform.translation.y
+            
+            map_centroids = []
+            
+            cos_theta = np.cos(yaw)
+            sin_theta = np.sin(yaw)
+            
+            for c in valid_centroids:
+                # Rotate and translate
+                mx = c[0] * cos_theta - c[1] * sin_theta + tx
+                my = c[0] * sin_theta + c[1] * cos_theta + ty
+                # Add default z=0
+                map_centroids.append(np.array([mx, my, 0.0]))
+                
+            return map_centroids
+            
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
+            # self.get_logger().warn(f'TF Error (laser to map): {e}')
+            return []
+
+    def _publish_tracking_results(self, tracks, timestamp_sec):
+        """Prepare tracked persons for publishing (convert back for costmap publisher)."""
+        
+        # Convert to dictionary format expected by SocialCostmapPublisher
+        published_persons = []
+        for t in tracks:
+            p_dict = {
+                'id': t.id,
+                'position_3d_map': t.position,
+                'confidence': t.confidence,
+                'source': t.source
+            }
+            published_persons.append(p_dict)
+            
+        # Create header stamp
+        ts_ros = rclpy.time.Time(seconds=timestamp_sec).to_msg()
+        
+        # Publish PointCloud
+        point_cloud = self.costmap_publisher_module.create_social_pointcloud(
+            persons=published_persons,
+            map_frame='map',
+            timestamp=ts_ros
+        )
+        self.social_pub.publish(point_cloud)
+        
+        # Publish Markers
+        markers = self.costmap_publisher_module.create_person_markers(
+            persons=published_persons,
+            map_frame='map',
+            timestamp=ts_ros
+        )
+        self.markers_pub.publish(markers)
+
     
     def _create_registered_depth(self, cv_depth: np.ndarray, cv_rgb: np.ndarray, 
                                 rgb_frame_id: str) -> Optional[np.ndarray]:

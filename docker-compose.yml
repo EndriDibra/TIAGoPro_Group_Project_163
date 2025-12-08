@@ -19,6 +19,8 @@ services:
       - LIBGL_ALWAYS_INDIRECT=0
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
+    env_file:
+      - .env
     volumes:
       # Mount local source code to the container
       - ./src:/home/user/src
