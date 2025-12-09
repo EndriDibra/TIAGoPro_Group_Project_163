@@ -1,0 +1,20 @@
+# Social Command Node Parameters
+social_cmd_node:
+  ros__parameters:
+    scenarios:
+      kitchen_task:
+        keywords: ["kitchen", "cook", "food"]
+        nav_goal: [3.0, 2.0, 0.0]
+        task_msg: "prepare_cooking"
+      meeting_task:
+        keywords: ["meeting", "conference", "work"]
+        nav_goal: [-2.0, 3.0, 1.57]
+        task_msg: "start_meeting"
+    
+    scenario_sequence:
+      - "go to kitchen"
+      - "wait 10"
+      - "start meeting"
+      - "wait 10"
+    
+    loop_sequence: true

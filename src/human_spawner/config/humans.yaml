@@ -1,19 +1,30 @@
-# Human spawner configuration
-humans:
-  - name: human_1
-    spawn_pose: [3.0, 2.0, 0.0]  # x, y, yaw (radians)
-    path:
-      - [3.0, 2.0]
-      - [5.0, 2.0]
-      - [5.0, 4.0]
-      - [3.0, 4.0]
-    speed: 0.6  # m/s
+# Human configuration
+models:
+  default: "models/human/model.sdf"
+  # actor: "models/actor/model.sdf"
 
-  - name: human_2
-    spawn_pose: [-2.0, 3.0, 1.57]  # facing +Y
-    path:
-      - [-2.0, 3.0]
-      - [-2.0, 6.0]
-      - [-4.0, 6.0]
-      - [-4.0, 3.0]
-    speed: 0.8
+initial_humans:
+  - name: standing_human
+    model: default
+    spawn_pose: [8.0, 0.0, 0.0]
+    path: [[8.0, 0.0]]
+    speed: 0.0
+
+triggers:
+  "prepare_cooking":
+    - action: spawn
+      name: chef
+      model: default
+      pose: [5.0, 2.0, 1.57]
+      path: [[5.0, 2.0], [5.0, 3.0]]
+      speed: 0.5
+  
+  "start_meeting":
+    - action: spawn
+      name: colleague
+      model: default
+      pose: [2.0, 1.0, 0.0]
+      path: [[2.0, 1.0]]
+    - action: animate # Example logic
+      name: standing_human
+      path: [[8.0, 2.0]] # Move somewhere else

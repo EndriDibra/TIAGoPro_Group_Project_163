@@ -405,6 +405,22 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     )
     launch_description.add_action(human_spawner_delayed)
 
+    # Social Command Node
+    social_cmd_node = Node(
+        package='tiago_social_cmd',
+        executable='social_cmd_node',
+        name='social_cmd_node',
+        output='screen',
+        parameters=[
+            os.path.join(get_package_share_directory('tiago_social_cmd'), 'config', 'scenarios.yaml')
+        ]
+    )
+    social_cmd_delayed = TimerAction(
+        period=15.0, # Wait for Nav2 and Spawner
+        actions=[social_cmd_node]
+    )
+    launch_description.add_action(social_cmd_delayed)
+
     return
 
 

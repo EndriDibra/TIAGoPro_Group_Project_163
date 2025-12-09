@@ -21,6 +21,7 @@ from gazebo_msgs.srv import SpawnEntity, DeleteEntity
 from geometry_msgs.msg import Pose, Point, Quaternion, Twist
 from nav_msgs.msg import Odometry
 from std_srvs.srv import Trigger
+from std_msgs.msg import String
 import yaml
 
 
@@ -55,14 +56,10 @@ class HumanController(Node):
         super().__init__('human_controller')
         
         self.spawned_humans: dict = {}
+        self.models: dict = {}
+        self.triggers: dict = {}
         self.lock = Lock()
         self.callback_group = ReentrantCallbackGroup()
-        
-        # Load model SDF
-        pkg_share = get_package_share_directory('human_spawner')
-        model_path = os.path.join(pkg_share, 'models', 'human', 'model.sdf')
-        with open(model_path, 'r') as f:
-            self.human_sdf = f.read()
         
         # Gazebo service clients
         self.spawn_client = self.create_client(SpawnEntity, '/spawn_entity')
@@ -77,17 +74,21 @@ class HumanController(Node):
         # Create service for external control
         self.create_service(Trigger, '/human_spawner/remove_all', self.remove_all_callback)
         
+        # Subscriber for social tasks
+        self.create_subscription(String, '/social_task', self.task_callback, 10)
+
         # Load config and spawn initial humans
+        pkg_share = get_package_share_directory('human_spawner')
         config_path = os.path.join(pkg_share, 'config', 'humans.yaml')
-        self.load_and_spawn_humans(config_path)
+        self.load_config(config_path)
         
         # Control timer (10 Hz)
         self.create_timer(0.1, self.control_loop, callback_group=self.callback_group)
         
-        self.get_logger().info('Human controller ready (Velocity Control Mode)')
+        self.get_logger().info('Human controller ready (Trigger Mode)')
 
-    def load_and_spawn_humans(self, config_path: str):
-        """Load humans from config file and spawn them."""
+    def load_config(self, config_path: str):
+        """Load humans and triggers from config file."""
         if not os.path.exists(config_path):
             self.get_logger().warn(f'Config file not found: {config_path}')
             return
@@ -95,16 +96,111 @@ class HumanController(Node):
         with open(config_path, 'r') as f:
             config = yaml.safe_load(f)
         
-        humans = config.get('humans', [])
-        for human in humans:
-            name = human.get('name', f'human_{len(self.spawned_humans)}')
-            spawn_pose = human.get('spawn_pose', [0.0, 0.0, 0.0])
-            path = human.get('path', [spawn_pose[:2]])
-            speed = human.get('speed', 0.5)
+        # Load models
+        pkg_share = get_package_share_directory('human_spawner')
+        models_config = config.get('models', {})
+        
+        if not models_config and 'humans' in config: 
+            # Legacy support if user didn't update yaml yet, assume default model exists
+            default_model_path = os.path.join(pkg_share, 'models', 'human', 'model.sdf')
+            if os.path.exists(default_model_path):
+                with open(default_model_path, 'r') as f:
+                    self.models['default'] = f.read()
+        
+        for model_name, relative_path in models_config.items():
+            if not relative_path.startswith('/'):
+               full_path = os.path.join(pkg_share, relative_path)
+            else:
+               full_path = relative_path
             
-            self.spawn_human(name, spawn_pose[0], spawn_pose[1], spawn_pose[2], path, speed)
+            if os.path.exists(full_path):
+                with open(full_path, 'r') as f:
+                    self.models[model_name] = f.read()
+            else:
+                 self.get_logger().error(f"Model file not found: {full_path}")
 
-    def spawn_human(self, name: str, x: float, y: float, yaw: float, path: list, speed: float) -> bool:
+        # Ensure we have a default
+        if 'default' not in self.models and 'humans' in config:
+             # Try to load default from standard location if not specified
+             default_model_path = os.path.join(pkg_share, 'models', 'human', 'model.sdf')
+             if os.path.exists(default_model_path):
+                 with open(default_model_path, 'r') as f:
+                     self.models['default'] = f.read()
+
+        # Load Initial Humans
+        initial_humans = config.get('initial_humans', [])
+        # Legacy support: 'humans' list
+        if not initial_humans:
+            initial_humans = config.get('humans', [])
+
+        for human in initial_humans:
+            self.process_spawn_action(human)
+
+        # Load Triggers
+        self.triggers = config.get('triggers', {})
+
+    def task_callback(self, msg):
+        task_name = msg.data
+        self.get_logger().info(f"Received task: {task_name}")
+        
+        if task_name in self.triggers:
+            actions = self.triggers[task_name]
+            for action_data in actions:
+                self.execute_action(action_data)
+        else:
+            self.get_logger().info(f"No triggers for task: {task_name}")
+
+    def execute_action(self, data):
+        action_type = data.get('action', '')
+        if action_type == 'spawn':
+            self.process_spawn_action(data)
+        elif action_type == 'destroy':
+            name = data.get('name')
+            if name:
+                self.remove_human(name)
+        elif action_type == 'animate':
+            self.process_animate_action(data)
+
+    def process_spawn_action(self, data):
+        name = data.get('name', f'human_{len(self.spawned_humans)}')
+        model_key = data.get('model', 'default')
+        spawn_pose = data.get('spawn_pose', None)
+        # Check for 'pose' alias from plan
+        if not spawn_pose:
+            spawn_pose = data.get('pose', [0.0, 0.0, 0.0])
+            
+        path = data.get('path', [spawn_pose[:2]])
+        speed = data.get('speed', 0.5)
+
+        # Get SDF
+        sdf_xml = self.models.get(model_key)
+        if not sdf_xml:
+            # Fallback to default if exists
+            sdf_xml = self.models.get('default')
+        
+        if sdf_xml:
+            self.spawn_human(name, sdf_xml, spawn_pose[0], spawn_pose[1], spawn_pose[2], path, speed)
+        else:
+            self.get_logger().error(f"No model found for key '{model_key}' (and no default)")
+
+    def process_animate_action(self, data):
+        name = data.get('name')
+        if name not in self.spawned_humans:
+             self.get_logger().warn(f"Cannot animate {name}, not found.")
+             return
+
+        animation = data.get('animation')
+        if animation:
+            self.get_logger().info(f"Triggering animation '{animation}' for {name}")
+        
+        new_path = data.get('path')
+        if new_path:
+             with self.lock:
+                 self.spawned_humans[name]['path'] = new_path
+                 self.spawned_humans[name]['current_idx'] = 0
+             self.get_logger().info(f"Updated path for {name}")
+
+    def spawn_human(self, name: str, xml: str, x: float, y: float, yaw: float, path: list, speed: float) -> bool:
         """Spawn a human at the given position."""
         if name in self.spawned_humans:
             self.get_logger().warn(f'Human {name} already exists')
@@ -112,55 +208,51 @@ class HumanController(Node):
         
         req = SpawnEntity.Request()
         req.name = name
-        req.xml = self.human_sdf
+        req.xml = xml
         # IMPORTANT: Set robot_namespace so plugin topics are isolated (e.g. /human_1/cmd_vel)
         req.robot_namespace = name
         req.initial_pose = Pose()
-        req.initial_pose.position = Point(x=x, y=y, z=0.2)  # Lift slightly to avoid ground collision
+        req.initial_pose.position = Point(x=x, y=y, z=0.2)
         req.initial_pose.orientation = yaw_to_quaternion(yaw)
         req.reference_frame = 'world'
         
         future = self.spawn_client.call_async(req)
-        # Verify spawn success
-        rclpy.spin_until_future_complete(self, future, timeout_sec=10.0)
-        
-        if future.result() is not None and future.result().success:
-            # Create publisher and subscriber for this human
-            cmd_vel_topic = f'/{name}/cmd_vel'
-            odom_topic = f'/{name}/odom'
-            
-            pub = self.create_publisher(Twist, cmd_vel_topic, 10)
-            
-            # We need to create a subscriber that updates the state
-            # Using a lambda to capture the name is tricky in loops, but here it's inside a method
-            # so `name` is local. However, `self.spawned_humans` modification needs lock.
-            
-            with self.lock:
-                self.spawned_humans[name] = {
-                    'path': path,
-                    'speed': speed,
-                    'current_idx': 0,
-                    'publisher': pub,
-                    'last_odom_x': x,
-                    'last_odom_y': y,
-                    'last_odom_yaw': yaw,
-                    'odom_received': False
-                }
-            
-            # Subscribe to odom to get feedback
-            self.create_subscription(
-                Odometry,
-                odom_topic,
-                lambda msg, n=name: self.odom_callback(msg, n),
-                10,
-                callback_group=self.callback_group
-            )
-            
-            self.get_logger().info(f'Spawned human: {name} at ({x:.2f}, {y:.2f})')
-            return True
-        else:
-            self.get_logger().error(f'Failed to spawn human: {name}')
-            return False
+        future.add_done_callback(lambda f: self.spawn_done_callback(f, name, x, y, yaw, path, speed))
+        return True
+
+    def spawn_done_callback(self, future, name, x, y, yaw, path, speed):
+        try:
+            result = future.result()
+            if result and result.success:
+                cmd_vel_topic = f'/{name}/cmd_vel'
+                odom_topic = f'/{name}/odom'
+                
+                pub = self.create_publisher(Twist, cmd_vel_topic, 10)
+                
+                with self.lock:
+                    self.spawned_humans[name] = {
+                        'path': path,
+                        'speed': speed,
+                        'current_idx': 0,
+                        'publisher': pub,
+                        'last_odom_x': x,
+                        'last_odom_y': y,
+                        'last_odom_yaw': yaw,
+                        'odom_received': False
+                    }
+                
+                self.create_subscription(
+                    Odometry,
+                    odom_topic,
+                    lambda msg, n=name: self.odom_callback(msg, n),
+                    10,
+                    callback_group=self.callback_group
+                )
+                self.get_logger().info(f'Spawned human: {name} at ({x:.2f}, {y:.2f})')
+            else:
+                self.get_logger().error(f'Failed to spawn human: {name}. Gazebo: {result.status_message if result else "Unknown"}')
+        except Exception as e:
+            self.get_logger().error(f'Exception spawning {name}: {e}')
 
     def odom_callback(self, msg: Odometry, name: str):
         """Update human state from odom."""
@@ -181,36 +273,37 @@ class HumanController(Node):
         req.name = name
         
         future = self.delete_client.call_async(req)
-        rclpy.spin_until_future_complete(self, future, timeout_sec=5.0)
-        
-        if future.result() is not None and future.result().success:
-            with self.lock:
-                # Note: We don't destroy publishers/subscribers here explicitly 
-                # as standard cleanup is complex, but we remove from the dict so control stops
-                del self.spawned_humans[name]
-            self.get_logger().info(f'Removed human: {name}')
-            return True
-        else:
-            self.get_logger().error(f'Failed to remove human: {name}')
-            return False
+        future.add_done_callback(lambda f: self.remove_done_callback(f, name))
+        return True
+
+    def remove_done_callback(self, future, name):
+        try:
+            if future.result() and future.result().success:
+                with self.lock:
+                    if name in self.spawned_humans:
+                        del self.spawned_humans[name]
+                self.get_logger().info(f'Removed human: {name}')
+            else:
+                 self.get_logger().error(f'Failed to remove human: {name}')
+        except:
+            pass
 
     def remove_all_callback(self, request, response):
         """Service callback to remove all humans."""
         names = list(self.spawned_humans.keys())
-        success = True
         for name in names:
-            if not self.remove_human(name):
-                success = False
+            self.remove_human(name)
         
-        response.success = success
-        response.message = f'Removed {len(names)} humans' if success else 'Some removals failed'
+        response.success = True
+        response.message = f'Triggered removal of {len(names)} humans'
         return response
 
     def control_loop(self):
         """Control loop for all humans."""
         # Simple throttle for logging
         if int(time.time()) % 5 == 0:
-            self.get_logger().info(f'Control loop running, managing {len(self.spawned_humans)} humans', throttle_duration_sec=5.0)
+            # self.get_logger().info(f'Control loop running...', throttle_duration_sec=5.0)
+            pass
 
         with self.lock:
             humans_copy = list(self.spawned_humans.items())
@@ -224,14 +317,16 @@ class HumanController(Node):
     def control_human(self, name, data):
         """Calculate and publish control for a single human."""
         path = data['path']
-        if len(path) < 2:
+        if not path or len(path) < 1:
             return
             
         current_idx = data['current_idx']
         
         # Target waypoint
-        # We target the NEXT waypoint (current_idx + 1)
-        target_pt = path[(current_idx + 1) % len(path)]
+        if len(path) == 1:
+             target_pt = path[0]
+        else:
+             target_pt = path[(current_idx + 1) % len(path)]
         
         # Current position (from odom or initial spawn)
         curr_x = data['last_odom_x']
@@ -245,10 +340,12 @@ class HumanController(Node):
         
         # Check if reached waypoint (tolerance 0.3m)
         if dist < 0.3:
-            # Advance to next waypoint
-            with self.lock:
-                if name in self.spawned_humans:
-                    self.spawned_humans[name]['current_idx'] = (current_idx + 1) % len(path)
+            if len(path) > 1:
+                # Advance to next waypoint
+                with self.lock:
+                    if name in self.spawned_humans:
+                        self.spawned_humans[name]['current_idx'] = (current_idx + 1) % len(path)
+            
             # Stop for this step
             msg = Twist()
             data['publisher'].publish(msg)
@@ -260,26 +357,17 @@ class HumanController(Node):
         
         # Control inputs
         # P-controller for turn
-        # Speed: reduce if turning sharply
         speed = data['speed']
         
         msg = Twist()
-        
-        # Simple logic: Turn, then drive? Or curve?
-        # Let's use simple differential drive logic
-        
-        msg.angular.z = 1.0 * yaw_err  # P=1.0 for angular
-        
-        # Cap angular speed
+        msg.angular.z = 1.0 * yaw_err 
         msg.angular.z = max(min(msg.angular.z, 1.0), -1.0)
         
-        # Linear speed: if facing roughly correct direction, drive
-        if abs(yaw_err) < 0.5:  # ~30 degrees
+        if abs(yaw_err) < 0.5: 
             msg.linear.x = speed
         else:
-            msg.linear.x = 0.0  # Turn in place first
+            msg.linear.x = 0.0 
             
-        # Publish
         data['publisher'].publish(msg)
 
 
