@@ -1,0 +1,77 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="human">
+    <static>false</static>
+    <link name="body">
+      <!-- Main body: cylinder representing human torso + legs -->
+      <pose>0 0 0.85 0 0 0</pose>
+      
+      <visual name="body_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.2</radius>
+            <length>1.5</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>1.0 0.5 0.0 1</ambient>
+          <diffuse>1.0 0.5 0.0 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      
+      <collision name="body_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.2</radius>
+            <length>1.5</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      
+      <!-- Head: sphere on top -->
+      <visual name="head_visual">
+        <pose>0 0 0.9 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.15</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <ambient>0.9 0.7 0.5 1</ambient>
+          <diffuse>0.9 0.7 0.5 1</diffuse>
+          <specular>0.1 0.1 0.1 1</specular>
+        </material>
+      </visual>
+      
+      <collision name="head_collision">
+        <pose>0 0 0.9 0 0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.15</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      
+      <inertial>
+        <mass>70.0</mass>
+        <pose>0 0 -0.85 0 0 0</pose> <!-- Low CoM to prevent toppling -->
+        <inertia>
+          <ixx>100.0</ixx>
+          <iyy>100.0</iyy>
+          <izz>2.0</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <plugin name="human_drive" filename="libgazebo_ros_planar_move.so">
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <odometry_rate>20.0</odometry_rate>
+      <robot_base_frame>body</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+    </plugin>
+  </model>
+</sdf>

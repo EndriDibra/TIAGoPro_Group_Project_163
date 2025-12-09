@@ -391,6 +391,20 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     )
     launch_description.add_action(vlm_navigator_node)
 
+    # Human Spawner Node (delayed to ensure Gazebo is ready)
+    human_spawner_node = Node(
+        package='human_spawner',
+        executable='human_controller',
+        name='human_controller',
+        output='screen',
+        parameters=[{'use_sim_time': True}],
+    )
+    human_spawner_delayed = TimerAction(
+        period=10.0,  # Wait for Gazebo to be fully ready
+        actions=[human_spawner_node]
+    )
+    launch_description.add_action(human_spawner_delayed)
+
     return
 
 
