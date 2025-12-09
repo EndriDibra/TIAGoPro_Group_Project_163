@@ -64,7 +64,7 @@ class VLMNavigator(Node):
         self.declare_parameter('controller_server_name', 'controller_server')
         self.declare_parameter('controller_name', 'FollowPath') 
         self.declare_parameter('default_max_speed', 1.0)
-        self.declare_parameter('vlm_loop_rate', 0.1)  # Query every 10 seconds
+        self.declare_parameter('vlm_loop_rate', 0.05)  # Query every 5 seconds
         self.declare_parameter('mistral_api_key', '')
         self.declare_parameter('vlm_backend', 'mock')  # 'mock', 'smol', or 'mistral'
         self.declare_parameter('sim_mode', True) 

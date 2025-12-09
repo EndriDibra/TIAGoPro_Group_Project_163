@@ -367,6 +367,7 @@ class SocialCostmapNode(Node):
             p_dict = {
                 'id': t.id,
                 'position_3d_map': t.position,
+                'velocity': t.velocity,  # Pass velocity for prediction
                 'confidence': t.confidence,
                 'source': t.source
             }

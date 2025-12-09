@@ -322,11 +322,15 @@ class HumanController(Node):
             
         current_idx = data['current_idx']
         
-        # Target waypoint
-        if len(path) == 1:
-             target_pt = path[0]
-        else:
-             target_pt = path[(current_idx + 1) % len(path)]
+        # Check if we've reached the end of the path
+        if current_idx >= len(path) - 1:
+            # Already at end of path - stop the human
+            msg = Twist()
+            data['publisher'].publish(msg)
+            return
+        
+        # Target waypoint is next point in path
+        target_pt = path[current_idx + 1]
         
         # Current position (from odom or initial spawn)
         curr_x = data['last_odom_x']
@@ -340,11 +344,10 @@ class HumanController(Node):
         
         # Check if reached waypoint (tolerance 0.3m)
         if dist < 0.3:
-            if len(path) > 1:
-                # Advance to next waypoint
-                with self.lock:
-                    if name in self.spawned_humans:
-                        self.spawned_humans[name]['current_idx'] = (current_idx + 1) % len(path)
+            # Advance to next waypoint
+            with self.lock:
+                if name in self.spawned_humans:
+                    self.spawned_humans[name]['current_idx'] = current_idx + 1
             
             # Stop for this step
             msg = Twist()
@@ -353,6 +356,15 @@ class HumanController(Node):
 
         # Calculate desired heading
         target_yaw = math.atan2(dy, dx)
+        
+        # FIX: Models are rotated -90 deg in STL? 
+        # Actually user said "rotated wrong". Usually citizen_extras needs +PI/2 or -PI/2.
+        # Let's try to assume they are standard for walking but maybe the initial spawn was wrong.
+        # But for walking, the planar move usually takes X as forward.
+        # If the visual is wrong, we can't easily fix it in the controller without rotating the visual in SDF.
+        # BUT if the planar move plugin is attached to a link, and that link is rotated...
+        # The user said "sometimes 45".
+        
         yaw_err = normalize_angle(target_yaw - curr_yaw)
         
         # Control inputs

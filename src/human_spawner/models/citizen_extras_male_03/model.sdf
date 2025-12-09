@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.4">
+
+ <model name="citizen_extras_male_03">
+
+    <link name="link">
+
+     <inertial>
+
+       <mass>20</mass>
+
+       <inertia>
+
+         <ixx>0.0</ixx>
+
+         <ixy>0.0</ixy>
+
+         <ixz>0.0</ixz>
+
+         <iyy>0.0</iyy>
+
+         <iyz>0.0</iyz>
+
+         <izz>0.0</izz>
+
+       </inertia>
+
+     </inertial>
+
+     <collision name="collision">
+
+       <pose>0 0 0 0 0 1.57</pose>
+
+       <geometry>
+
+         <mesh>
+
+           <uri>model://citizen_extras_male_03/meshes/mesh.dae</uri>
+
+         </mesh>
+
+       </geometry>
+
+     </collision>
+
+     <visual name="visual">
+
+       <pose>0 0 0 0 0 1.57</pose>
+
+       <geometry>
+
+         <mesh>
+
+           <uri>model://citizen_extras_male_03/meshes/mesh.dae</uri>
+
+         </mesh>
+
+       </geometry>
+
+     </visual>
+
+    </link>
+
+     <plugin name="human_drive" filename="libgazebo_ros_planar_move.so">
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <odometry_rate>20.0</odometry_rate>
+      <robot_base_frame>link</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+    </plugin>
+ </model>
+</sdf>

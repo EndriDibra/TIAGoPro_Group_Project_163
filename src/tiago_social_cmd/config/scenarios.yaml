@@ -2,19 +2,32 @@
 social_cmd_node:
   ros__parameters:
     scenarios:
-      kitchen_task:
-        keywords: ["kitchen", "cook", "food"]
-        nav_goal: [3.0, 2.0, 0.0]
-        task_msg: "prepare_cooking"
-      meeting_task:
-        keywords: ["meeting", "conference", "work"]
-        nav_goal: [-2.0, 3.0, 1.57]
-        task_msg: "start_meeting"
+      frontal_approach:
+        keywords: ["frontal", "approach", "straight"]
+        # From -3,-3, 45deg to 3,3
+        start_pose: [-3.0, -3.0, 0.785] 
+        nav_goal: [3.0, 3.0, 0.785]
+        task_msg: "frontal_approach_human"
+
+      intersection:
+        keywords: ["intersection", "cross", "crossing"]
+        # From -3,0, 0deg to 3,0
+        start_pose: [-3.0, 0.0, 0.0]
+        nav_goal: [3.0, 0.0, 0.0]
+        task_msg: "intersection_human"
+
+      narrow_doorway:
+        keywords: ["door", "narrow", "wait"]
+        # From 1.5,0, 90deg to 1.5,7
+        start_pose: [1.5, 0.0, 1.57]
+        nav_goal: [1.5, 8.0, 1.57]
+        task_msg: "doorway_human"
     
     scenario_sequence:
-      - "go to kitchen"
       - "wait 10"
-      - "start meeting"
+      - "frontal_approach"
+      - "intersection"
+      - "narrow_doorway"
       - "wait 10"
     
     loop_sequence: true

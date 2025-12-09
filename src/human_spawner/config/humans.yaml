@@ -1,30 +1,35 @@
-# Human configuration
+# Map specific models
 models:
-  default: "models/human/model.sdf"
-  # actor: "models/actor/model.sdf"
+  default: models/human/model.sdf
+  male: models/citizen_extras_male_03/model.sdf
+  female: models/citizen_extras_female_02/model.sdf
+  female_2: models/citizen_extras_female_03/model.sdf
 
-initial_humans:
-  - name: standing_human
-    model: default
-    spawn_pose: [8.0, 0.0, 0.0]
-    path: [[8.0, 0.0]]
-    speed: 0.0
-
+# Triggers for Scenarios
 triggers:
-  "prepare_cooking":
+  frontal_approach_human:
     - action: spawn
-      name: chef
-      model: default
-      pose: [5.0, 2.0, 1.57]
-      path: [[5.0, 2.0], [5.0, 3.0]]
+      name: frontal_human
+      model: male
+      # Robot goes -3,-3 to 3,3. Human starts slightly closer at 2,2 to avoid goal occlusion
+      pose: [2.0, 2.0, -2.35]
+      path: [[2.0, 2.0], [-3.0, -3.0]]
+      speed: 0.6
+
+  intersection_human:
+    - action: spawn
+      name: cross_human
+      model: female
+      # Robot goes -3,0 to 3,0 (X-axis). Human goes 0,-3 to 0,3 (Y-axis crossing)
+      pose: [1.0, -2.0, 1.57] # Facing +Y
+      path: [[1.0, -2.0], [1.0, 2.0]]
+      speed: 0.7
+
+  doorway_human:
+    - action: spawn
+      name: door_human
+      model: female_2
+      # Robot goes 1.5,0 to 1.5,7 (+Y). Human spawns slightly closer at 1.5,6
+      pose: [1.5, 7.0, -1.57] # Facing -Y (towards robot)
+      path: [[1.5, 7.0], [1.5, 0.0]]
       speed: 0.5
-  
-  "start_meeting":
-    - action: spawn
-      name: colleague
-      model: default
-      pose: [2.0, 1.0, 0.0]
-      path: [[2.0, 1.0]]
-    - action: animate # Example logic
-      name: standing_human
-      path: [[8.0, 2.0]] # Move somewhere else

@@ -29,15 +29,20 @@ class SocialCostmapPublisher:
         # No grid parameters needed anymore
         pass
     
+    # Prediction parameters
+    PREDICTION_TIME = 2.0  # seconds - how far ahead to predict
+    MIN_SPEED_THRESHOLD = 0.1  # m/s - below this, use circular costmap
+    
     def create_social_pointcloud(self,
                                 persons: List[Dict],
                                 map_frame: str = 'map',
                                 timestamp = None) -> PointCloud2:
         """
         Generate PointCloud2 with points representing social obstacles.
+        Includes forward prediction zone based on velocity.
         
         Args:
-            persons: List of localized persons with 'position_3d_map' field
+            persons: List of localized persons with 'position_3d_map' and optional 'velocity' fields
             map_frame: Frame ID for the point cloud
             timestamp: ROS timestamp for the message
         
@@ -53,18 +58,21 @@ class SocialCostmapPublisher:
             pos = p['position_3d_map']
             px, py = pos[0], pos[1]
             
+            # Get velocity if available
+            velocity = p.get('velocity', np.zeros(3))
+            vx, vy = velocity[0], velocity[1]
+            speed = math.sqrt(vx**2 + vy**2)
+            
             # 1. Physical body: fill with dense rings from center out to body radius
-            # Create a solid obstacle for the person's body
             for radius in np.linspace(0.1, BODY_RADIUS, 3):
                 num_points = 8
                 for angle in np.linspace(0, 2*math.pi, num_points, endpoint=False):
                     x = px + radius * math.cos(angle)
                     y = py + radius * math.sin(angle)
-                    z = 0.5  # fixed height
+                    z = 0.5
                     points.append((x, y, z))
 
             # 2. Intimate boundary ring at INTIMATE_EDGE
-            # This marks the critical personal space boundary
             radius = INTIMATE_EDGE
             num_points = 24
             for angle in np.linspace(0, 2*math.pi, num_points, endpoint=False):
@@ -72,6 +80,41 @@ class SocialCostmapPublisher:
                 y = py + radius * math.sin(angle)
                 z = 0.5
                 points.append((x, y, z))
+            
+            # 3. Forward prediction zone if moving
+            if speed > self.MIN_SPEED_THRESHOLD:
+                heading = math.atan2(vy, vx)
+                prediction_dist = speed * self.PREDICTION_TIME
+                
+                # Generate points along forward arc (only ahead, not behind)
+                # Create a teardrop shape extending forward
+                num_distance_steps = max(3, int(prediction_dist / 0.3))  # Point every ~0.3m
+                
+                for dist_step in range(1, num_distance_steps + 1):
+                    # Distance from current position (forward only)
+                    dist = (dist_step / num_distance_steps) * prediction_dist
+                    
+                    # Lateral width tapers as we go further ahead
+                    # At person: width = INTIMATE_EDGE
+                    # At max prediction: width = BODY_RADIUS
+                    taper_factor = 1.0 - (dist / prediction_dist) * 0.6
+                    lateral_width = INTIMATE_EDGE * taper_factor
+                    
+                    # Center point of this slice
+                    center_x = px + dist * math.cos(heading)
+                    center_y = py + dist * math.sin(heading)
+                    
+                    # Generate arc of points at this distance
+                    # Perpendicular direction
+                    perp_heading = heading + math.pi / 2
+                    
+                    num_lateral_points = max(3, int(lateral_width / 0.15))
+                    for lat_step in range(-num_lateral_points, num_lateral_points + 1):
+                        lat_offset = (lat_step / num_lateral_points) * lateral_width
+                        x = center_x + lat_offset * math.cos(perp_heading)
+                        y = center_y + lat_offset * math.sin(perp_heading)
+                        z = 0.5
+                        points.append((x, y, z))
 
         # Create header
         header = Header()
@@ -202,6 +245,47 @@ class SocialCostmapPublisher:
             
             p_ring.lifetime.sec = 1
             marker_array.markers.append(p_ring)
+            
+            # Create Velocity Arrow marker (if moving)
+            velocity = person.get('velocity', np.zeros(3))
+            vx, vy = velocity[0], velocity[1]
+            speed = math.sqrt(vx**2 + vy**2)
+            
+            if speed > self.MIN_SPEED_THRESHOLD:
+                arrow = Marker()
+                arrow.header.frame_id = map_frame
+                if timestamp is not None:
+                    arrow.header.stamp = timestamp
+                
+                arrow.ns = namespace + "_velocity"
+                arrow.id = i
+                arrow.type = Marker.ARROW
+                arrow.action = Marker.ADD
+                
+                # Arrow starts at person position
+                arrow.pose.position.x = float(pos_map[0])
+                arrow.pose.position.y = float(pos_map[1])
+                arrow.pose.position.z = 1.0  # Above the person
+                
+                # Orientation from velocity direction
+                heading = math.atan2(vy, vx)
+                arrow.pose.orientation.z = math.sin(heading / 2)
+                arrow.pose.orientation.w = math.cos(heading / 2)
+                
+                # Arrow length proportional to prediction distance
+                prediction_dist = speed * self.PREDICTION_TIME
+                arrow.scale.x = prediction_dist  # Arrow length
+                arrow.scale.y = 0.1  # Arrow width
+                arrow.scale.z = 0.1  # Arrow height
+                
+                # Color (Cyan for velocity)
+                arrow.color.r = 0.0
+                arrow.color.g = 1.0
+                arrow.color.b = 1.0
+                arrow.color.a = 0.8
+                
+                arrow.lifetime.sec = 1
+                marker_array.markers.append(arrow)
         
         # Cleanup old markers
         if len(persons) < 10:
