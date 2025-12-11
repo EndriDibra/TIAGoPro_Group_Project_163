@@ -1,7 +1,6 @@
 import os
 import base64
 import json
-import random
 from typing import Dict, Optional
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -287,8 +286,6 @@ class SmolVLMBackend(VLMBackend):
                 if depth == 0:
                     return text[start:i+1]
         return None
-    
-
     
     def _get_fallback_response(self) -> Dict:
         """Return a safe fallback response (supervisor mode compatible)."""

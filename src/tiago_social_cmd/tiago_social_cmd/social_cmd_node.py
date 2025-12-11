@@ -218,7 +218,8 @@ class SocialCmdNode(Node):
                         dur = float(step_cmd.split()[1])
                         self.get_logger().info(f"Waiting {dur} seconds...")
                         time.sleep(dur)
-                    except: pass
+                    except Exception:
+                        pass
                     continue
                 
                 self.get_logger().info(f"Auto-running: {step_cmd}")

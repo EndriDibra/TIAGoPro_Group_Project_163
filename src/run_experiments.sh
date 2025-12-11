@@ -7,9 +7,9 @@
 set -e  # Exit on error
 
 # Configuration
-EXPERIMENT_DURATION=3600  # 1 hour in seconds (change as needed)
-LOG_DIR="$HOME/src/tmp"
-ROSBAG_DIR="$HOME/rosbags"
+EXPERIMENT_DURATION=600  # 10 minutes in seconds
+LOG_DIR="$HOME/src/tests/logs"
+ROSBAG_DIR="$HOME/src/tests/rosbags"
 WORKSPACE_DIR="$HOME/TIAGoPro_Group_Project_163"
 
 # Base launch command

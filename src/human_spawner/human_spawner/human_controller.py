@@ -100,12 +100,6 @@ class HumanController(Node):
         pkg_share = get_package_share_directory('human_spawner')
         models_config = config.get('models', {})
         
-        if not models_config and 'humans' in config: 
-            # Legacy support if user didn't update yaml yet, assume default model exists
-            default_model_path = os.path.join(pkg_share, 'models', 'human', 'model.sdf')
-            if os.path.exists(default_model_path):
-                with open(default_model_path, 'r') as f:
-                    self.models['default'] = f.read()
         
         for model_name, relative_path in models_config.items():
             if not relative_path.startswith('/'):
@@ -128,10 +122,7 @@ class HumanController(Node):
                      self.models['default'] = f.read()
 
         # Load Initial Humans
-        initial_humans = config.get('initial_humans', [])
-        # Legacy support: 'humans' list
-        if not initial_humans:
-            initial_humans = config.get('humans', [])
+        initial_humans = config.get('initial_humans', []) or config.get('humans', [])
 
         for human in initial_humans:
             self.process_spawn_action(human)
@@ -285,7 +276,7 @@ class HumanController(Node):
                 self.get_logger().info(f'Removed human: {name}')
             else:
                  self.get_logger().error(f'Failed to remove human: {name}')
-        except:
+        except Exception:
             pass
 
     def remove_all_callback(self, request, response):
@@ -300,10 +291,6 @@ class HumanController(Node):
 
     def control_loop(self):
         """Control loop for all humans."""
-        # Simple throttle for logging
-        if int(time.time()) % 5 == 0:
-            # self.get_logger().info(f'Control loop running...', throttle_duration_sec=5.0)
-            pass
 
         with self.lock:
             humans_copy = list(self.spawned_humans.items())
@@ -356,14 +343,6 @@ class HumanController(Node):
 
         # Calculate desired heading
         target_yaw = math.atan2(dy, dx)
-        
-        # FIX: Models are rotated -90 deg in STL? 
-        # Actually user said "rotated wrong". Usually citizen_extras needs +PI/2 or -PI/2.
-        # Let's try to assume they are standard for walking but maybe the initial spawn was wrong.
-        # But for walking, the planar move usually takes X as forward.
-        # If the visual is wrong, we can't easily fix it in the controller without rotating the visual in SDF.
-        # BUT if the planar move plugin is attached to a link, and that link is rotated...
-        # The user said "sometimes 45".
         
         yaw_err = normalize_angle(target_yaw - curr_yaw)
         

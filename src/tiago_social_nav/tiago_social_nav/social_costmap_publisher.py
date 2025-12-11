@@ -30,7 +30,7 @@ class SocialCostmapPublisher:
         pass
     
     # Prediction parameters
-    PREDICTION_TIME = 2.0  # seconds - how far ahead to predict
+    PREDICTION_TIME = 1.0  # seconds - how far ahead to predict
     MIN_SPEED_THRESHOLD = 0.1  # m/s - below this, use circular costmap
     
     def create_social_pointcloud(self,
