@@ -19,6 +19,7 @@
 import os
 import yaml
 import tempfile
+import datetime
 from os import environ, pathsep
 from ament_index_python.packages import get_package_prefix, get_package_share_directory
 
@@ -391,7 +392,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         parameters=[{'use_sim_time': True}],
     )
     human_spawner_delayed = TimerAction(
-        period=10.0,  # Wait for Gazebo to be fully ready
+        period=20.0,  # Wait for Gazebo to be fully ready
         actions=[human_spawner_node]
     )
     launch_description.add_action(human_spawner_delayed)
@@ -407,7 +408,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         ]
     )
     social_cmd_delayed = TimerAction(
-        period=15.0, # Wait for Nav2 and Spawner
+        period=25.0, # Wait for Nav2 and Spawner
         actions=[social_cmd_node]
     )
     launch_description.add_action(social_cmd_delayed)
@@ -415,8 +416,8 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
     # Rosbag recording (conditional)
     # Topics for evaluation metrics:
     # - PSC, TTC, Min Distance: /human/odom, /odom, /tf, /tf_static
-    # - Detection Latency: /head_front_camera/color/image_raw -> /social_costmap/person_markers
-    # - VLM Latency: /head_front_camera/color/image_raw -> /vlm/response
+    # - Detection Latency: /head_front_camera/color/image_raw/compressed -> /social_costmap/person_markers
+    # - VLM Latency: /head_front_camera/color/image_raw/compressed -> /vlm/response
     # - Experiment marker: /social_task
     rosbag_record = ExecuteProcess(
         cmd=['ros2', 'bag', 'record',
@@ -425,19 +426,20 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
              '/odom',
              '/tf', '/tf_static',
              # Latency measurement: input
-             '/head_front_camera/color/image_raw',
+             '/head_front_camera/color/image_raw/compressed',
              # Latency measurement: outputs
              '/vlm/response',
              '/social_costmap/person_markers',
              # Experiment metadata
              '/social_task',
-             '-o', os.path.join(os.environ['HOME'], 'src', 'tests', 'rosbags')
+             '-o', os.path.join(os.environ['HOME'], 'src', 'tests', 'rosbags', 
+                   datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
         ],
         output='screen',
         condition=IfCondition(LaunchConfiguration('record'))
     )
     rosbag_delayed = TimerAction(
-        period=10.0,  # Start recording after all nodes are up
+        period=25.0,  # Start recording after all nodes are up
         actions=[rosbag_record]
     )
     launch_description.add_action(rosbag_delayed)
