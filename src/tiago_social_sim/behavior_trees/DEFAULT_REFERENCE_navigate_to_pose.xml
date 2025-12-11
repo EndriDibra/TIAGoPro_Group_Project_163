@@ -1,0 +1,38 @@
+<!--
+  DEFAULT PAL Behavior Tree for NavigateToPose (Reference Copy)
+  Original location: /opt/pal/alum/share/pal_navigation_cfg/nav2_bt_navigator/behavior_trees/navigate_to_pose_w_replanning_and_recovery_wo_backup.xml
+  
+  Key settings:
+  - RateController: 10 Hz (replans 10 times per second!)
+  - 6 recovery retries at top level
+  - Recovery actions: ClearCostmaps -> Spin -> Wait (round robin)
+-->
+<root main_tree_to_execute="MainTree">
+    <BehaviorTree ID="MainTree">
+      <RecoveryNode number_of_retries="6" name="NavigateRecovery">
+        <PipelineSequence name="NavigateWithReplanning">
+          <RateController hz="10.0">
+            <RecoveryNode number_of_retries="1" name="ComputePathToPose">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+              <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+            </RecoveryNode>
+          </RateController>
+          <RecoveryNode number_of_retries="1" name="FollowPath">
+            <FollowPath path="{path}" controller_id="FollowPath"/>
+            <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+          </RecoveryNode>
+        </PipelineSequence>
+        <ReactiveFallback name="RecoveryFallback">
+          <GoalUpdated/>
+          <RoundRobin name="RecoveryActions">
+            <Sequence name="ClearingActions">
+              <ClearEntireCostmap name="ClearLocalCostmap-Subtree" service_name="local_costmap/clear_entirely_local_costmap"/>
+              <ClearEntireCostmap name="ClearGlobalCostmap-Subtree" service_name="global_costmap/clear_entirely_global_costmap"/>
+            </Sequence>
+            <Spin spin_dist="3.14"/>
+            <Wait wait_duration="5"/>
+          </RoundRobin>
+        </ReactiveFallback>
+      </RecoveryNode>
+    </BehaviorTree>
+  </root>

@@ -130,16 +130,8 @@ class MockBackend(VLMBackend):
     def get_navigation_command(self, image_path: str, map_img_path: str, heading_deg: float = None, distance_to_goal: float = None) -> Dict:
         """Return a randomized mock response for testing (supervisor mode compatible)."""
         # Random action choice weighted towards Continue for testing
-        action_choice = random.random()
-        if action_choice < 0.33:
-            action = "Continue"
-            speed = 1.0
-        elif action_choice < 0.66:
-            action = "Slow Down"
-            speed = 0.5
-        else:
-            action = "Yield"
-            speed = 0.01
+        action = "Continue"
+        speed = 1.0
             
         return {
             "observation": f"Mock: Distance to goal: {distance_to_goal:.1f}m." if distance_to_goal else "Mock: Analyzing scene.",

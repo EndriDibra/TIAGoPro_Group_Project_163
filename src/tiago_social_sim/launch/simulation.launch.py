@@ -73,9 +73,17 @@ class LaunchArguments(LaunchArgumentsBase):
     tuck_arm: DeclareLaunchArgument = CommonArgs.tuck_arm
     is_public_sim: DeclareLaunchArgument = CommonArgs.is_public_sim
     
-    headless: DeclareLaunchArgument = DeclareLaunchArgument(
-        "headless", default_value="False",
-        description="Run Gazebo without GUI (headless mode)")
+    record: DeclareLaunchArgument = DeclareLaunchArgument(
+        "record", default_value="False",
+        description="Enable rosbag recording of relevant topics")
+    
+    vlm_backend: DeclareLaunchArgument = DeclareLaunchArgument(
+        "vlm_backend", default_value="mock",
+        description="VLM backend to use: 'mock' (testing), 'smol' (local GPU), or 'mistral' (cloud API)")
+    
+    track_humans: DeclareLaunchArgument = DeclareLaunchArgument(
+        "track_humans", default_value="True",
+        description="Enable human tracking (YOLO + laser). If False, social costmap will be empty.")
 
 
 def private_navigation(context, *args, **kwargs):
@@ -370,7 +378,10 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         executable='social_costmap_node',
         name='social_costmap_node',
         output='screen',
-        parameters=[{'use_sim_time': True}],
+        parameters=[
+            {'use_sim_time': True},
+            {'track_humans': LaunchConfiguration('track_humans')}
+        ],
     )
     launch_description.add_action(social_costmap_node)
 
@@ -381,7 +392,7 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         name='vlm_navigator',
         output='screen',
         parameters=[
-            {'vlm_backend': os.environ.get('VLM_BACKEND', 'mistral')},  # Default to mistral, override with VLM_BACKEND env var
+            {'vlm_backend': LaunchConfiguration('vlm_backend')},
             {'mistral_api_key': os.environ.get('MISTRAL_API_KEY', '')},  # Read from environment
             {'controller_server_name': 'controller_server'},
             {'controller_name': 'FollowPath'},
@@ -420,6 +431,36 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
         actions=[social_cmd_node]
     )
     launch_description.add_action(social_cmd_delayed)
+
+    # Rosbag recording (conditional)
+    # Topics for evaluation metrics:
+    # - PSC, TTC, Min Distance: /human/odom, /odom, /tf, /tf_static
+    # - Detection Latency: /head_front_camera/color/image_raw -> /social_costmap/person_markers
+    # - VLM Latency: /head_front_camera/color/image_raw -> /vlm/response
+    # - Experiment marker: /social_task
+    rosbag_record = ExecuteProcess(
+        cmd=['ros2', 'bag', 'record',
+             # Core metrics: robot and human positions
+             '/human/odom',
+             '/odom',
+             '/tf', '/tf_static',
+             # Latency measurement: input
+             '/head_front_camera/color/image_raw',
+             # Latency measurement: outputs
+             '/vlm/response',
+             '/social_costmap/person_markers',
+             # Experiment metadata
+             '/social_task',
+             '-o', os.path.join(os.environ['HOME'], 'rosbags', 'social_nav')
+        ],
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('record'))
+    )
+    rosbag_delayed = TimerAction(
+        period=10.0,  # Start recording after all nodes are up
+        actions=[rosbag_record]
+    )
+    launch_description.add_action(rosbag_delayed)
 
     return
 

@@ -9,7 +9,7 @@ models:
 triggers:
   frontal_approach_human:
     - action: spawn
-      name: frontal_human
+      name: human
       model: male
       # Robot goes -3,-3 to 3,3. Human starts slightly closer at 2,2 to avoid goal occlusion
       pose: [2.0, 2.0, -2.35]
@@ -18,16 +18,16 @@ triggers:
 
   intersection_human:
     - action: spawn
-      name: cross_human
+      name: human
       model: female
       # Robot goes -3,0 to 3,0 (X-axis). Human goes 0,-3 to 0,3 (Y-axis crossing)
-      pose: [1.0, -2.0, 1.57] # Facing +Y
-      path: [[1.0, -2.0], [1.0, 2.0]]
+      pose: [1.0, -3.0, 1.57] # Facing +Y
+      path: [[1.0, -3.0], [1.0, 3.0]]
       speed: 0.7
 
   doorway_human:
     - action: spawn
-      name: door_human
+      name: human
       model: female_2
       # Robot goes 1.5,0 to 1.5,7 (+Y). Human spawns slightly closer at 1.5,6
       pose: [1.5, 7.0, -1.57] # Facing -Y (towards robot)

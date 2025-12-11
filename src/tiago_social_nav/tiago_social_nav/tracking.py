@@ -8,14 +8,19 @@ from scipy.optimize import linear_sum_assignment
 class TrackedPerson:
     id: int
     position: np.ndarray  # [x, y, z] in map frame
-    velocity: np.ndarray  # [vx, vy, vz] in map frame
+    velocity: np.ndarray  # [vx, vy, vz] in map frame (smoothed output)
     last_update_time: float
     last_yolo_time: float  # Last time YOLO confirmed this person
     confidence: float
     source: str  # 'yolo', 'laser', 'fused'
     
-    # Velocity smoothing factor
-    VELOCITY_ALPHA: float = 0.3
+    # Velocity estimation parameters
+    MAX_VELOCITY: float = 2.0  # m/s - clamp unrealistic spikes
+    MIN_DT_FOR_VELOCITY: float = 0.08  # seconds - ignore updates faster than this
+    VELOCITY_BUFFER_SIZE: int = 5  # Number of measurements to average
+    
+    # Internal velocity buffer (initialized post-init)
+    _velocity_buffer: list = field(default_factory=list)
     
     def predict(self, current_time: float) -> np.ndarray:
         """Predict position at current_time based on velocity (constant velocity model)."""
@@ -23,12 +28,30 @@ class TrackedPerson:
         return self.position + self.velocity * dt
 
     def update(self, measurement: np.ndarray, source: str, current_time: float):
-        """Update state with new measurement."""
-        # Update velocity with exponential smoothing
+        """Update state with new measurement using moving average velocity."""
         dt = current_time - self.last_update_time
-        if dt > 0.01:  # Avoid division by tiny dt
+        
+        # Only update velocity if enough time has passed
+        if dt > self.MIN_DT_FOR_VELOCITY:
             new_velocity = (measurement - self.position) / dt
-            self.velocity = self.VELOCITY_ALPHA * new_velocity + (1 - self.VELOCITY_ALPHA) * self.velocity
+            
+            # Clamp velocity magnitude to filter spikes
+            speed = np.linalg.norm(new_velocity[:2])
+            if speed > self.MAX_VELOCITY:
+                new_velocity[:2] = new_velocity[:2] * (self.MAX_VELOCITY / speed)
+            
+            # Add to buffer
+            self._velocity_buffer.append(new_velocity.copy())
+            
+            # Keep only last N measurements
+            if len(self._velocity_buffer) > self.VELOCITY_BUFFER_SIZE:
+                self._velocity_buffer.pop(0)
+            
+            # Compute moving average
+            if len(self._velocity_buffer) >= 2:
+                self.velocity = np.mean(self._velocity_buffer, axis=0)
+            else:
+                self.velocity = new_velocity
         
         self.position = measurement
         self.last_update_time = current_time
@@ -144,9 +167,18 @@ class PersonTracker:
         # 4. Apply unified time-based confidence decay and prune dead tracks
         active_tracks = []
         for track in self.tracks:
-            # Confidence decays based on time since last YOLO confirmation
             time_since_yolo = current_time - track.last_yolo_time
-            track.confidence = max(0.0, 1.0 - time_since_yolo / self.CONFIDENCE_DECAY_TIME)
+            time_since_any_update = current_time - track.last_update_time
+            
+            if time_since_yolo < 1.0:
+                # YOLO recently confirmed - full confidence
+                track.confidence = 1.0
+            elif time_since_any_update < 0.5:
+                # Laser is still tracking - slow decay from last YOLO
+                track.confidence = max(0.0, 1.0 - time_since_yolo / self.decay_time)
+            else:
+                # Lost by both sensors - fast decay (5 seconds)
+                track.confidence = max(0.0, 1.0 - time_since_any_update / 5.0)
             
             # Keep track if confidence is above threshold
             if track.confidence > 0.05:

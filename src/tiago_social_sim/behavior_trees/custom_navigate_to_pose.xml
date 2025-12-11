@@ -1,0 +1,48 @@
+<!--
+  Custom Behavior Tree for NavigateToPose
+  
+  Key modifications from PAL default:
+  - RateController: 1.0 Hz (replan every 1 second instead of 10Hz)
+  - Recovery retries: 2 (faster failure, down from 6)
+  - Recovery uses RoundRobin: ClearCostmaps -> Spin -> Wait (cycles faster)
+  - Shorter wait times (2s instead of 5s)
+-->
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <RecoveryNode number_of_retries="3" name="NavigateRecovery">
+      <!-- Main navigation pipeline -->
+      <PipelineSequence name="NavigateWithReplanning">
+        <!-- Compute path at controlled rate (4 Hz = every 0.25 second) -->
+        <RateController hz="4.0">
+          <RecoveryNode number_of_retries="1" name="ComputePathRecovery">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap-Context" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </RecoveryNode>
+        </RateController>
+        <!-- Follow the computed path -->
+        <RecoveryNode number_of_retries="1" name="FollowPathRecovery">
+          <FollowPath path="{path}" controller_id="FollowPath"/>
+          <ClearEntireCostmap name="ClearLocalCostmap-Context" service_name="local_costmap/clear_entirely_local_costmap"/>
+        </RecoveryNode>
+      </PipelineSequence>
+      
+      <!-- Recovery behavior when navigation fails - cycles through these -->
+      <ReactiveFallback name="RecoveryFallback">
+        <GoalUpdated/>
+        <RoundRobin name="RecoveryActions">
+          <!-- First: Clear costmaps -->
+          <Sequence name="ClearingActions">
+            <ClearEntireCostmap name="ClearLocalCostmap" service_name="local_costmap/clear_entirely_local_costmap"/>
+            <ClearEntireCostmap name="ClearGlobalCostmap" service_name="global_costmap/clear_entirely_global_costmap"/>
+          </Sequence>
+          <!-- Second: Back up 0.3m -->
+          <BackUp backup_dist="0.3" backup_speed="0.25"/>
+          <!-- Third: Spin 180° (helps when stuck) -->
+          <Spin spin_dist="3.14"/>
+          <!-- Fourth: Short wait -->
+          <Wait wait_duration="1"/>
+        </RoundRobin>
+      </ReactiveFallback>
+    </RecoveryNode>
+  </BehaviorTree>
+</root>

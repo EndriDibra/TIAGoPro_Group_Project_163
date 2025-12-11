@@ -39,6 +39,9 @@ class SocialCostmapNode(Node):
         # Declare localization parameters
         self.declare_parameter('localization_method', '3d_centroid')  # or 'min_z_column'
         
+        # Declare tracking toggle
+        self.declare_parameter('track_humans', True)  # If False, skip all tracking (empty costmap)
+        
         # Get parameters
         self.camera_topic = self.get_parameter('camera_topic').get_parameter_value().string_value
         self.depth_topic = self.get_parameter('depth_topic').get_parameter_value().string_value
@@ -52,22 +55,28 @@ class SocialCostmapNode(Node):
         device = self.get_parameter('device').get_parameter_value().string_value
         
         localization_method = self.get_parameter('localization_method').get_parameter_value().string_value
+        self.track_humans = self.get_parameter('track_humans').get_parameter_value().bool_value
         
         self.get_logger().info(f'Subscribing to RGB: {self.camera_topic}, Depth: {self.depth_topic}, Scan: {self.scan_topic}')
         self.get_logger().info(f'Detection rate: {detection_rate} Hz, Model: {yolo_model}, Device: {device}')
         self.get_logger().info(f'Localization method: {localization_method}')
+        self.get_logger().info(f'Human tracking enabled: {self.track_humans}')
         
         # Rate limiting for detection
         self.detection_interval = 1.0 / detection_rate
         self.last_detection_time = 0.0
         
-        # Initialize modules
-        self.get_logger().info('Initializing YOLO detector...')
-        self.detector = PersonDetector(
-            model_name=yolo_model,
-            confidence_threshold=confidence,
-            device=device
-        )
+        # Initialize modules (conditionally load YOLO)
+        if self.track_humans:
+            self.get_logger().info('Initializing YOLO detector...')
+            self.detector = PersonDetector(
+                model_name=yolo_model,
+                confidence_threshold=confidence,
+                device=device
+            )
+        else:
+            self.get_logger().info('Human tracking disabled - skipping YOLO initialization')
+            self.detector = None
         
         self.localizer = PersonLocalizer(method=localization_method)
         self.costmap_publisher_module = SocialCostmapPublisher()
@@ -125,7 +134,7 @@ class SocialCostmapNode(Node):
         
         self.bridge = CvBridge()
         
-        self.get_logger().info('Social Costmap Node (PointCloud2) with YOLO + Laser Tracking ready!')
+        self.get_logger().info('Social Costmap Node (PointCloud2) ready!' + (' (YOLO + Laser Tracking)' if self.track_humans else ' (Tracking Disabled)'))
 
     def depth_camera_info_callback(self, msg):
         if self.depth_camera_model is None:
@@ -139,6 +148,8 @@ class SocialCostmapNode(Node):
 
     def scan_callback(self, msg):
         """Store latest scan for use in tracking timer."""
+        if not self.track_humans:
+            return  # Skip if tracking disabled
         self.last_scan_msg = msg
         # Don't process here - let the unified timer handle tracking
     
@@ -153,6 +164,10 @@ class SocialCostmapNode(Node):
 
     def rgbd_callback(self, rgb_msg, depth_msg):
         """Process synchronized RGB-D data with rate-limited YOLO detection."""
+        # Skip if tracking is disabled
+        if not self.track_humans:
+            return
+        
         # Rate limiting for detection
         current_time = time.time()
         if current_time - self.last_detection_time < self.detection_interval:
@@ -244,6 +259,12 @@ class SocialCostmapNode(Node):
         rgb_detections: List of [x,y,z] arrays in map frame (from YOLO)
         scan_msg: LaserScan message (to be clustered)
         """
+        # If tracking is disabled, publish empty results
+        if not self.track_humans:
+            current_time = self.get_clock().now().nanoseconds / 1e9
+            self._publish_tracking_results([], current_time)
+            return
+        
         current_time = self.get_clock().now().nanoseconds / 1e9
         
         laser_clusters_map = []
