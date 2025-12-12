@@ -30,11 +30,8 @@
       <ReactiveFallback name="RecoveryFallback">
         <GoalUpdated/>
         <RoundRobin name="RecoveryActions">
-          <!-- First: Clear costmaps -->
-          <Sequence name="ClearingActions">
-            <ClearEntireCostmap name="ClearLocalCostmap" service_name="local_costmap/clear_entirely_local_costmap"/>
-            <ClearEntireCostmap name="ClearGlobalCostmap" service_name="global_costmap/clear_entirely_global_costmap"/>
-          </Sequence>
+          <!-- First: Clear local costmap only (avoid clearing global to prevent localization-induced map corruption) -->
+          <ClearEntireCostmap name="ClearLocalCostmap" service_name="local_costmap/clear_entirely_local_costmap"/>
           <!-- Second: Back up 0.3m -->
           <BackUp backup_dist="0.3" backup_speed="0.25"/>
           <!-- Third: Spin 180° (helps when stuck) -->

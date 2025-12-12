@@ -593,6 +593,34 @@ class RosbagMetricsExtractor:
         
         return -1.0
     
+    def compute_vlm_action_counts(self, vlm_responses: list) -> tuple[int, int, int]:
+        """
+        Count VLM action types in responses.
+        
+        Returns: (continue_count, slow_down_count, yield_count)
+        """
+        continue_count = 0
+        slow_down_count = 0
+        yield_count = 0
+        
+        for timestamp, response in vlm_responses:
+            try:
+                # Response.data is a string representation of a dict
+                # Parse it to extract the action
+                response_str = response.data
+                
+                # Simple string matching for action types
+                if "'action': 'Continue'" in response_str or '"action": "Continue"' in response_str:
+                    continue_count += 1
+                elif "'action': 'Slow Down'" in response_str or '"action": "Slow Down"' in response_str:
+                    slow_down_count += 1
+                elif "'action': 'Yield'" in response_str or '"action": "Yield"' in response_str:
+                    yield_count += 1
+            except Exception:
+                pass  # Skip unparseable responses
+        
+        return continue_count, slow_down_count, yield_count
+    
     def extract_metrics(self) -> list[ScenarioMetrics]:
         """Extract all metrics from the bag file."""
         self.read_bag()
@@ -634,6 +662,7 @@ class RosbagMetricsExtractor:
             min_dist = self.compute_min_distance(synced)
             det_lat = self.compute_detection_latency(window, human_odom_window, person_markers_window)
             vlm_lat = self.compute_vlm_latency(window, person_markers_window, vlm_responses_window)
+            cont_count, slow_count, yield_count = self.compute_vlm_action_counts(vlm_responses_window)
             
             # Duration
             duration = (window.end_time - window.start_time) / 1e9  # Convert ns to seconds
@@ -647,13 +676,16 @@ class RosbagMetricsExtractor:
                 min_distance=min_dist,
                 detection_latency=det_lat,
                 vlm_latency=vlm_lat,
+                continue_count=cont_count,
+                slow_down_count=slow_count,
+                yield_count=yield_count,
                 scenario_duration=duration,
                 start_time=window.start_time / 1e9,
                 end_time=window.end_time / 1e9
             )
             
             print(f"  PSC: {psc:.1f}%, MinTTC: {min_ttc:.2f}s, MinDist: {min_dist:.2f}m, "
-                  f"DetLat: {det_lat:.2f}s, VLMLat: {vlm_lat:.2f}s, Duration: {duration:.1f}s")
+                  f"DetLat: {det_lat:.2f}s, VLMLat: {vlm_lat:.2f}s, Cont: {cont_count}, Slow: {slow_count}, Yield: {yield_count}, Duration: {duration:.1f}s")
             
             all_metrics.append(metrics)
         

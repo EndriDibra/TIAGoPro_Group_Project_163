@@ -24,10 +24,9 @@ social_cmd_node:
         task_msg: "doorway_human"
     
     scenario_sequence:
-      - "wait 10"
+      - "wait 5"
       - "frontal_approach"
       - "intersection"
       - "narrow_doorway"
-      - "wait 10"
     
     loop_sequence: true

@@ -80,7 +80,7 @@ global_costmap:
       plugin: "nav2_costmap_2d::ObstacleLayer"
       enabled: true
       combination_method: 0
-      observation_sources: "scan"  # No social_points - humans only in local costmap
+      observation_sources: "scan global_social_hints"
       footprint_clearing_enabled: true
       
       scan:
@@ -96,6 +96,19 @@ global_costmap:
         raytrace_min_range: 0.0
         obstacle_max_range: 14.0
         obstacle_min_range: 0.0
+
+      global_social_hints:
+        topic: "/social_obstacles_global"
+        data_type: "PointCloud2"
+        clearing: false            # hints should not clear other obstacles
+        marking: true              # they mark cells as obstacles
+        max_obstacle_height: 2.0
+        min_obstacle_height: 0.0
+        obstacle_max_range: 15.0
+        raytrace_max_range: 0.0    # no raytracing for hints
+        observation_persistence: 0.0  # instant decay - fresh predictions each update
+        expected_update_rate: 0.5
+        inf_is_valid: false
         
     inflation_layer:
       plugin: "nav2_costmap_2d::InflationLayer"

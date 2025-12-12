@@ -93,6 +93,7 @@ class SocialCostmapNode(Node):
         # ROS Publishers
         # Replaced OccupancyGrid with PointCloud2
         self.social_pub = self.create_publisher(PointCloud2, '/social_obstacles', 10)
+        self.global_hint_pub = self.create_publisher(PointCloud2, '/social_obstacles_global', 10)
         self.markers_pub = self.create_publisher(MarkerArray, '/social_costmap/person_markers', 10)
         
         # Subscribers
@@ -397,13 +398,21 @@ class SocialCostmapNode(Node):
         # Create header stamp
         ts_ros = rclpy.time.Time(seconds=timestamp_sec).to_msg()
         
-        # Publish PointCloud
+        # Publish PointCloud (local costmap)
         point_cloud = self.costmap_publisher_module.create_social_pointcloud(
             persons=published_persons,
             map_frame='map',
             timestamp=ts_ros
         )
         self.social_pub.publish(point_cloud)
+        
+        # Publish Global Hint PointCloud (global costmap - minimal hints for moving humans)
+        global_hint_cloud = self.costmap_publisher_module.create_global_hint_pointcloud(
+            persons=published_persons,
+            map_frame='map',
+            timestamp=ts_ros
+        )
+        self.global_hint_pub.publish(global_hint_cloud)
         
         # Publish Markers
         markers = self.costmap_publisher_module.create_person_markers(

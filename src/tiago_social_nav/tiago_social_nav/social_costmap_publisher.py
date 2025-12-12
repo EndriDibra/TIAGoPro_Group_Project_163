@@ -28,9 +28,12 @@ class SocialCostmapPublisher:
         # No grid parameters needed anymore
         pass
     
-    # Prediction parameters
+    # Prediction parameters (local costmap)
     PREDICTION_TIME = 2.0  # seconds - how far ahead to predict
     MIN_SPEED_THRESHOLD = 0.1  # m/s - below this, use circular costmap
+    
+    # Global hint parameters
+    GLOBAL_HINT_TIME = 1.0  # seconds - single point ahead for global planner
     
     def create_social_pointcloud(self,
                                 persons: List[Dict],
@@ -115,6 +118,65 @@ class SocialCostmapPublisher:
                         z = 0.5
                         points.append((x, y, z))
 
+        # Create header
+        header = Header()
+        header.frame_id = map_frame
+        if timestamp is not None:
+            header.stamp = timestamp
+            
+        fields = [
+            PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
+            PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
+            PointField(name='z', offset=8, datatype=PointField.FLOAT32, count=1),
+        ]
+
+        pc2_msg = pc2.create_cloud(header, fields, points)
+        return pc2_msg
+    
+    def create_global_hint_pointcloud(self,
+                                      persons: List[Dict],
+                                      map_frame: str = 'map',
+                                      timestamp = None) -> PointCloud2:
+        """
+        Generate minimal PointCloud2 for global costmap - just hints ahead of moving humans.
+        
+        Only creates points for humans that are moving (speed > threshold).
+        Places a single point 1.5s ahead of each moving human to guide global planner.
+        Uses instant decay (no persistence) for fresh predictions each update.
+        
+        Args:
+            persons: List of localized persons with 'position_3d_map' and 'velocity' fields
+            map_frame: Frame ID for the point cloud
+            timestamp: ROS timestamp for the message
+        
+        Returns:
+            PointCloud2 message with minimal hint points
+        """
+        points = []
+        
+        for p in persons:
+            if 'position_3d_map' not in p:
+                continue
+                
+            pos = p['position_3d_map']
+            px, py = pos[0], pos[1]
+            
+            # Get velocity
+            velocity = p.get('velocity', np.zeros(3))
+            vx, vy = velocity[0], velocity[1]
+            speed = math.sqrt(vx**2 + vy**2)
+            
+            # Only create hint for moving humans
+            if speed > self.MIN_SPEED_THRESHOLD:
+                heading = math.atan2(vy, vx)
+                hint_dist = speed * self.GLOBAL_HINT_TIME
+                
+                # Single point ahead of human
+                x = px + hint_dist * math.cos(heading)
+                y = py + hint_dist * math.sin(heading)
+                z = 0.5
+                points.append((x, y, z))
+        
         # Create header
         header = Header()
         header.frame_id = map_frame
