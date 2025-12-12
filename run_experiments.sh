@@ -8,7 +8,7 @@
 set -e  # Exit on error
 
 # Configuration
-EXPERIMENT_DURATION=3600 # second
+EXPERIMENT_DURATION=1200 # second
 LOG_DIR="./src/tests/logs"
 ROSBAG_DIR="./src/tests/rosbags"
 CONTAINER_NAME="tiago_group_sim"
