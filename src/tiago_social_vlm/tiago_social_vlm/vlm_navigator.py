@@ -221,10 +221,8 @@ class VLMNavigator(Node):
         current_time = self.get_clock().now().nanoseconds / 1e9
         
         if self.mode == "DIRECT_NAV":
-            # Just ensure speed is max, occasionally re-check
-            # The _update_mode called by callbacks handles switching.
-            # Timeout check for humans (redundant with people_callback but safe)
-            pass
+            # _update_mode from callbacks handles switching to VLM_ASSIST when needed
+            return
 
         elif self.mode == "VLM_ASSIST":
             if current_time - self.last_person_time > self.human_timeout:

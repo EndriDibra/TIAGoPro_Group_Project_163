@@ -10,7 +10,6 @@ from sensor_msgs.msg import PointCloud2, PointField
 from std_msgs.msg import Header
 from visualization_msgs.msg import Marker, MarkerArray
 import sensor_msgs_py.point_cloud2 as pc2
-import rclpy
 
 # Proxemics constants
 BODY_RADIUS = 0.25       # m

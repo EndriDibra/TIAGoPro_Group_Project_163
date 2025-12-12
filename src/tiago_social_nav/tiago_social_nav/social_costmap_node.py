@@ -504,10 +504,6 @@ class SocialCostmapNode(Node):
         registered_depth[v_proj, u_proj] = Z_proj
         
         return registered_depth
-    
-
-
-
 
 
 def main(args=None):
