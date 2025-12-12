@@ -415,21 +415,19 @@ def declare_actions(launch_description: LaunchDescription, launch_args: LaunchAr
 
     # Rosbag recording (conditional)
     # Topics for evaluation metrics:
-    # - PSC, TTC, Min Distance: /human/odom, /odom, /tf, /tf_static
-    # - Detection Latency: /head_front_camera/color/image_raw/compressed -> /social_costmap/person_markers
-    # - VLM Latency: /head_front_camera/color/image_raw/compressed -> /vlm/response
+    # - PSC, TTC, Min Distance: /mobile_base_controller/odom (robot), /human/odom (human), /tf
+    # - Detection Latency: /human/odom -> /social_costmap/person_markers
+    # - VLM Latency: /social_costmap/person_markers -> /vlm/response
     # - Experiment marker: /social_task
     rosbag_record = ExecuteProcess(
         cmd=['ros2', 'bag', 'record',
              # Core metrics: robot and human positions
              '/human/odom',
-             '/odom',
-             '/tf', '/tf_static',
-             # Latency measurement: input
-             '/head_front_camera/color/image_raw/compressed',
-             # Latency measurement: outputs
-             '/vlm/response',
+             '/mobile_base_controller/odom',  # Direct robot odom with velocity
+             '/tf',  # For backup robot pose extraction
+             # Detection and VLM latency
              '/social_costmap/person_markers',
+             '/vlm/response',
              # Experiment metadata
              '/social_task',
              '-o', os.path.join(os.environ['HOME'], 'src', 'tests', 'rosbags', 

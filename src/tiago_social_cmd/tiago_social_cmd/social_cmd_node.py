@@ -2,6 +2,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
+from action_msgs.msg import GoalStatus
 from std_msgs.msg import String
 from std_srvs.srv import Trigger
 from geometry_msgs.msg import PoseStamped
@@ -37,7 +38,13 @@ class SocialCmdNode(Node):
 
         # Execution State
         self.current_scenario_name = None
-        self.execution_state = "IDLE" # IDLE, SETUP, ACTION
+        self.execution_state = "IDLE"  # IDLE, SETUP, RECOVERY, ACTION
+        
+        # Retry logic for start position
+        self.recovery_pose = [0.0, 0.0, 0.0]
+        self.max_start_retries = 3
+        self.current_start_attempt = 0
+        self.current_start_pose = None
 
         # Load initial config
         self.scenarios = self.get_scenarios_from_params()
@@ -110,6 +117,10 @@ class SocialCmdNode(Node):
         self.get_logger().info(f"Starting scenario sequence: {name}")
         self.current_scenario_name = name
         
+        # Reset retry state
+        self.current_start_attempt = 0
+        self.current_start_pose = data.get('start_pose', None)
+        
         # CLEANUP: Remove old humans
         if self.remove_humans_client.wait_for_service(timeout_sec=1.0):
             req = Trigger.Request()
@@ -119,12 +130,11 @@ class SocialCmdNode(Node):
             self.get_logger().warn(f"Human cleanup service not available.")
 
         # Check for start_pose (Setup Phase)
-        start_pose = data.get('start_pose', None)
-        
-        if start_pose:
+        if self.current_start_pose:
             self.execution_state = "SETUP"
-            self.get_logger().info(f"Phase: SETUP -> Navigate to start ({start_pose})")
-            return self.send_goal(start_pose)
+            self.current_start_attempt += 1
+            self.get_logger().info(f"Phase: SETUP -> Navigate to start ({self.current_start_pose}) [Attempt {self.current_start_attempt}/{self.max_start_retries}]")
+            return self.send_goal(self.current_start_pose)
         else:
             # Skip directly to ACTION phase
             self.execution_state = "ACTION"
@@ -190,18 +200,76 @@ class SocialCmdNode(Node):
         get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
-        result = future.result().result
         status = future.result().status
-        self.get_logger().info(f'Nav Result Status: {status}')
+        status_name = self._status_to_string(status)
+        self.get_logger().info(f'Nav Result Status: {status_name}')
         
-        # Check logic for next step
         if self.execution_state == "SETUP":
-             # Move to ACTION phase
-             self.execute_action_phase(self.current_scenario_name)
+            if status == GoalStatus.STATUS_SUCCEEDED:
+                # Successfully reached start position -> proceed to ACTION
+                self.get_logger().info("Reached start position successfully.")
+                self.execute_action_phase(self.current_scenario_name)
+            else:
+                # Failed to reach start position -> try recovery
+                self.get_logger().warn(f"Failed to reach start position (status: {status_name})")
+                self.attempt_recovery()
+                
+        elif self.execution_state == "RECOVERY":
+            if status == GoalStatus.STATUS_SUCCEEDED:
+                # Reached recovery pose -> retry start position
+                self.get_logger().info("Reached recovery pose, retrying start position...")
+                self.current_start_attempt += 1
+                if self.current_start_attempt <= self.max_start_retries:
+                    self.execution_state = "SETUP"
+                    self.get_logger().info(f"Phase: SETUP -> Navigate to start ({self.current_start_pose}) [Attempt {self.current_start_attempt}/{self.max_start_retries}]")
+                    self.send_goal(self.current_start_pose)
+                else:
+                    self.skip_scenario("Max retries exceeded after recovery")
+            else:
+                # Even recovery failed -> skip scenario
+                self.skip_scenario(f"Recovery navigation also failed (status: {status_name})")
+                
+        elif self.execution_state == "ACTION":
+            # ACTION phase complete (success or not, we proceed)
+            if status != GoalStatus.STATUS_SUCCEEDED:
+                self.get_logger().warn(f"Did not reach end goal (status: {status_name}), but proceeding anyway.")
+            else:
+                self.get_logger().info("Reached end goal successfully.")
+            self.execution_state = "IDLE"
+            self.nav_complete_event.set()
         else:
-             # Finished ACTION phase
-             self.execution_state = "IDLE"
-             self.nav_complete_event.set()
+            # IDLE or unknown state
+            self.execution_state = "IDLE"
+            self.nav_complete_event.set()
+    
+    def attempt_recovery(self):
+        """Navigate to recovery pose before retrying start position."""
+        if self.current_start_attempt >= self.max_start_retries:
+            self.skip_scenario("Max retries exceeded for start position")
+            return
+            
+        self.get_logger().info(f"Attempting recovery: navigating to {self.recovery_pose}")
+        self.execution_state = "RECOVERY"
+        self.send_goal(self.recovery_pose)
+    
+    def skip_scenario(self, reason):
+        """Skip current scenario and signal completion."""
+        self.get_logger().error(f"SKIPPING scenario '{self.current_scenario_name}': {reason}")
+        self.execution_state = "IDLE"
+        self.nav_complete_event.set()
+    
+    def _status_to_string(self, status):
+        """Convert GoalStatus to human-readable string."""
+        status_map = {
+            GoalStatus.STATUS_UNKNOWN: "UNKNOWN",
+            GoalStatus.STATUS_ACCEPTED: "ACCEPTED",
+            GoalStatus.STATUS_EXECUTING: "EXECUTING",
+            GoalStatus.STATUS_CANCELING: "CANCELING",
+            GoalStatus.STATUS_SUCCEEDED: "SUCCEEDED",
+            GoalStatus.STATUS_CANCELED: "CANCELED",
+            GoalStatus.STATUS_ABORTED: "ABORTED",
+        }
+        return status_map.get(status, f"STATUS_{status}")
 
     def start_sequence_execution(self):
         self.executor_thread = threading.Thread(target=self.run_sequence)

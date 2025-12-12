@@ -104,20 +104,33 @@ run_experiment() {
 
 trap stop_all EXIT
 
+LOOP_COUNT=3  # Number of times to repeat all experiments
+
 log "=========================================="
 log "TIAGo Social Navigation Experiment Suite"
 log "(Host-Based Container Restart Mode)"
 log "=========================================="
-log "Total experiments: ${#EXPERIMENT_ORDER[@]}"
+log "Total experiments per loop: ${#EXPERIMENT_ORDER[@]}"
+log "Number of loops: $LOOP_COUNT"
+log "Total experiments: $((${#EXPERIMENT_ORDER[@]} * LOOP_COUNT))"
 log "Duration per experiment: $((EXPERIMENT_DURATION / 60)) minutes"
+log "Total estimated runtime: $(( ${#EXPERIMENT_ORDER[@]} * LOOP_COUNT * EXPERIMENT_DURATION / 3600 )) hours"
 log ""
 
-for name in "${EXPERIMENT_ORDER[@]}"; do
-    run_experiment "$name" "${EXPERIMENTS[$name]}"
+for ((loop=1; loop<=LOOP_COUNT; loop++)); do
+    log "=========================================="
+    log "LOOP $loop of $LOOP_COUNT"
+    log "=========================================="
+    
+    for name in "${EXPERIMENT_ORDER[@]}"; do
+        run_experiment "$name" "${EXPERIMENTS[$name]}"
+    done
 done
 
 log "=========================================="
 log "All experiments completed!"
 log "=========================================="
+log "Loops completed: $LOOP_COUNT"
+log "Total experiments: $((${#EXPERIMENT_ORDER[@]} * LOOP_COUNT))"
 log "Logs saved in: $LOG_DIR"
 log "Rosbags saved in: $ROSBAG_DIR"

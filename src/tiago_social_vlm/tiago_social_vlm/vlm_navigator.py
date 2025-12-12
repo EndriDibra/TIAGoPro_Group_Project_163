@@ -64,7 +64,8 @@ class VLMNavigator(Node):
         self.declare_parameter('controller_server_name', 'controller_server')
         self.declare_parameter('controller_name', 'FollowPath') 
         self.declare_parameter('default_max_speed', 1.0)
-        self.declare_parameter('vlm_loop_rate', 0.05)  # Query every 5 seconds
+        self.declare_parameter('loop_rate', 2.0)  # Fast loop rate (2 Hz = every 0.5 seconds)
+        self.declare_parameter('vlm_cooldown', 5.0)  # Seconds between VLM queries
         self.declare_parameter('mistral_api_key', '')
         self.declare_parameter('vlm_backend', 'mock')  # 'mock', 'smol', or 'mistral'
         self.declare_parameter('sim_mode', True) 
@@ -72,13 +73,14 @@ class VLMNavigator(Node):
         self.controller_server = self.get_parameter('controller_server_name').value
         self.controller_name = self.get_parameter('controller_name').value
         self.default_speed = self.get_parameter('default_max_speed').value
-        self.loop_rate = self.get_parameter('vlm_loop_rate').value
+        self.loop_rate = self.get_parameter('loop_rate').value
+        self.vlm_cooldown = self.get_parameter('vlm_cooldown').value
         api_key = self.get_parameter('mistral_api_key').value
         if not api_key:
             api_key = os.environ.get('MISTRAL_API_KEY')
         vlm_backend = self.get_parameter('vlm_backend').value
 
-        self._log(f"Parameters: controller={self.controller_server}/{self.controller_name}, default_speed={self.default_speed}, loop_rate={self.loop_rate}, vlm_backend={vlm_backend}")
+        self._log(f"Parameters: controller={self.controller_server}/{self.controller_name}, default_speed={self.default_speed}, loop_rate={self.loop_rate}Hz, vlm_cooldown={self.vlm_cooldown}s, vlm_backend={vlm_backend}")
 
         # --- State ---
         self.mode = "IDLE" 
@@ -88,7 +90,8 @@ class VLMNavigator(Node):
         self.person_positions = []  # List of (x, y) positions in map frame
         self.latest_person_markers = None
         self.last_person_time = 0.0
-        self.human_timeout = 5.0 
+        self.human_timeout = 5.0
+        self.last_vlm_query_time = 0.0  # Track last VLM query for cooldown
         
         self.latest_rgb = None
         self.latest_map = None
@@ -210,7 +213,9 @@ class VLMNavigator(Node):
             self.set_max_speed(self.default_speed)
             
         elif new_mode == "VLM_ASSIST":
-            self._log("VLM_ASSIST: Will query VLM on next control loop")
+            self._log("VLM_ASSIST: Immediate VLM query, then cooldown between queries")
+            # Reset cooldown to allow immediate query when entering this mode
+            self.last_vlm_query_time = 0.0
 
     def control_loop(self):
         current_time = self.get_clock().now().nanoseconds / 1e9
@@ -229,12 +234,13 @@ class VLMNavigator(Node):
                 
                 # Force stop
                 self.set_max_speed(0.01)  # Use 0.01 instead of 0.0 - Nav2 ignores 0%
-                
-                # Do NOT switch to Direct Nav. Stay in VLM_ASSIST (or switch to SAFETY_STOP mode if implemented)
-                # For now, just return to prevent VLM query loop from potentially confusing things
                 return
             
-            self.run_vlm_update()
+            # Check cooldown before querying VLM
+            time_since_last_query = current_time - self.last_vlm_query_time
+            if time_since_last_query >= self.vlm_cooldown:
+                self.run_vlm_update()
+                self.last_vlm_query_time = current_time
 
     def run_vlm_update(self):
         if not self.latest_rgb:
