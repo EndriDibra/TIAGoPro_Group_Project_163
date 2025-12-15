@@ -4,14 +4,14 @@
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -32,127 +32,127 @@
       "sample_id": "mistral_0004",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0006",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0008",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0022",
@@ -207,15 +207,15 @@
       "sample_id": "mistral_0029",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0030",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0031",
@@ -228,43 +228,43 @@
       "sample_id": "mistral_0032",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0033",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0034",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0035",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0036",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0037",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0038",
@@ -277,63 +277,63 @@
       "sample_id": "mistral_0039",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0040",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0041",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0042",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0043",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0044",
       "llm_grounded": true,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0045",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0046",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0047",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -341,63 +341,63 @@
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0049",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0050",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0051",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0052",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0053",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0054",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0055",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0056",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0057",
@@ -410,36 +410,36 @@
       "sample_id": "mistral_0058",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0059",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0060",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0061",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0062",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0063",
@@ -460,77 +460,77 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0066",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0067",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0068",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0069",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0070",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0071",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0072",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0073",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0074",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0075",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0076",
@@ -543,141 +543,141 @@
       "sample_id": "mistral_0077",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0078",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0079",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0080",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0081",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0082",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0083",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0084",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0085",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0086",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0087",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0088",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0089",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0090",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0091",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0092",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0093",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0094",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0002",
@@ -691,20 +691,20 @@
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -712,13 +712,13 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "mistral_0007",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -726,112 +726,112 @@
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0022",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0023",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0024",
@@ -844,8 +844,8 @@
       "sample_id": "mistral_0025",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0026",
@@ -858,8 +858,8 @@
       "sample_id": "mistral_0027",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0028",
@@ -893,161 +893,161 @@
       "sample_id": "mistral_0032",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0033",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0034",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0035",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0036",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0037",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0038",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0039",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0040",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0041",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0042",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0043",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0044",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0045",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0046",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0047",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0048",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0049",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0050",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0051",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0052",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0053",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0054",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1131,21 +1131,21 @@
       "sample_id": "mistral_0066",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0067",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0068",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -1215,91 +1215,91 @@
       "sample_id": "mistral_0078",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0079",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0080",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0081",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0082",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0083",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0084",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0085",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0086",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0087",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0088",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0089",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0090",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1369,28 +1369,28 @@
       "sample_id": "mistral_0100",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0101",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0102",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0103",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1432,7 +1432,7 @@
       "sample_id": "mistral_0109",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -1446,63 +1446,63 @@
       "sample_id": "mistral_0111",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0112",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0113",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0114",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0115",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0116",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0117",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0118",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0119",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1523,42 +1523,42 @@
       "sample_id": "mistral_0122",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0123",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0124",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0125",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0126",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0127",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1593,84 +1593,84 @@
       "sample_id": "mistral_0132",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0133",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0134",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0135",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0136",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0137",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0138",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0139",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0140",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0141",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0142",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0143",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -1747,42 +1747,42 @@
       "sample_id": "mistral_0154",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0155",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0156",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0157",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0158",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0159",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1824,105 +1824,105 @@
       "sample_id": "mistral_0165",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0166",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0167",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0168",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0169",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0170",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0171",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0172",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0173",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0174",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0175",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0176",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0177",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0178",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0179",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -1950,42 +1950,42 @@
       "sample_id": "mistral_0183",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0184",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0185",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0186",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0187",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0188",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2055,42 +2055,42 @@
       "sample_id": "mistral_0198",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0199",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0200",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0201",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0202",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0203",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2104,7 +2104,7 @@
       "sample_id": "mistral_0205",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2125,28 +2125,28 @@
       "sample_id": "mistral_0208",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0209",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0210",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0211",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -2167,42 +2167,42 @@
       "sample_id": "mistral_0214",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0215",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0216",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0217",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0218",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0219",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -2216,14 +2216,14 @@
       "sample_id": "mistral_0221",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0222",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2272,35 +2272,35 @@
       "sample_id": "mistral_0229",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0230",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0231",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0232",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0233",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2314,14 +2314,14 @@
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2329,133 +2329,133 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0003",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0004",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0006",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0008",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
@@ -2468,36 +2468,36 @@
       "sample_id": "mistral_0022",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0023",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0024",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0025",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0026",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0027",
@@ -2517,8 +2517,8 @@
       "sample_id": "mistral_0029",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0030",
@@ -2531,14 +2531,14 @@
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -2546,7 +2546,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0003",
@@ -2559,148 +2559,148 @@
       "sample_id": "mistral_0004",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0006",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0008",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0022",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0023",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0024",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0025",
@@ -2755,36 +2755,36 @@
       "sample_id": "mistral_0032",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0033",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0034",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0035",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0036",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0037",
@@ -2811,70 +2811,70 @@
       "sample_id": "mistral_0040",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0041",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0002",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0003",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
+    },
+    {
+      "sample_id": "mistral_0004",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
+      "sample_id": "mistral_0005",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
+      "sample_id": "mistral_0006",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
       "expected_action": "Expected: Continue, Got: Continue"
     },
     {
-      "sample_id": "mistral_0004",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
-    },
-    {
-      "sample_id": "mistral_0005",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
-    },
-    {
-      "sample_id": "mistral_0006",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
-    },
-    {
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -2882,98 +2882,98 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0022",
@@ -3007,14 +3007,14 @@
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -3022,259 +3022,259 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0003",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0006",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0008",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0009",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0020",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0021",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0022",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0023",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0024",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0025",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0026",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0027",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0028",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0029",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0030",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0031",
       "llm_grounded": true,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Yield"
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0032",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0033",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0034",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0035",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0036",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
       "sample_id": "mistral_0037",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0038",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0039",
@@ -3287,8 +3287,8 @@
       "sample_id": "mistral_0040",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Yield, Got: Yield"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0041",
@@ -3308,8 +3308,8 @@
       "sample_id": "mistral_0043",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Yield, Got: Yield"
     },
     {
       "sample_id": "mistral_0044",
@@ -3329,14 +3329,14 @@
       "sample_id": "mistral_0046",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0047",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -3350,14 +3350,14 @@
       "sample_id": "mistral_0000",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -3378,14 +3378,14 @@
       "sample_id": "mistral_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -3399,7 +3399,7 @@
       "sample_id": "mistral_0007",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -3413,77 +3413,77 @@
       "sample_id": "mistral_0009",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0010",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0012",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "mistral_0017",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -3581,28 +3581,28 @@
       "sample_id": "mistral_0033",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0034",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0035",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "mistral_0036",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Slow Down, Got: Yield"
     },
     {
@@ -3679,36 +3679,36 @@
       "sample_id": "smol_0002",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0003",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0006",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0007",
@@ -3735,49 +3735,49 @@
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0012",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": true,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -3799,14 +3799,14 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -3820,7 +3820,7 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0023",
@@ -3841,28 +3841,28 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0027",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0028",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0029",
@@ -3876,7 +3876,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0031",
@@ -3890,7 +3890,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0033",
@@ -3910,15 +3910,15 @@
       "sample_id": "smol_0035",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0036",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0037",
@@ -3931,22 +3931,22 @@
       "sample_id": "smol_0038",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0039",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0040",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0041",
@@ -3973,29 +3973,29 @@
       "sample_id": "smol_0044",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0045",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0046",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0047",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0048",
@@ -4008,14 +4008,14 @@
       "sample_id": "smol_0049",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0050",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4023,63 +4023,63 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0052",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0053",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0054",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0055",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0056",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0057",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0058",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0059",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0060",
@@ -4093,7 +4093,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0062",
@@ -4106,43 +4106,43 @@
       "sample_id": "smol_0063",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0064",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0065",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0066",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0067",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0068",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0069",
@@ -4156,7 +4156,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0071",
@@ -4169,71 +4169,71 @@
       "sample_id": "smol_0072",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0073",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0074",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0075",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0076",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0077",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0078",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0079",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0080",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0081",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0000",
@@ -4261,20 +4261,20 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4289,7 +4289,7 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0008",
@@ -4309,14 +4309,14 @@
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4324,70 +4324,70 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0017",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0019",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0022",
@@ -4415,14 +4415,14 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0027",
@@ -4435,8 +4435,8 @@
       "sample_id": "smol_0028",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0029",
@@ -4450,21 +4450,21 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0031",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0032",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0033",
@@ -4484,8 +4484,8 @@
       "sample_id": "smol_0035",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0036",
@@ -4498,14 +4498,14 @@
       "sample_id": "smol_0037",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0038",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4547,7 +4547,7 @@
       "sample_id": "smol_0044",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4582,14 +4582,14 @@
       "sample_id": "smol_0049",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0050",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4603,14 +4603,14 @@
       "sample_id": "smol_0052",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0053",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4638,7 +4638,7 @@
       "sample_id": "smol_0057",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4694,21 +4694,21 @@
       "sample_id": "smol_0065",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0066",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0067",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4799,14 +4799,14 @@
       "sample_id": "smol_0080",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0081",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4848,14 +4848,14 @@
       "sample_id": "smol_0087",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0088",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4904,14 +4904,14 @@
       "sample_id": "smol_0095",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0096",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4960,14 +4960,14 @@
       "sample_id": "smol_0103",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0104",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -4995,7 +4995,7 @@
       "sample_id": "smol_0108",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5016,14 +5016,14 @@
       "sample_id": "smol_0111",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0112",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5121,7 +5121,7 @@
       "sample_id": "smol_0126",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5156,14 +5156,14 @@
       "sample_id": "smol_0131",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0132",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5184,7 +5184,7 @@
       "sample_id": "smol_0135",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5219,7 +5219,7 @@
       "sample_id": "smol_0140",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5332,7 +5332,7 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0002",
@@ -5345,21 +5345,21 @@
       "sample_id": "smol_0003",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5381,7 +5381,7 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0009",
@@ -5394,14 +5394,14 @@
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5409,34 +5409,34 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5444,28 +5444,28 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0018",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0019",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -5479,7 +5479,7 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0023",
@@ -5506,22 +5506,22 @@
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0027",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0028",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0029",
@@ -5563,14 +5563,14 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0002",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0003",
@@ -5583,15 +5583,15 @@
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0006",
@@ -5625,14 +5625,14 @@
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5640,35 +5640,35 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0017",
@@ -5688,15 +5688,15 @@
       "sample_id": "smol_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -5737,8 +5737,8 @@
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0027",
@@ -5751,29 +5751,29 @@
       "sample_id": "smol_0028",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Slow Down, Got: Continue"
     },
     {
       "sample_id": "smol_0029",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0030",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0031",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0032",
@@ -5800,7 +5800,7 @@
       "sample_id": "smol_0035",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5821,7 +5821,7 @@
       "sample_id": "smol_0038",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -5856,15 +5856,15 @@
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0006",
@@ -5884,92 +5884,92 @@
       "sample_id": "smol_0008",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0009",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0012",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
-    },
-    {
-      "sample_id": "smol_0014",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
-    },
-    {
-      "sample_id": "smol_0015",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
-    },
-    {
-      "sample_id": "smol_0016",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
-    },
-    {
-      "sample_id": "smol_0017",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
       "expected_action": "Expected: Yield, Got: Continue"
     },
     {
-      "sample_id": "smol_0018",
+      "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
+      "sample_id": "smol_0015",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
+      "sample_id": "smol_0016",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
+      "sample_id": "smol_0017",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
+    },
+    {
+      "sample_id": "smol_0018",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0019",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -6004,13 +6004,13 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6059,15 +6059,15 @@
       "sample_id": "smol_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0002",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0003",
@@ -6080,22 +6080,22 @@
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0006",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0007",
@@ -6116,63 +6116,63 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0012",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0013",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
     },
     {
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0017",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0018",
@@ -6186,14 +6186,14 @@
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -6207,34 +6207,34 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Slow Down, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0023",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0024",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0025",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6255,43 +6255,43 @@
       "sample_id": "smol_0001",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0002",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0003",
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0006",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0007",
@@ -6312,56 +6312,56 @@
       "llm_grounded": false,
       "llm_consistent": false,
       "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Slow Down"
+      "expected_action": "Expected: Continue, Got: Continue"
     },
     {
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0012",
-      "llm_grounded": false,
-      "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
-    },
-    {
-      "sample_id": "smol_0013",
-      "llm_grounded": false,
-      "llm_consistent": false,
-      "appropriate": false,
-      "expected_action": "Expected: Yield, Got: Slow Down"
-    },
-    {
-      "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
       "appropriate": true,
       "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
+      "sample_id": "smol_0013",
+      "llm_grounded": false,
+      "llm_consistent": false,
+      "appropriate": false,
+      "expected_action": "Expected: Yield, Got: Continue"
+    },
+    {
+      "sample_id": "smol_0014",
+      "llm_grounded": false,
+      "llm_consistent": true,
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
+    },
+    {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0017",
@@ -6381,15 +6381,15 @@
       "sample_id": "smol_0019",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": false,
-      "expected_action": "Expected: Slow Down, Got: Continue"
+      "appropriate": true,
+      "expected_action": "Expected: Slow Down, Got: Slow Down"
     },
     {
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
-      "expected_action": "Expected: Continue, Got: Continue"
+      "appropriate": false,
+      "expected_action": "Expected: Continue, Got: Yield"
     },
     {
       "sample_id": "smol_0021",
@@ -6430,7 +6430,7 @@
       "sample_id": "smol_0026",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6472,14 +6472,14 @@
       "sample_id": "smol_0004",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0005",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6514,14 +6514,14 @@
       "sample_id": "smol_0010",
       "llm_grounded": false,
       "llm_consistent": false,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0011",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6542,21 +6542,21 @@
       "sample_id": "smol_0014",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0015",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
       "sample_id": "smol_0016",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Slow Down"
     },
     {
@@ -6584,7 +6584,7 @@
       "sample_id": "smol_0020",
       "llm_grounded": false,
       "llm_consistent": true,
-      "appropriate": true,
+      "appropriate": false,
       "expected_action": "Expected: Continue, Got: Yield"
     },
     {
@@ -6606,7 +6606,7 @@
         "total": 523
       },
       "appropriateness": {
-        "correct": 449,
+        "correct": 179,
         "total": 523
       },
       "kappa": {
@@ -6624,7 +6624,7 @@
         "total": 418
       },
       "appropriateness": {
-        "correct": 342,
+        "correct": 255,
         "total": 419
       },
       "kappa": {

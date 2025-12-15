@@ -13,7 +13,7 @@ MISTRAL
   Human C Rate:  75.0%
   LLM C Rate:    99.6%
   Kappa C:       0.000
-  Approp Rate:   85.9%
+  Approp Rate:   34.2%
   Overall Agree: 29.2%
 
 SMOL
@@ -25,7 +25,7 @@ SMOL
   Human C Rate:  50.0%
   LLM C Rate:    62.7%
   Kappa C:       0.273
-  Approp Rate:   81.6%
+  Approp Rate:   60.9%
   Overall Agree: 63.6%
 
 --------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ TOTAL (ALL EXPERIMENTS)
   Human C Rate:  63.0%
   LLM C Rate:    76.1%
   Kappa C:       0.295
-  Approp Rate:   84.0%
+  Approp Rate:   46.1%
   Overall Agree: 45.7%
 
 ================================================================================
