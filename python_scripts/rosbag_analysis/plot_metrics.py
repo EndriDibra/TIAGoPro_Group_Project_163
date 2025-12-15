@@ -110,9 +110,9 @@ def plot_psc_by_experiment(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'psc_by_experiment.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'psc_by_experiment.svg'))
     plt.close()
-    print("Saved: psc_by_experiment.png")
+    print("Saved: psc_by_experiment.svg")
 
 
 def plot_min_distance_by_experiment(df: pd.DataFrame, output_dir: str):
@@ -142,9 +142,9 @@ def plot_min_distance_by_experiment(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'min_distance_by_experiment.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'min_distance_by_experiment.svg'))
     plt.close()
-    print("Saved: min_distance_by_experiment.png")
+    print("Saved: min_distance_by_experiment.svg")
 
 
 def plot_min_distance_boxplot(df: pd.DataFrame, output_dir: str):
@@ -168,9 +168,9 @@ def plot_min_distance_boxplot(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'min_distance_boxplot.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'min_distance_boxplot.svg'))
     plt.close()
-    print("Saved: min_distance_boxplot.png")
+    print("Saved: min_distance_boxplot.svg")
 
 
 def plot_collision_rate(df: pd.DataFrame, output_dir: str):
@@ -199,9 +199,9 @@ def plot_collision_rate(df: pd.DataFrame, output_dir: str):
                 f'{val:.1f}%', ha='center', va='bottom', fontsize=10)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'collision_rate.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'collision_rate.svg'))
     plt.close()
-    print("Saved: collision_rate.png")
+    print("Saved: collision_rate.svg")
 
 
 def plot_psc_boxplot(df: pd.DataFrame, output_dir: str):
@@ -225,9 +225,9 @@ def plot_psc_boxplot(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'psc_boxplot.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'psc_boxplot.svg'))
     plt.close()
-    print("Saved: psc_boxplot.png")
+    print("Saved: psc_boxplot.svg")
 
 
 def plot_vlm_latency_boxplot(df: pd.DataFrame, output_dir: str):
@@ -257,9 +257,9 @@ def plot_vlm_latency_boxplot(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'vlm_latency_boxplot.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'vlm_latency_boxplot.svg'))
     plt.close()
-    print("Saved: vlm_latency_boxplot.png")
+    print("Saved: vlm_latency_boxplot.svg")
 
 
 def plot_vlm_actions_stacked(df: pd.DataFrame, output_dir: str):
@@ -297,9 +297,9 @@ def plot_vlm_actions_stacked(df: pd.DataFrame, output_dir: str):
     ax.grid(axis='y', alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'vlm_actions_stacked.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'vlm_actions_stacked.svg'))
     plt.close()
-    print("Saved: vlm_actions_stacked.png")
+    print("Saved: vlm_actions_stacked.svg")
 
 
 def plot_scenario_comparison(df: pd.DataFrame, output_dir: str):
@@ -346,9 +346,9 @@ def plot_scenario_comparison(df: pd.DataFrame, output_dir: str):
     ax.set_ylabel('Experiment', fontsize=12)
     
     plt.tight_layout()
-    plt.savefig(os.path.join(output_dir, 'psc_heatmap.png'), dpi=150)
+    plt.savefig(os.path.join(output_dir, 'psc_heatmap.svg'))
     plt.close()
-    print("Saved: psc_heatmap.png")
+    print("Saved: psc_heatmap.svg")
 
 
 def compute_statistics(df: pd.DataFrame, output_dir: str):
