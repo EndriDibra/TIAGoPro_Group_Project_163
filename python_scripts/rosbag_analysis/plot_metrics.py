@@ -351,6 +351,56 @@ def plot_scenario_comparison(df: pd.DataFrame, output_dir: str):
     print("Saved: psc_heatmap.svg")
 
 
+def plot_collision_heatmap(df: pd.DataFrame, output_dir: str):
+    """Heatmap: Collision Rate for each experiment-scenario combination."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Pivot table for collision rate (mean of boolean represents percentage)
+    pivot = df.pivot_table(
+        values='collision', 
+        index='experiment_display', 
+        columns='scenario_display', 
+        aggfunc='mean'
+    ) * 100  # Convert to percentage
+    
+    # Reorder
+    exp_order = get_experiment_order(df)
+    pivot = pivot.reindex(exp_order)
+    
+    # Create heatmap - distinct from PSC, using Reds to emphasize danger
+    # vmin=0, vmax=100 ensures the scale is absolute
+    im = ax.imshow(pivot.values, cmap='Reds', aspect='auto', vmin=0, vmax=100)
+    
+    # Set ticks
+    ax.set_xticks(range(len(pivot.columns)))
+    ax.set_yticks(range(len(pivot.index)))
+    ax.set_xticklabels(pivot.columns, rotation=45, ha='right')
+    ax.set_yticklabels(pivot.index)
+    
+    # Add colorbar
+    cbar = ax.figure.colorbar(im, ax=ax)
+    cbar.set_label('Collision Rate (%)', fontsize=12)
+    
+    # Add text annotations
+    for i in range(len(pivot.index)):
+        for j in range(len(pivot.columns)):
+            val = pivot.values[i, j]
+            if not np.isnan(val):
+                # Use white text for dark red backgrounds (>50%), black otherwise
+                color = 'white' if val > 50 else 'black'
+                ax.text(j, i, f'{val:.1f}', ha='center', va='center', 
+                       color=color, fontsize=10, fontweight='bold')
+    
+    ax.set_title('Collision Rate Heatmap: Experiment × Scenario', fontsize=14)
+    ax.set_xlabel('Scenario', fontsize=12)
+    ax.set_ylabel('Experiment', fontsize=12)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'collision_heatmap.svg'))
+    plt.close()
+    print("Saved: collision_heatmap.svg")
+
+
 def compute_statistics(df: pd.DataFrame, output_dir: str):
     """Compute and save statistical summary."""
     stats_lines = []
@@ -478,6 +528,7 @@ def main():
     plot_vlm_latency_boxplot(df, args.output_dir)
     plot_vlm_actions_stacked(df, args.output_dir)
     plot_scenario_comparison(df, args.output_dir)
+    plot_collision_heatmap(df, args.output_dir)
     
     # Compute statistics
     print("\nComputing statistics...")

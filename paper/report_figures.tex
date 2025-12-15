@@ -1,0 +1,79 @@
+\subsection{Navigation Performance Figures}
+
+\begin{figure}[h]
+    \centering
+    \includesvg[width=1\linewidth]{Graphics//Tests/psc_boxplot}
+    \caption{Distribution of Personal Space Compliance (PSC) across different experiments. Higher values indicate better maintenance of social distances.}
+    \label{fig:psc_boxplot}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includesvg[width=1\linewidth]{Graphics//Tests/min_distance_boxplot}
+    \caption{Distribution of Minimum Distance to Pedestrians. The red dashed line indicates the collision threshold.}
+    \label{fig:min_dist_boxplot}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includesvg[width=1\linewidth]{Graphics//Tests/collision_rate}
+    \caption{Collision Rates observed during experiments. Lower is better.}
+    \label{fig:collision_rate}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includesvg[width=1\linewidth]{Graphics//Tests/collision_heatmap}
+    \caption{Heatmap of Collision Rates broken down by Experiment and Scenario. Darker red indicates a higher rate of failure.}
+    \label{fig:collision_heatmap}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includesvg[width=1\linewidth]{Graphics//Tests/vlm_actions_stacked}
+    \caption{Distribution of actions decided by the VLM (Continue, Slow Down, Yield) across experiments.}
+    \label{fig:vlm_actions}
+\end{figure}
+
+\subsection{Statistical Summaries}
+
+\begin{table}[h]
+\centering
+\caption{Summary of Navigation Performance Metrics by Experiment. PSC: Personal Space Compliance. Values are Mean $\pm$ Standard Deviation.}
+\label{tab:performance_summary}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metric} & \textbf{No VLM} & \textbf{Local VLM} & \textbf{Cloud VLM} & \textbf{No Tracking} \\
+\midrule
+Scenarios (N) & 94 & 64 & 56 & 68 \\
+PSC (\%) & $87.76 \pm 17.28$ & $78.51 \pm 14.84$ & $61.81 \pm 28.58$ & $63.23 \pm 21.45$ \\
+Min Distance (m) & $1.884 \pm 1.708$ & $0.547 \pm 0.536$ & $0.245 \pm 0.591$ & $0.307 \pm 0.978$ \\
+Collision Rate (\%) & 12.8\% & 25.0\% & 58.9\% & 32.4\% \\
+VLM Latency (s) & $0.798 \pm 0.614$ & $5.596 \pm 1.729$ & $4.300 \pm 2.080$ & - \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{VLM Performance Metrics. Comparison of Cloud (Mistral) and Local (Smol) VLM models on Grounding (G) and Captioning (C) tasks. }
+\label{tab:vlm_metrics}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Experiment} & \textbf{N Samples} & \textbf{Latency (s)} & \textbf{Human G (\%)} & \textbf{LLM G (\%)} & \textbf{Human C (\%)} & \textbf{LLM C (\%)} & \textbf{Approp (\%)} \\
+\midrule
+Cloud VLM (Mistral) & 523 & 4.30 & 50.0 & 26.2 & 75.0 & 99.6 & 85.9 \\
+Local VLM (Smol)    & 419 & 5.60 & 9.1 & 0.5 & 50.0 & 62.7 & 81.6 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{Statistical Significance}
+
+The Kruskal-Wallis test showed significant differences in PSC across experiments ($H=76.11, p < 0.001$). Pairwise Mann-Whitney U tests confirmed that the \textbf{No VLM} baseline significantly outperformed all other methods in Personal Space Compliance ($p < 0.001$). Interestingly, \textbf{Local VLM} significantly outperformed \textbf{Cloud VLM} ($U=2279.0, p=0.01$).
+
+Collision rates were also found to be statistically distinct across groups ($\chi^2 = 36.91, p < 0.001$).
