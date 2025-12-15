@@ -1,0 +1,59 @@
+============================================================
+STATISTICAL SUMMARY
+============================================================
+
+1. SUMMARY STATISTICS BY EXPERIMENT
+----------------------------------------
+
+NO VLM:
+  Scenarios: 94
+  PSC: 87.76% ± 17.28%
+  Min Distance: 1.884m ± 1.708m
+  Collisions: 12 / 94 (12.8%)
+  VLM Latency: 0.798s ± 0.614s
+  Actions - Continue: 362, Slow: 0, Yield: 0
+
+LOCAL VLM:
+  Scenarios: 64
+  PSC: 78.51% ± 14.84%
+  Min Distance: 0.547m ± 0.536m
+  Collisions: 16 / 64 (25.0%)
+  VLM Latency: 5.596s ± 1.729s
+  Actions - Continue: 292, Slow: 126, Yield: 1
+
+CLOUD VLM:
+  Scenarios: 56
+  PSC: 61.81% ± 28.58%
+  Min Distance: 0.245m ± 0.591m
+  Collisions: 33 / 56 (58.9%)
+  VLM Latency: 4.300s ± 2.080s
+  Actions - Continue: 7, Slow: 239, Yield: 277
+
+NO TRACKING:
+  Scenarios: 68
+  PSC: 63.23% ± 21.45%
+  Min Distance: 0.307m ± 0.978m
+  Collisions: 22 / 68 (32.4%)
+  Actions - Continue: 0, Slow: 0, Yield: 0
+
+============================================================
+2. STATISTICAL TESTS
+----------------------------------------
+
+Kruskal-Wallis test (PSC across experiments):
+  H-statistic: 76.1051
+  p-value: 0.0000
+  Significant: Yes (α=0.05)
+
+Mann-Whitney U tests (pairwise PSC comparisons):
+  No VLM vs Local VLM: U=4320.0, p=0.0000 *
+  No VLM vs Cloud VLM: U=4218.0, p=0.0000 *
+  No VLM vs No Tracking: U=5319.0, p=0.0000 *
+  Local VLM vs Cloud VLM: U=2279.0, p=0.0105 *
+  Local VLM vs No Tracking: U=3300.0, p=0.0000 *
+  Cloud VLM vs No Tracking: U=1948.0, p=0.8271 
+
+Chi-square test (collision rates):
+  χ²: 36.9137
+  p-value: 0.0000
+  Significant: Yes (α=0.05)

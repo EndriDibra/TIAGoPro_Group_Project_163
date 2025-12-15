@@ -14,7 +14,7 @@ This script:
 import argparse
 import os
 import sys
-from extract_metrics import MetricsExtractor, find_bags_in_directory
+from extract_metrics import RosbagMetricsExtractor, find_bags_in_directory
 from metrics_types import write_metrics_csv
 
 
@@ -78,7 +78,7 @@ def main():
         print('='*60)
         
         try:
-            extractor = MetricsExtractor(bag_path)
+            extractor = RosbagMetricsExtractor(bag_path)
             metrics = extractor.extract_metrics()
             all_metrics.extend(metrics)
             print(f"Extracted {len(metrics)} scenario metrics")

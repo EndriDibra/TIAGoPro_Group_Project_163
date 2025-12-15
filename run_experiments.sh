@@ -8,7 +8,7 @@
 set -e  # Exit on error
 
 # Configuration
-EXPERIMENT_DURATION=3600 # seconds
+EXPERIMENT_DURATION=600 # seconds
 LOG_DIR="./src/tests/logs"
 ROSBAG_DIR="./src/tests/rosbags"
 CONTAINER_NAME="tiago_group_sim"
@@ -104,7 +104,7 @@ run_experiment() {
 
 trap stop_all EXIT
 
-LOOP_COUNT=3  # Number of times to repeat all experiments
+LOOP_COUNT=6  # Number of times to repeat all experiments
 
 log "=========================================="
 log "TIAGo Social Navigation Experiment Suite"
