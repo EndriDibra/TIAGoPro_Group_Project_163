@@ -1,0 +1,71 @@
+VLM EVALUATION METRICS SUMMARY
+================================================================================
+
+PER-EXPERIMENT METRICS
+--------------------------------------------------------------------------------
+
+MISTRAL
+  N Samples:     523
+  N Labeled:     24
+  Human G Rate:  50.0%
+  LLM G Rate:    26.2%
+  Kappa G:       -0.083
+  Human C Rate:  75.0%
+  LLM C Rate:    99.6%
+  Kappa C:       0.000
+  Approp Rate:   85.9%
+  Overall Agree: 29.2%
+
+SMOL
+  N Samples:     419
+  N Labeled:     22
+  Human G Rate:  9.1%
+  LLM G Rate:    0.5%
+  Kappa G:       -0.065
+  Human C Rate:  50.0%
+  LLM C Rate:    62.7%
+  Kappa C:       0.273
+  Approp Rate:   81.6%
+  Overall Agree: 63.6%
+
+--------------------------------------------------------------------------------
+TOTAL (ALL EXPERIMENTS)
+  N Samples:     942
+  N Labeled:     46
+  Human G Rate:  30.4%
+  LLM G Rate:    8.7%
+  Kappa G:       -0.028
+  Human C Rate:  63.0%
+  LLM C Rate:    76.1%
+  Kappa C:       0.295
+  Approp Rate:   84.0%
+  Overall Agree: 45.7%
+
+================================================================================
+HUMAN-LLM AGREEMENT SUMMARY (Combined across experiments)
+================================================================================
+
+Total Labeled Samples: 46
+  - Mistral: 24 labeled
+  - Smol: 22 labeled
+
+Grounding Agreement:
+  Agreement Rate: 65.2%
+  Cohen's Kappa:  -0.028
+
+Consistency Agreement:
+  Agreement Rate: 69.6%
+  Cohen's Kappa:  0.295
+
+Overall Agreement (both G and C match):
+  Agreement Rate: 45.7%
+  Cohen's Kappa:  -0.006
+
+--------------------------------------------------------------------------------
+Kappa Interpretation:
+  < 0:       Less than chance agreement
+  0.01-0.20: Slight agreement
+  0.21-0.40: Fair agreement
+  0.41-0.60: Moderate agreement
+  0.61-0.80: Substantial agreement
+  0.81-1.00: Almost perfect agreement

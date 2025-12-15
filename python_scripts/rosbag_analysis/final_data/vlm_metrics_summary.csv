@@ -1,3 +1,0 @@
-Experiment,N_Samples,N_Labeled,Human_G_Rate,LLM_G_Rate,Kappa_G,Human_C_Rate,LLM_C_Rate,Kappa_C,Approp_Rate
-mistral,523,24,50.000,26.195,-0.083,75.000,99.618,0.000,85.851
-smol,419,22,9.091,0.477,-0.065,50.000,62.679,0.273,81.623

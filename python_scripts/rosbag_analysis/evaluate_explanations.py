@@ -44,9 +44,9 @@ def get_expected_action(distance: Optional[float], ttc: Optional[float]) -> str:
     Determine expected action based on distance and TTC.
     Uses most conservative action when both are available.
     """
-    # Default if no data
+    # Default if no data: assume safe to continue
     if distance is None and ttc is None:
-        return "unknown"
+        return "Continue"
     
     # Distance-based action
     # Note: These are center-to-center, not accounting for footprints
@@ -94,25 +94,17 @@ def check_appropriateness(sample: dict) -> Tuple[bool, str]:
     
     expected = get_expected_action(distance, ttc)
     
-    if expected == "unknown":
-        return None, "No context data"
-    
     # Normalize action names
     vlm_action_norm = vlm_action.lower().strip()
     expected_norm = expected.lower().strip()
     
-    # Check match (allow some flexibility)
+    # Check exact match only (no over-conservativeness allowed)
     is_appropriate = False
     if expected_norm == "yield" and vlm_action_norm in ["yield", "stop"]:
         is_appropriate = True
     elif expected_norm == "slow down" and vlm_action_norm in ["slow down", "slow"]:
         is_appropriate = True
     elif expected_norm == "continue" and vlm_action_norm == "continue":
-        is_appropriate = True
-    # Also appropriate if more conservative than needed
-    elif expected_norm == "continue" and vlm_action_norm in ["slow down", "slow", "yield", "stop"]:
-        is_appropriate = True
-    elif expected_norm == "slow down" and vlm_action_norm in ["yield", "stop"]:
         is_appropriate = True
     
     reason = f"Expected: {expected}, Got: {vlm_action}"

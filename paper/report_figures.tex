@@ -72,6 +72,21 @@ Local VLM (Smol)    & 419 & 5.60 & 9.1 & 0.5 & 50.0 & 62.7 & 81.6 \\
 }
 \end{table}
 
+\begin{table}[h]
+\centering
+\caption{Human-LLM Agreement on VLM Evaluation. Agreement rates and Cohen's $\kappa$ for grounding (G) and consistency (C) judgments. N=46 labeled samples.}
+\label{tab:vlm_agreement}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Agreement (\%)} & \textbf{Cohen's $\kappa$} \\
+\midrule
+Grounding & 65.2 & $-0.028$ \\
+Consistency & 69.6 & $0.295$ \\
+Overall (G $\cap$ C) & 45.7 & $-0.006$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection*{Statistical Significance}
 
 The Kruskal-Wallis test showed significant differences in PSC across experiments ($H=76.11, p < 0.001$). Pairwise Mann-Whitney U tests confirmed that the \textbf{No VLM} baseline significantly outperformed all other methods in Personal Space Compliance ($p < 0.001$). Interestingly, \textbf{Local VLM} significantly outperformed \textbf{Cloud VLM} ($U=2279.0, p=0.01$).
