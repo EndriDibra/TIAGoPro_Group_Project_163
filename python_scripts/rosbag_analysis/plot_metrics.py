@@ -271,30 +271,31 @@ def plot_vlm_actions_stacked(df: pd.DataFrame, output_dir: str):
         print("Skipping VLM actions plot: action columns not found")
         return
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(8, 3))
     
     # Sum actions per experiment
     action_sums = df.groupby('experiment_display')[action_cols].sum()
     
-    # Reorder
-    exp_order = get_experiment_order(df)
+    # Only include VLM experiments (Local and Cloud)
+    vlm_experiments = ['Local VLM', 'Cloud VLM']
+    exp_order = [e for e in vlm_experiments if e in action_sums.index]
     action_sums = action_sums.reindex(exp_order)
     
-    # Create stacked bar chart
-    bottom = np.zeros(len(action_sums))
+    # Create stacked horizontal bar chart
+    left = np.zeros(len(action_sums))
     action_colors = ['#27ae60', '#f39c12', '#e74c3c']
     labels = ['Continue', 'Slow Down', 'Yield']
     
     for col, color, label in zip(action_cols, action_colors, labels):
-        ax.bar(action_sums.index, action_sums[col], bottom=bottom, 
-               label=label, color=color, edgecolor='black')
-        bottom += action_sums[col].values
+        ax.barh(action_sums.index, action_sums[col], left=left, 
+                label=label, color=color, edgecolor='black')
+        left += action_sums[col].values
     
-    ax.set_ylabel('Total VLM Actions', fontsize=12)
-    ax.set_xlabel('Experiment', fontsize=12)
+    ax.set_xlabel('Total VLM Actions', fontsize=12)
+    ax.set_ylabel('Experiment', fontsize=12)
     ax.set_title('VLM Action Distribution by Experiment', fontsize=14)
-    ax.legend(title='Action Type', loc='upper right')
-    ax.grid(axis='y', alpha=0.3)
+    ax.legend(title='Action Type', loc='lower right')
+    ax.grid(axis='x', alpha=0.3)
     
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'vlm_actions_stacked.svg'))
