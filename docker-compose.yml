@@ -11,19 +11,21 @@ services:
     working_dir: /home/user
     entrypoint: /entrypoint.sh
     command: bash
-    runtime: nvidia
+    # runtime: nvidia  # Commented out - not available on this system
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
       - LIBGL_ALWAYS_SOFTWARE=1
       - LIBGL_ALWAYS_INDIRECT=0
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
+      # - NVIDIA_VISIBLE_DEVICES=all
+      # - NVIDIA_DRIVER_CAPABILITIES=all
     env_file:
       - .env
     volumes:
       # Mount local source code to the container
       - ./src:/home/user/src
+      # Mount python scripts for analysis
+      - ./python_scripts:/home/user/python_scripts
       # GUI forwarding
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-$HOME/.Xauthority}:/home/user/.Xauthority

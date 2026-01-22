@@ -1,0 +1,78 @@
+================================================================================
+STATISTICAL TESTS FOR PSC AND DISTANCE METRICS
+================================================================================
+
+0. KRUSKAL-WALLIS TEST: PSC across all experiments
+--------------------------------------------------------------------------------
+Cloud VLM: n=56, mean=61.809464285714284, std=28.322053964789326
+Local VLM: n=64, mean=78.51390624999999, std=14.722816754232559
+No Tracking: n=68, mean=63.228529411764704, std=21.29388611955705
+No VLM: n=94, mean=87.75691489361702, std=17.191583110459046
+
+Kruskal-Wallis Test Results:
+  H statistic: 76.10510676577117
+  p-value: 2.1000569597681798e-16
+  Significant at α=0.05: Yes
+  Effect size (η²): 0.26296800994881714
+  Effect size interpretation: large
+
+
+================================================================================
+MANN-WHITNEY U TEST: No VLM vs. No Tracking
+================================================================================
+
+1. PERSONAL SPACE COMPLIANCE (PSC)
+--------------------------------------------------------------------------------
+No VLM: n=94, mean=87.75691489361702, std=17.191583110459046
+No Tracking: n=68, mean=63.228529411764704, std=21.29388611955705
+
+Mann-Whitney U Test Results:
+  U statistic: 5319.0
+  p-value: 2.3829840309733397e-13
+  Significant at α=0.05: Yes
+  Effect size (r): 0.5660710236643838
+  Effect size interpretation: large
+
+
+2. MINIMUM DISTANCE
+--------------------------------------------------------------------------------
+No VLM: n=94, mean=1.8839042553191487, std=1.698520533132071
+No Tracking: n=68, mean=0.30705882352941183, std=0.9710132955161861
+
+Mann-Whitney U Test Results:
+  U statistic: 5334.0
+  p-value: 4.0413743323238793e-13
+  Significant at α=0.05: Yes
+  Effect size (r): 0.5700705834170761
+  Effect size interpretation: large
+
+
+3. COLLISION RATE
+--------------------------------------------------------------------------------
+Contingency Table:
+              Collision  No Collision  Total
+No VLM         12          82       94
+No Tracking     22          46       68
+Total           34          128       162
+
+No VLM collision rate: 12.76595744680851%
+No Tracking collision rate: 32.35294117647059%
+
+Fisher's Exact Test Results:
+  Odds ratio: 0.30598669623059865
+  p-value: 0.003278165641823811
+  Significant at α=0.05: Yes
+  Interpretation: No Tracking has 3.27x higher odds of collision
+
+================================================================================
+NOTES:
+- Kruskal-Wallis test is a non-parametric test for comparing multiple
+  independent samples. Effect size (η²): <0.01 negligible, 0.01-0.06
+  small, 0.06-0.14 medium, >0.14 large.
+- Mann-Whitney U test is a non-parametric test for comparing two
+  independent samples when the assumption of normality is violated.
+- Fisher's exact test is used for binary (collision) data.
+- Effect size (r) interpretation: <0.1 negligible, 0.1-0.3 small,
+  0.3-0.5 medium, >0.5 large.
+- All values are shown with full precision (no rounding).
+================================================================================
